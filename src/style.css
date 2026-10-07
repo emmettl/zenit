@@ -81,6 +81,6 @@ h1 { font-size: clamp(44px,5vw,64px); margin-top: 18px; }
 @media (max-width: 650px) { header { padding: 24px 22px; } .edition-state { right: 22px; top: 29px; } .composition { margin: auto 22px 20px; padding-top: 80px; } .controls { margin: 0 22px 20px; padding: 16px; } }
 
 .scene { position: fixed; }
-@media (max-width: 650px) { .composition { padding-top: max(180px,calc(55svh - 180px)); } }
+@media (max-width: 900px) { .composition { padding-top: max(180px,calc(55svh - 180px)); } }
 
 .pass-link { min-height: 28px; padding: 0; border: 0; border-bottom: 1px solid #385363; background: none; font: inherit; color: #b7d7e6; }

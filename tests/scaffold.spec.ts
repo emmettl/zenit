@@ -173,3 +173,19 @@ test('surface stars fade in daylight while the geometric ISS model remains avail
   await page.getByRole('button',{name:'Seek to pass peak'}).click()
   await expect.poll(async()=>Number(await page.locator('canvas').getAttribute('data-surface-star-opacity'))).toBeGreaterThan(.98)
 })
+
+
+test('the app-panel width keeps the culminated ISS clear of camera and clock controls',async({page})=>{
+  await page.setViewportSize({width:664,height:780})
+  await page.emulateMedia({reducedMotion:'reduce'})
+  await page.goto('/')
+  await expect(page.getByRole('button',{name:'Watch Sydney pass'})).toBeEnabled()
+  await page.getByRole('button',{name:'Watch Sydney pass'}).click()
+  await page.getByRole('button',{name:'Seek to pass peak'}).click()
+  const marker=page.getByRole('button',{name:'Inspect ISS',exact:true})
+  await expect(marker).toBeVisible()
+  const satellite=await marker.boundingBox(),controls=await page.getByRole('region',{name:'Study and camera controls'}).boundingBox()
+  expect(satellite).not.toBeNull();expect(controls).not.toBeNull()
+  expect(satellite!.y+satellite!.height).toBeLessThan(controls!.y)
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true)
+})
