@@ -1,0 +1,40 @@
+{
+  "source": {
+    "name": "HYG",
+    "version": "4.4",
+    "revision": "53e3df311869e813ace5f1ad2ec4ce909f13256c",
+    "repository": "https://codeberg.org/astronexus/hyg",
+    "path": "data/hyg/CURRENT/hyg_v44.csv.gz",
+    "compressedSha256": "00b349893b9a53106dd488d8371e8d2fa586043e500bb3cdb8bff3931682197d",
+    "compressedBytes": 13636362,
+    "csvSha256": "ea0e1699a1e7d48daa197b5fe567fcf447420e367f37619862ee1d6f077599cd",
+    "csvBytes": 33929696,
+    "capturedAt": "2026-10-07T21:40:20.822126Z"
+  },
+  "selection": {
+    "maximumVisualMagnitude": 6,
+    "maximumRecords": 10000,
+    "excludeSun": true
+  },
+  "statistics": {
+    "sourceRecords": 119614,
+    "selectedRecords": 5070,
+    "namedRecords": 428,
+    "missingDistance": 104,
+    "missingColour": 23,
+    "variableRecords": 778,
+    "excluded": {
+      "sun": 1,
+      "fainter": 114543,
+      "invalidDirectionOrMagnitude": 0,
+      "cap": 0
+    }
+  },
+  "release": {
+    "file": "data/stellar/hyg-v44-bright-d874dfa7da5f.json",
+    "sha256": "d874dfa7da5f030ff1d121dd7711c8ee71eb236f7ef313b2c8ac51b87cd42a0f",
+    "bytes": 854727,
+    "gzipBytes": 331934
+  },
+  "reproducibility": "Offline compiler verifies the pinned compressed source hash and retains original catalogue directions. Raw capture is outside the public artifact."
+}

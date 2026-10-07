@@ -1,0 +1,4 @@
+HYG Database v4.4, David Nash / Astronomy Nexus; compiled from Hipparcos, Yale Bright Star and Gliese.
+Source: https://codeberg.org/astronexus/hyg at 53e3df311869e813ace5f1ad2ec4ce909f13256c
+Licence: CC BY-SA 4.0, https://creativecommons.org/licenses/by-sa/4.0/
+Changes: Selected V <= 6.0; excluded Sun; normalized fields and missing distances; magnitude/ID order; catalogue positions retained.

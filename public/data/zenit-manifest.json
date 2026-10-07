@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "edition": "zenit",
-  "status": "scaffold",
+  "status": "stellar-reference",
   "canonicalUrl": "https://zenit.motionstudies.app/",
   "evidence": {
     "orbital": {
@@ -9,16 +9,28 @@
       "records": 0
     },
     "stellar": {
-      "status": "pending",
-      "records": 0
+      "status": "catalogue",
+      "records": 5070,
+      "file": "stellar/hyg-v44-bright-d874dfa7da5f.json",
+      "sha256": "d874dfa7da5f030ff1d121dd7711c8ee71eb236f7ef313b2c8ac51b87cd42a0f",
+      "source": "HYG 4.4",
+      "epoch": 2000.0,
+      "frame": "J2000 mean equatorial",
+      "licence": "CC-BY-SA-4.0",
+      "notice": "stellar/NOTICE.txt"
     }
   },
-  "scene": "Spherical Earth and geographic graticule for camera rehearsal only. No propagated positions or catalogue stars are displayed.",
+  "scene": "HYG bright-star reference around a spherical Earth and camera rehearsal. Orbital positions remain pending.",
   "observerPreset": {
     "name": "Zurich",
     "latitude": 47.3769,
     "longitude": 8.5417,
-    "use": "Camera composition only; no solar or visibility model."
+    "use": "Geometric stellar horizon and camera preset; idealised dark sky, no local weather or satellite visibility model."
   },
-  "brief": "https://github.com/emmettl/motionstudies/blob/main/docs/ZENIT.md"
+  "brief": "https://github.com/emmettl/motionstudies/blob/main/docs/ZENIT.md",
+  "sky": {
+    "orientationTimeUtc": "2026-10-07T21:00:00Z",
+    "model": "Catalogue directions with precession, nutation and Earth rotation. Proper motion, annual aberration, parallax, refraction and observing conditions omitted.",
+    "catalogueMotionScaleDegrees": 0.039268
+  }
 }

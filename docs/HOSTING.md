@@ -8,6 +8,6 @@ The `cloudflare` environment permits the `main` branch only. `CLOUDFLARE_API_TOK
 
 Retry by dispatching `cloudflare.yml` with a successful latest Pages run ID. The publisher records source repository, run, commit and content digest in `_release.json`, and checks both addresses and their cache policies. To roll back, set `CLOUDFLARE_ENABLED=false`, then use the trusted publisher to deploy an earlier successful artifact without `--require-latest`. Restore the variable after reviewing the rollback.
 
-The initial public allowlist admits only `data/zenit-manifest.json`, whose evidence is pending. Orbital and stellar releases need a reviewed allowlist and attribution update before publication. No collector or paid storage service is enabled.
+The public allowlist admits `data/zenit-manifest.json`, `data/stellar/NOTICE.txt` and immutable `data/stellar/hyg-v44-bright-<12 hex>.json` releases. The retained source and compiled SHA-256 are checked before build and catalogue rendering. Raw CSV and gzip captures are excluded. Orbital releases need a separate allowlist and attribution update. No collector or paid storage service is enabled.
 
 The check job uses GitHub's macOS 15 runner for Chromium and native WebKit, avoiding Ubuntu browser-runtime package mirror failures. Pages deployment and Cloudflare publishing remain separate Linux jobs. Both browser projects must pass before a Pages artifact is admitted.

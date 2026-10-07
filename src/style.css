@@ -26,7 +26,7 @@ input[type=range] { width: 100%; height: 44px; accent-color: #a5d2e6; margin: 6p
 button { min-height: 44px; padding: 8px 12px; border: 1px solid #385363; color: #d5e5ef; background: #10212c; border-radius: 3px; font-size: 11px; cursor: pointer; }
 button:disabled { opacity: .42; cursor: default; }
 button:not(:disabled):hover { border-color: #a5d2e6; }
-button:focus-visible, input:focus-visible, a:focus-visible { outline: 2px solid #debd8a; outline-offset: 4px; }
+button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible { outline: 2px solid #debd8a; outline-offset: 4px; }
 .camera-state { font-size: 10px; color: #8b9daa; margin-bottom: 0; }
 footer { border-top: 1px solid #263a4780; padding: 16px 44px; display: flex; justify-content: space-between; gap: 16px; background: #05090edb; font-size: 10px; line-height: 1.6; color: #8b9daa; }
 footer p { margin: 0; }
@@ -42,3 +42,16 @@ footer nav { display: flex; gap: 24px; white-space: nowrap; }
   footer { padding: 15px 22px; flex-direction: column; gap: 9px; }
   footer nav { gap: 18px; }
 }
+
+.stellar-panel { max-height: calc(100svh - 215px); overflow-y: auto; position: absolute; z-index: 2; right: 44px; top: 185px; width: 288px; padding: 20px; border: 1px solid #263a47; border-radius: 4px; background: #0b141bd9; font-size: 11px; }
+.stellar-panel h2 { font-size: 18px; margin: 0 0 12px; }
+.stellar-panel label { display: block; color: #a6b9c5; margin: 12px 0 6px; }
+.stellar-panel .star-toggle { display: flex; align-items: center; gap: 8px; min-height: 32px; }
+.stellar-panel select { width: 100%; min-height: 44px; color: #e4edf3; border: 1px solid #385363; border-radius: 3px; background: #10212c; padding: 8px; font: inherit; }
+.star-card { margin-top: 18px; border-top: 1px solid #263a47; padding-top: 14px; }
+.star-card h3 { font-size: 20px; font-weight: 400; margin: 0; }
+.star-id, .catalogue-state, .sky-note, .credit { color: #8b9daa; font-family: 'DM Mono',monospace; font-size: 10px; line-height: 1.7; }
+.star-card dl { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; line-height: 1.5; }
+.star-card dt { color: #8b9daa; } .star-card dd { margin: 0; text-align: right; }
+.credit { display: block; margin-top: 14px; }
+@media (max-width: 900px) { .stellar-panel { max-height: none; position: relative; right: auto; top: auto; width: min(510px,calc(100% - 44px)); margin: 0 22px 20px; order: 5; } footer { order: 6; } }

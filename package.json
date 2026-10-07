@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "ZENIT \u2014 an Earth-orbit Motion Studies edition",
+  "description": "ZENIT — an Earth-orbit Motion Studies edition",
   "license": "MIT",
   "engines": {
     "node": ">=24"
@@ -21,6 +21,7 @@
   "dependencies": {
     "@motionstudies/core": "0.1.0-alpha.31",
     "@motionstudies/web": "0.1.0-alpha.31",
+    "astronomy-engine": "2.1.19",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "three": "0.186.1"
