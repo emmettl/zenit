@@ -8,7 +8,7 @@ permissions:
   contents: read
 jobs:
   check:
-    runs-on: ubuntu-latest
+    runs-on: macos-15
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
@@ -19,15 +19,8 @@ jobs:
       - run: npm install --global npm@11.21.0 --ignore-scripts
       - run: npm ci
       - run: npm run check
-      # Use the same stable Ubuntu mirror as the existing edition checks.
-      - run: |
-          shopt -s nullglob
-          for source in /etc/apt/apt-mirrors.txt /etc/apt/sources.list /etc/apt/sources.list.d/*.list /etc/apt/sources.list.d/*.sources; do
-            if [ -f "$source" ]; then
-              sudo sed -i 's|http://azure.archive.ubuntu.com|https://archive.ubuntu.com|g;s|http://archive.ubuntu.com|https://archive.ubuntu.com|g;s|http://security.ubuntu.com|https://security.ubuntu.com|g' "$source"
-            fi
-          done
-      - run: npx playwright install --with-deps chromium webkit
+      # Native WebKit/Chromium runtimes avoid the Ubuntu package-mirror dependency.
+      - run: npx playwright install chromium webkit
       - run: npm run test:browser
       - uses: actions/upload-artifact@v7
         if: always()
