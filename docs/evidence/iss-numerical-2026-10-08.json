@@ -1,0 +1,32 @@
+{
+  "recordedOn": "2026-10-08",
+  "model": "satellite.js 7.1.0 / WGS72 / AFSPC a",
+  "reference": "Independent Python sgp4 2.27 (Vallado C++), Astropy 8.0.1 / PyERFA 2.0.1.5",
+  "tests": {
+    "temePositionToleranceKm": 2e-05,
+    "velocityToleranceKmPerSecond": 1e-07,
+    "earthFixedToleranceKm": 0.05,
+    "horizonToleranceDegrees": 0.01,
+    "earthFixedDifference": "Reference includes IERS polar motion; browser omits it. Both use UT1=UTC.",
+    "solarAltitudeToleranceDegrees": 0.02
+  },
+  "trail": {
+    "sampleSeconds": 2,
+    "seconds": 60,
+    "studySpacingForChordMeasurementSeconds": 300,
+    "maximumMeasuredChordErrorMetres": 3.9955490100189035,
+    "maximumAllowedChordErrorMetres": 6,
+    "meaning": "Polyline chord error relative to direct SGP4 positions only; not total orbital prediction accuracy."
+  },
+  "localBenchmark": {
+    "platform": "darwin",
+    "architecture": "arm64",
+    "node": "v26.10.0",
+    "iterations": 100,
+    "trailSamples": 31,
+    "medianMilliseconds": 0.043000000000006366,
+    "p95Milliseconds": 0.1422500000000042,
+    "physicalPhoneMeasured": false,
+    "scope": "Propagation and Earth-fixed transform only; not full frame time."
+  }
+}

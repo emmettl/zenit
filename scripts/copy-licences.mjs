@@ -8,6 +8,7 @@ for (const [source, target] of [
   ['react/LICENSE', 'react.txt'],
   ['react-dom/LICENSE', 'react-dom.txt'],
   ['three/LICENSE', 'three.txt'],
+  ['satellite.js/LICENSE.md', 'satellite-js.txt'],
 ]) await copyFile('node_modules/' + source, 'dist/licences/' + target)
 
 const astronomy=await readFile('node_modules/astronomy-engine/astronomy.js','utf8')

@@ -55,3 +55,32 @@ footer nav { display: flex; gap: 24px; white-space: nowrap; }
 .star-card dt { color: #8b9daa; } .star-card dd { margin: 0; text-align: right; }
 .credit { display: block; margin-top: 14px; }
 @media (max-width: 900px) { .stellar-panel { max-height: none; position: relative; right: auto; top: auto; width: min(510px,calc(100% - 44px)); margin: 0 22px 20px; order: 5; } footer { order: 6; } }
+header { padding: 24px 36px; }
+h1 { font-size: clamp(44px,5vw,64px); margin-top: 18px; }
+.edition-state { right: 36px; top: 32px; }
+.composition { margin: auto 36px 14px; padding-top: 15px; }
+.composition h2 { font-size: 26px; margin: 8px 0; }
+.composition > p:last-child { margin-bottom: 0; }
+.controls { margin: 0 36px 20px; padding: 16px 20px 12px; }
+.stellar-panel { right: 36px; top: 140px; width: 300px; max-height: calc(100svh - 175px); }
+.iss-heading { display: flex; align-items: start; gap: 12px; }
+.iss-heading h2 { font-size: 16px; }
+.iss-heading button { flex: none; padding: 5px 8px; font-size: 9px; }
+.stellar-heading { margin-top: 24px; border-top: 1px solid #263a47; padding-top: 18px; }
+.study-time { font: 12px 'DM Mono',monospace; color: #c8dce8; margin: 12px 0 0; }
+.clock-window { display: flex; justify-content: space-between; font: 9px 'DM Mono',monospace; color: #8b9daa; margin: 0 0 12px; }
+.clock-buttons { align-items: center; }
+.speed-label { display: flex; align-items: center; gap: 8px; font-size: 10px; color: #8b9daa; }
+.speed-label select { min-height: 44px; border: 1px solid #385363; background: #10212c; color: #d5e5ef; padding: 6px; }
+.pass-note { font: 9px/1.6 'DM Mono',monospace; color: #8b9daa; margin: 10px 0; }
+.camera-heading { border-top: 1px solid #263a47; padding-top: 12px; margin-top: 12px; }
+.controls input[type=range] { height: 32px; }
+.iss-marker { position: absolute; z-index: 1; transform: translate(10px,-50%); min-height: 28px; font: 10px 'DM Mono',monospace; background: #07151dbb; color: #67d9f4; padding: 4px 8px; border-color: #67d9f466; }
+.iss-marker[hidden] { display: none; }
+@media (max-width: 900px) { .stellar-panel { position: relative; max-height: none; right: auto; top: auto; width: min(510px,calc(100% - 44px)); } }
+@media (max-width: 650px) { header { padding: 24px 22px; } .edition-state { right: 22px; top: 29px; } .composition { margin: auto 22px 20px; padding-top: 80px; } .controls { margin: 0 22px 20px; padding: 16px; } }
+
+.scene { position: fixed; }
+@media (max-width: 650px) { .composition { padding-top: max(180px,calc(55svh - 180px)); } }
+
+.pass-link { min-height: 28px; padding: 0; border: 0; border-bottom: 1px solid #385363; background: none; font: inherit; color: #b7d7e6; }

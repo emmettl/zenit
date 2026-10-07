@@ -1,0 +1,7 @@
+ISS General Perturbations / OMM snapshot.
+Provider: CelesTrak, https://celestrak.org/
+Upstream: USSPACECOM / 18th Space Defense Squadron, via Space-Track.org.
+Basic SSA redistribution is permitted with appropriate citation: https://www.space-track.org/documentation#/odr
+Provider usage policy: https://celestrak.org/usage-policy.php
+Changes: selected NORAD 25544; decimal-string identity; explicit documented Earth/TEME/UTC/SGP4 defaults; UTC epoch suffix; source fields otherwise retained.
+Positions, pass times and trails are calculated with SGP4, not observed tracks or optical visibility predictions.

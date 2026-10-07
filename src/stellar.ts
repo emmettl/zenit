@@ -1,6 +1,6 @@
-import { MakeTime, Observer, RotateVector, Rotation_EQJ_HOR, Vector as AstroVector } from 'astronomy-engine'
-import { Vector3 } from 'three'
-import { OBSERVER, observerNormal } from './camera'
+import { Body, GeoVector, MakeTime, Observer, RotateVector, Rotation_EQJ_HOR, Vector as AstroVector } from 'astronomy-engine'
+import { Matrix4, Vector3 } from 'three'
+import { OBSERVER, POLAR_RATIO, observerNormal } from './camera'
 
 export const SKY_TIME = '2026-10-07T21:00:00Z'
 export interface Star {
@@ -43,7 +43,7 @@ export async function loadCatalogue(signal: AbortSignal): Promise<Catalogue> {
   if (!manifestResponse.ok) throw new Error('Stellar manifest could not be loaded')
   const manifest = await manifestResponse.json()
   const evidence = manifest.evidence?.stellar
-  if (manifest.sky?.orientationTimeUtc !== SKY_TIME || !evidence || !/^stellar\/hyg-v44-bright-[a-f0-9]{12}\.json$/.test(evidence.file) || !/^[a-f0-9]{64}$/.test(evidence.sha256)) throw new Error('Stellar release is unavailable')
+  if (!Number.isFinite(Date.parse(manifest.sky?.orientationTimeUtc)) || !evidence || !/^stellar\/hyg-v44-bright-[a-f0-9]{12}\.json$/.test(evidence.file) || !/^[a-f0-9]{64}$/.test(evidence.sha256)) throw new Error('Stellar release is unavailable')
   const response = await fetch('./data/' + evidence.file, { signal })
   if (!response.ok) throw new Error('Stellar catalogue could not be loaded')
   const bytes = await response.arrayBuffer()
@@ -56,16 +56,21 @@ export async function loadCatalogue(signal: AbortSignal): Promise<Catalogue> {
 
 // HYG directions stay at their J2000 catalogue epoch. The orientation transform
 // includes precession/nutation and Earth rotation; it is not proper-motion propagation.
-export function skyDirections(stars: Star[], time = SKY_TIME): Vector3[] {
-  const date = new Date(time)
-  const rotation = Rotation_EQJ_HOR(date, new Observer(0, 0, 0))
-  return stars.map(star => {
-    const cos = Math.cos(star.dec)
-    const equatorial = new AstroVector(cos*Math.cos(star.ra), cos*Math.sin(star.ra), Math.sin(star.dec), MakeTime(date))
-    const horizontal = RotateVector(rotation, equatorial)
-    // At Greenwich/equator: HOR (north, west, zenith) -> world (zenith, north, west).
-    return new Vector3(horizontal.z, horizontal.x, horizontal.y).normalize()
+export function stellarRotation(time: string): Matrix4 {
+  const date=new Date(time),rotation=Rotation_EQJ_HOR(date,new Observer(0,0,0))
+  const basis=[[1,0,0],[0,1,0],[0,0,1]].map(([x,y,z])=>{
+    const v=RotateVector(rotation,new AstroVector(x,y,z,MakeTime(date)))
+    return new Vector3(v.z,v.x,v.y)
   })
+  return new Matrix4().makeBasis(basis[0],basis[1],basis[2])
+}
+export function catalogueDirection(star: Star): Vector3 {
+  const cos=Math.cos(star.dec)
+  return new Vector3(cos*Math.cos(star.ra),cos*Math.sin(star.ra),Math.sin(star.dec))
+}
+export function skyDirections(stars: Star[],time=SKY_TIME): Vector3[] {
+  const rotation=stellarRotation(time)
+  return stars.map(star=>catalogueDirection(star).applyMatrix4(rotation).normalize())
 }
 
 export function horizonReading(direction: Vector3, latitude=OBSERVER.latitude, longitude=OBSERVER.longitude) {
@@ -88,7 +93,19 @@ export function starColour(index: number | null): [number,number,number] {
   return stops[stops.length-1][1]
 }
 
-export function blockedByEarth(position: Vector3, direction: Vector3): boolean {
-  const projection=position.dot(direction)
-  return projection<0 && projection*projection>=position.lengthSq()-1
+export function blockedByEarth(position: Vector3,direction: Vector3,maximumDistance=Infinity): boolean {
+  const origin=new Vector3(position.x,position.y/POLAR_RATIO,position.z)
+  const ray=new Vector3(direction.x,direction.y/POLAR_RATIO,direction.z)
+  const scale=ray.length();ray.divideScalar(scale)
+  const projection=origin.dot(ray),discriminant=projection*projection-origin.lengthSq()+1
+  return projection<0&&discriminant>=0&&-projection-Math.sqrt(discriminant)<maximumDistance*scale
+}
+
+// Authored solar-altitude fade, not atmospheric photometry or observing conditions.
+export function twilightOpacity(solarAltitude: number): number {
+  return Math.max(0,Math.min(1,(-solarAltitude-6)/12))
+}
+export function solarAltitude(time: number): number {
+  const vector=GeoVector(Body.Sun,new Date(time),false)
+  return horizonReading(new Vector3(vector.x,vector.y,vector.z).applyMatrix4(stellarRotation(new Date(time).toISOString())).normalize()).altitude
 }

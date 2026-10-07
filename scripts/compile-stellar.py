@@ -62,13 +62,14 @@ def compile_catalogue(source_path, captured_at, output_root):
     notice=data['licence']['attribution']+'\nSource: https://codeberg.org/astronexus/hyg at '+REVISION+'\nLicence: CC BY-SA 4.0, https://creativecommons.org/licenses/by-sa/4.0/\nChanges: '+data['licence']['changes']+'\n'
     (dest/'NOTICE.txt').write_text(notice)
     manifest_path=Path(output_root)/'public/data/zenit-manifest.json'
-    manifest=json.loads(manifest_path.read_text());manifest['status']='stellar-reference'
+    manifest=json.loads(manifest_path.read_text());has_orbit=manifest['evidence']['orbital']['records']>0;manifest['status']='iss-pass' if has_orbit else 'stellar-reference'
     manifest['evidence']['stellar']={'status':'catalogue','records':len(rows),'file':'stellar/'+name,'sha256':digest,
       'source':'HYG 4.4','epoch':2000.0,'frame':data['frame'],'licence':'CC-BY-SA-4.0','notice':'stellar/NOTICE.txt'}
-    manifest['sky']={'orientationTimeUtc':'2026-10-07T21:00:00Z','model':'Catalogue directions with precession, nutation and Earth rotation. Proper motion, annual aberration, parallax, refraction and observing conditions omitted.',
+    manifest['sky']={'orientationTimeUtc':manifest['study']['initialUtc'] if has_orbit else '2026-10-07T21:00:00Z','model':manifest['sky']['model'] if has_orbit else 'Catalogue directions with precession, nutation and Earth rotation. Proper motion, annual aberration, parallax, refraction and observing conditions omitted.',
       'catalogueMotionScaleDegrees':round(26.77*max(math.hypot(x[14] or 0,x[15] or 0) for x in rows)/3600000,6)}
-    manifest['scene']='HYG bright-star reference around a spherical Earth and camera rehearsal. Orbital positions remain pending.'
-    manifest['observerPreset']['use']='Geometric stellar horizon and camera preset; idealised dark sky, no local weather or satellite visibility model.'
+    if not has_orbit: manifest['scene']='HYG bright-star reference around a spherical Earth and camera rehearsal. Orbital positions remain pending.'
+    if not has_orbit: manifest['observerPreset']['use']='Geometric stellar horizon and camera preset; idealised dark sky, no local weather or satellite visibility model.'
+    if has_orbit: manifest['sky']['surfaceVisibility']='Authored twilight fade: full at solar altitude <= -18 degrees, zero at >= -6 degrees. No local atmosphere, weather, terrain or satellite brightness model.'
     manifest_path.write_text(json.dumps(manifest,indent=2)+'\n')
     audit={'source':data['source'],'selection':data['selection'],'statistics':stats,'release':{'file':'data/stellar/'+name,'sha256':digest,'bytes':len(encoded),'gzipBytes':len(gzip.compress(encoded,mtime=0))},'reproducibility':'Offline compiler verifies the pinned compressed source hash and retains original catalogue directions. Raw capture is outside the public artifact.'}
     (Path(output_root)/'docs/evidence').mkdir(parents=True,exist_ok=True)

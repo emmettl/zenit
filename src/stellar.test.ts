@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { Vector3 } from 'three'
-import { blockedByEarth, horizonReading, readCatalogue, skyDirections, starColour } from './stellar'
+import { blockedByEarth, horizonReading, readCatalogue, skyDirections, starColour, twilightOpacity } from './stellar'
 import reference from './stellar-reference.json'
 
 const manifest=JSON.parse(readFileSync('public/data/zenit-manifest.json','utf8'))
@@ -40,6 +40,9 @@ describe('celestial orientation and occultation',()=>{
       const vector=new Vector3(Math.cos(altitude)*Math.sin(azimuth),Math.cos(altitude)*Math.cos(azimuth),Math.sin(altitude))
       expect(vector.angleTo(new Vector3(...c.eastNorthUp))*180/Math.PI*60).toBeLessThan(1)
     }
+  })
+  it('fades the surface stellar reference through twilight and removes it by civil twilight',()=>{
+    expect(twilightOpacity(-24)).toBe(1);expect(twilightOpacity(-18)).toBe(1);expect(twilightOpacity(-12)).toBe(.5);expect(twilightOpacity(-6)).toBe(0);expect(twilightOpacity(20)).toBe(0)
   })
   it('distinguishes an Earth-blocked direction from an unobstructed one',()=>{
     const position=new Vector3(4,0,0)
