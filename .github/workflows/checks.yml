@@ -19,6 +19,14 @@ jobs:
       - run: npm install --global npm@11.21.0 --ignore-scripts
       - run: npm ci
       - run: npm run check
+      # Use the same stable Ubuntu mirror as the existing edition checks.
+      - run: |
+          shopt -s nullglob
+          for source in /etc/apt/apt-mirrors.txt /etc/apt/sources.list /etc/apt/sources.list.d/*.list /etc/apt/sources.list.d/*.sources; do
+            if [ -f "$source" ]; then
+              sudo sed -i 's|azure.archive.ubuntu.com|archive.ubuntu.com|g' "$source"
+            fi
+          done
       - run: npx playwright install --with-deps chromium webkit
       - run: npm run test:browser
       - uses: actions/upload-artifact@v7
