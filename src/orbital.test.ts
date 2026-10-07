@@ -7,7 +7,7 @@ import {cameraPose,EARTH_RADIUS_KM,earthSurface,LANDING_HEIGHT,OBSERVER,observer
 import {blockedByEarth,horizonReading,solarAltitude} from './stellar'
 import reference from './orbital-reference.json'
 const manifest=JSON.parse(readFileSync('public/data/zenit-manifest.json','utf8'))
-const raw=JSON.parse(readFileSync('public/data/'+manifest.evidence.orbital.file,'utf8')),orbit=readOrbit(raw)
+const raw=JSON.parse(readFileSync('public/data/'+(manifest.evidence.iss??manifest.evidence.orbital).file,'utf8')),orbit=readOrbit(raw)
 const vector=(v:{x:number;y:number;z:number})=>new Vector3(v.x,v.y,v.z)
 describe('SGP4 and frame evidence',()=>{
   it('matches independent near/deep-space propagation and handles decay at positive and negative offsets',()=>{

@@ -84,3 +84,14 @@ h1 { font-size: clamp(44px,5vw,64px); margin-top: 18px; }
 @media (max-width: 900px) { .composition { padding-top: max(180px,calc(55svh - 180px)); } }
 
 .pass-link { min-height: 28px; padding: 0; border: 0; border-bottom: 1px solid #385363; background: none; font: inherit; color: #b7d7e6; }
+
+.family-filters { border: 0; padding: 0; margin: 14px 0; }
+.family-filters legend { font-size: 10px; color: #8b9daa; margin-bottom: 8px; }
+.stellar-panel .family-filters label { display: flex; align-items: center; gap: 8px; min-height: 32px; margin: 4px 0; }
+.family-filters label span:last-child { margin-left: auto; font: 10px 'DM Mono',monospace; }
+.family-dot { width: 5px; height: 5px; transform: rotate(45deg); flex: none; }
+.family-stations { background: #59e0ff; } .family-gnss { background: #b8b5ff; } .family-geo { background: #ed9c63; }
+.attachment-note { font-size: 11px; color: #a6b9c5; line-height: 1.7; }
+.attachments { font-size: 10px; color: #a6b9c5; margin: 16px 0; } .attachments summary { cursor: pointer; padding: 8px 0; }
+.attachments button { display: block; width: 100%; margin: 4px 0; text-align: left; }
+.position-state { font: 9px 'DM Mono',monospace; color: #b7d7e6; }

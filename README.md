@@ -6,11 +6,35 @@ An Earth-orbit Motion Studies edition: the orbital population, its families, and
 
 ## Current state
 
-ZENIT now joins **one propagated ISS object**, a **5,070-record HYG 4.4 stellar field**, and a reversible twelve-second descent to a night-side surface viewpoint in **Sydney**. Select the ISS or a star, toggle the ISS trail or stars, pause, reverse and seek the shared study clock, or return to orbit without losing the selected record and instant.
+ZENIT now opens a three-family population: **635 retained independent movers**, with **616 eligible at the opening instant**, from CelesTrak's stations, GNSS and active geosynchronous groups. The 5,070-record HYG field and reversible twelve-second Sydney ISS descent remain available. Isolate families, select a satellite or attachment, switch whole-orbit / near-Earth framing, toggle the selected model trail, and pause, reverse or seek one shared clock.
+
+The overview opens paused at **600×**. Whole-orbit framing uses linear physical distances and pulls back enough for the outer population, adapting to portrait aspect ratio. Near-Earth framing uses the original close view. Station movers are cyan, navigation violet, geosynchronous amber; shared navigation/geosynchronous membership is mint. These are source groups rather than complete orbital-regime partitions.
 
 **Watch Sydney pass** seeks to 90 study seconds before culmination, pauses the study during descent, then starts 10× playback on arrival. Reduced motion jumps directly and stays paused. Clicking the culmination reading seeks to the peak without starting playback. Camera and clock controls remain independent; hidden tabs pause the study. Playback stops at the dated window boundaries.
 
 The frozen twelve-hour window is **7 October 2026, 11:58:49–23:58:49 UTC**. The modelled pass rises at **17:53:22.867**, culminates at **17:58:49** at **44.9° elevation**, and sets at **18:04:12.677 UTC**. The Sun is about **17.9° below the horizon** at culmination. The retained elements give Zurich daytime passes; Sydney supplies the first night-side composition. This is a replay from dated elements, not a live position service or an optical visibility prediction.
+
+## Cohort evidence and eligibility
+
+The [cohort release](docs/evidence/cohorts-release-2026-10-08.json) uses the **original 7 October source-probe bodies**, newly retained in ignored `work/sources/cohorts-2026-10-07/` after verification against all four recorded SHA-256 hashes. No provider request was repeated. Their HTTP response dates are known; exact original local acquisition timestamps were not recorded and remain unavailable. Later retention time is recorded separately.
+
+The 762 GP rows contain **716 distinct identities**, with **46 overlapping membership rows**. Twelve docked records are attachments, not independent lights. Sixty-nine other identities cannot enter the frozen study under the 24-hour element-offset rule. The remaining **635** are below the 1,000-mover ceiling, with no cap exclusions, invalid-element exclusions, propagation-screening failures or missing station metadata. All membership is retained after choosing the newest epoch per identity; epoch ties preserve source order stations, GNSS, GEO.
+
+| Source group | Input rows | Retained movers | Initially eligible | Attachments | Excluded independent IDs |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Stations | 23 | 11 | 11 | 12 | 0 |
+| GNSS / Navigation | 172 | 130 | 124 | 0 | 42 |
+| Active geosynchronous | 567 | 533 | 518 | 0 | 34 |
+
+Group counts overlap and must not be summed into a population total. At the initial instant, selecting navigation and geosynchronous together gives **605** distinct eligible movers; adding stations gives **616**. Eligibility is evaluated at the displayed instant, so an older retained identity can become unavailable as the clock advances. The source ledger explains exclusions; disappearance under this rule is not a reentry claim.
+
+Docked records remain selectable under their parent, including **eight ISS** and **four Tianhe** attachments. Their position and trail follow the parent. The SATCAT relationship is frozen across this study; docking and undocking history is not reconstructed. Available object type and catalogue launch date are preserved as supplied; missing metadata remains unknown. Provider memberships and docking facts are explicitly attributed, and optional operating-status enrichment is omitted.
+
+The [numerical/performance audit](docs/evidence/cohorts-numerical-2026-10-08.json) verifies 16 independent C++ SGP4 vectors for four actual retained station, navigation and deep-space records at positive and negative offsets, with 10 cm position and 0.1 mm/s velocity tolerances. A dedicated module worker calculates direct states at a nominal 33 ms cadence, with one outstanding request and no queued history. Position packets use transferable Float64 coordinates. Manual seeks invalidate older revisions; the displayed UTC clock, stellar sky, selected record and all lights use the same packet timestamp. No position interpolation is applied.
+
+The cohort payload is about **54 KB gzip**. A local arm64 Node benchmark of 616 eligible movers measured roughly **0.46 ms median / 0.66 ms p95** for propagation and Earth-fixed conversion, excluding transfer, rendering and UI. Across five-minute-spaced checks, selected two-second trail chords deviate by at most about **4.23 m** from direct model positions, within the 6 m trail ceiling. The largest measured geocentric radius is about **45,315 km**. These are model and local-cost checks, not source accuracy or physical-phone frame-rate measurements.
+
+Reproduce offline with `node scripts/compile-cohorts.mjs`. The retained ISS group element set is identical to the existing pass input, so the signature sequence is preserved. Independent cohort, ISS and stellar load failures have explicit retry states. The compiler and browser verify each published data hash; CI and visitors do not contact providers.
 
 ## Orbital evidence and frame
 
@@ -53,6 +77,6 @@ Cloudflare uses a main-only `cloudflare` environment with `CLOUDFLARE_API_TOKEN`
 
 ## Next composition
 
-Expand the validated one-object composition into bounded station, navigation and geosynchronous cohorts, with attachment handling and explicit source groups. Measure the complete playback on a named physical phone before claiming the 30 fps target. Gaia stellar depth and much longer clocks remain distant optional research.
+Develop freer orbital inspection and composition around the now-bounded families, while retaining explicit source groups and attachment handling. Measure the complete playback on a named physical phone before claiming the 30 fps target. Gaia stellar depth and much longer clocks remain distant optional research.
 
 The build includes dependency and font licence notices under `licences/`. Code is MIT licensed. The stellar dataset retains its separate CC BY-SA 4.0 licence and attribution; the code licence does not grant data rights.

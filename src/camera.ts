@@ -17,9 +17,9 @@ export function horizonDirection(altitude: number,azimuth: number): Vector3 {
   const alt=altitude*Math.PI/180,az=azimuth*Math.PI/180
   return north.multiplyScalar(Math.cos(alt)*Math.cos(az)).addScaledVector(east,Math.cos(alt)*Math.sin(az)).addScaledVector(up,Math.sin(alt)).normalize()
 }
-export function cameraPose(progress: number,aim=horizonDirection(30,0)) {
+export function cameraPose(progress: number,aim=horizonDirection(30,0),startRadius=4.2) {
   const p=Math.max(0,Math.min(1,progress)),t=p*p*(3-2*p),normal=observerNormal(OBSERVER.latitude,OBSERVER.longitude)
-  const start=new Vector3(-0.7,-0.35,-1).normalize().multiplyScalar(4.2)
+  const start=new Vector3(-0.7,-0.35,-1).normalize().multiplyScalar(startRadius)
   const landing=earthSurface(OBSERVER.latitude,OBSERVER.longitude).addScaledVector(normal,LANDING_HEIGHT)
   const radial=start.clone().normalize().lerp(landing.clone().normalize(),t).normalize()
   const position=radial.multiplyScalar(Math.exp(Math.log(start.length())*(1-t)+Math.log(landing.length())*t))

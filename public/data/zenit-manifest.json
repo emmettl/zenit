@@ -1,17 +1,18 @@
 {
   "schemaVersion": 1,
   "edition": "zenit",
-  "status": "iss-pass",
+  "status": "orbital-families",
   "canonicalUrl": "https://zenit.motionstudies.app/",
   "evidence": {
     "orbital": {
-      "status": "propagated",
-      "records": 1,
-      "file": "orbital/iss-b1c62cd01d58.json",
-      "sha256": "b1c62cd01d58245c95f627911a9b7f366c0efcaf826c1a58fd3540ead1e36734",
-      "source": "CelesTrak standard GP / USSPACECOM",
-      "notice": "orbital/NOTICE.txt",
-      "elementEpoch": "2026-10-07T13:30:47.478528Z"
+      "status": "cohorts",
+      "records": 635,
+      "initialEligibleRecords": 616,
+      "attachments": 12,
+      "file": "orbital/cohorts-8ceb46133139.json",
+      "sha256": "8ceb461331394c874932790d9cbf1f9771b39ded787078f52e6dcd822103e6bf",
+      "source": "CelesTrak stations / GNSS / active geosynchronous",
+      "notice": "orbital/NOTICE.txt"
     },
     "stellar": {
       "status": "catalogue",
@@ -23,9 +24,18 @@
       "frame": "J2000 mean equatorial",
       "licence": "CC-BY-SA-4.0",
       "notice": "stellar/NOTICE.txt"
+    },
+    "iss": {
+      "status": "propagated",
+      "records": 1,
+      "file": "orbital/iss-b1c62cd01d58.json",
+      "sha256": "b1c62cd01d58245c95f627911a9b7f366c0efcaf826c1a58fd3540ead1e36734",
+      "source": "CelesTrak standard GP / USSPACECOM",
+      "notice": "orbital/NOTICE.txt",
+      "elementEpoch": "2026-10-07T13:30:47.478528Z"
     }
   },
-  "scene": "One frozen ISS element set propagated over a reversible twelve-hour study, a HYG stellar sky and a night-side Sydney pass.",
+  "scene": "A bounded, deduplicated three-family orbital population, the HYG reference sky and retained Sydney ISS pass.",
   "observerPreset": {
     "name": "Sydney",
     "latitude": -33.8688,
@@ -54,5 +64,17 @@
     "peakRangeKm": 590.1395344674711,
     "solarAltitudeDegrees": -17.884055771093873,
     "rule": "Highest culmination >= 20 degrees with Sun below -6 degrees over Sydney in the 18 hours after the element epoch. One-second peak sampling; horizon crossings bisected to milliseconds. Geometric pass, not an optical visibility prediction."
+  },
+  "population": {
+    "inputRows": 762,
+    "distinctIdentities": 716,
+    "duplicateMembershipRows": 46,
+    "independentMovers": 635,
+    "initialEligibleMovers": 616,
+    "attachments": 12,
+    "excludedIndependentIdentities": 69,
+    "ceiling": 1000,
+    "capExclusions": 0,
+    "missingStationMetadata": 0
   }
 }

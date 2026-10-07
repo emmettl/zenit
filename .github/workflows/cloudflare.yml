@@ -41,7 +41,7 @@ jobs:
         uses: actions/checkout@v7
         with:
           repository: emmettl/motionstudies
-          ref: 10e92bc78436a6e16273e8ed919225c171855b5b
+          ref: fb3f45c5dfa821b5038805c32986ef20f6e14015
           path: hosting-tools
           persist-credentials: false
       - name: Set up Node

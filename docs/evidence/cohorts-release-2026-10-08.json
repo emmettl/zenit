@@ -1,0 +1,774 @@
+{
+  "source": {
+    "provider": "CelesTrak standard GP and selected SATCAT fields",
+    "upstream": "USSPACECOM / 18 SDS via Space-Track",
+    "sources": [
+      {
+        "id": "stations",
+        "url": "https://celestrak.org/NORAD/elements/gp.php?GROUP=stations&FORMAT=json",
+        "responseDateUtc": "2026-10-07T20:10:22Z",
+        "sha256": "9a8dd20063818e9782e17cc0fbb363bb9687fd38bc4df0416c7ec7deec0cbe0c",
+        "bytes": 9729,
+        "exactAcquisitionTimeUtc": null,
+        "retention": "Original source probe; exact local acquisition timestamp not recorded. Server response Date is distinct from epoch and later retention time."
+      },
+      {
+        "id": "gnss",
+        "url": "https://celestrak.org/NORAD/elements/gp.php?GROUP=gnss&FORMAT=json",
+        "responseDateUtc": "2026-10-07T20:10:43Z",
+        "sha256": "a36af6fab6f198e9fd9e605bd968b1b4b39b937631dc343c76146e98dc67255a",
+        "bytes": 71036,
+        "exactAcquisitionTimeUtc": null,
+        "retention": "Original source probe; exact local acquisition timestamp not recorded. Server response Date is distinct from epoch and later retention time."
+      },
+      {
+        "id": "geo",
+        "url": "https://celestrak.org/NORAD/elements/gp.php?GROUP=geo&FORMAT=json",
+        "responseDateUtc": "2026-10-07T20:10:43Z",
+        "sha256": "e9b64b76fa4b2133c6f3cce1a30d5fd89894fc0ba53a7689ae09525ef61e1ad1",
+        "bytes": 229294,
+        "exactAcquisitionTimeUtc": null,
+        "retention": "Original source probe; exact local acquisition timestamp not recorded. Server response Date is distinct from epoch and later retention time."
+      },
+      {
+        "id": "stations-satcat",
+        "url": "https://celestrak.org/satcat/records.php?GROUP=stations&FORMAT=json",
+        "responseDateUtc": "2026-10-07T20:10:41Z",
+        "sha256": "60140c6a1d8b9902bfb9019be85bd43ef4cbc6d67d6dd41da4bded6b3d64d8b2",
+        "bytes": 7642,
+        "exactAcquisitionTimeUtc": null,
+        "retention": "Original source probe; exact local acquisition timestamp not recorded. Server response Date is distinct from epoch and later retention time."
+      }
+    ]
+  },
+  "rights": {
+    "id": "basic-ssa-citation",
+    "reference": "https://www.space-track.org/documentation#/odr",
+    "providerPolicy": "https://celestrak.org/usage-policy.php",
+    "attribution": "CelesTrak; USSPACECOM / 18th Space Defense Squadron via Space-Track.org.",
+    "fieldProvenance": "GP elements and catalogue fields are attributed to their source. Group membership and docking relationships are provider-supplied snapshot facts, not reconstructed historical events. Operating-status enrichment is omitted."
+  },
+  "model": {
+    "library": "satellite.js",
+    "version": "7.1.0",
+    "gravity": "WGS72",
+    "operationMode": "a",
+    "output": "TEME kilometres",
+    "earthFixed": "GMST rotation to PEF; UT1 approximated by UTC, polar motion omitted",
+    "observer": "WGS84 geodetic ellipsoid",
+    "epochPrecision": "JavaScript milliseconds; source sub-millisecond fraction retained in evidence but truncated by the library (< 1 ms)",
+    "maximumElementAgeHours": 24,
+    "trailSeconds": 60,
+    "trailSampleSeconds": 2,
+    "interpolation": "none; direct SGP4 at every sample",
+    "selection": "Latest epoch per decimal-string NORAD ID. Ties preserve source order stations, gnss, geo. Keep all source group memberships; one moving glyph per independent identity. Exclude attachments from independent propagation, expose them under their parent. Age eligibility can change across the frozen study.",
+    "attachmentPolicy": "Frozen SATCAT attachment relationship across the study; no docking/undocking history reconstructed.",
+    "eligibility": "Absolute element offset <= 24 hours, intersected with the declared study window. Source age does not supply covariance or a guaranteed positional error."
+  },
+  "groups": [
+    {
+      "id": "stations",
+      "label": "Stations",
+      "description": "CelesTrak stations group; includes independent payloads and debris.",
+      "inputRows": 23,
+      "retainedMovers": 11,
+      "initialEligibleMovers": 11,
+      "attachments": 12,
+      "excluded": 0
+    },
+    {
+      "id": "gnss",
+      "label": "Navigation",
+      "description": "CelesTrak GNSS group; includes medium and geosynchronous orbits.",
+      "inputRows": 172,
+      "retainedMovers": 130,
+      "initialEligibleMovers": 124,
+      "attachments": 0,
+      "excluded": 42
+    },
+    {
+      "id": "geo",
+      "label": "Geosynchronous",
+      "description": "CelesTrak active geosynchronous group; inclined/eccentric members remain distinct.",
+      "inputRows": 567,
+      "retainedMovers": 533,
+      "initialEligibleMovers": 518,
+      "attachments": 0,
+      "excluded": 34
+    }
+  ],
+  "statistics": {
+    "inputRows": 762,
+    "distinctIdentities": 716,
+    "duplicateMembershipRows": 46,
+    "independentMovers": 635,
+    "initialEligibleMovers": 616,
+    "attachments": 12,
+    "excludedIndependentIdentities": 69,
+    "ceiling": 1000,
+    "capExclusions": 0,
+    "missingStationMetadata": 0
+  },
+  "exclusionLedger": [
+    {
+      "id": "36086",
+      "groups": [
+        "stations"
+      ],
+      "reason": "attachment",
+      "parentId": "25544"
+    },
+    {
+      "id": "49044",
+      "groups": [
+        "stations"
+      ],
+      "reason": "attachment",
+      "parentId": "25544"
+    },
+    {
+      "id": "53239",
+      "groups": [
+        "stations"
+      ],
+      "reason": "attachment",
+      "parentId": "48274"
+    },
+    {
+      "id": "54216",
+      "groups": [
+        "stations"
+      ],
+      "reason": "attachment",
+      "parentId": "48274"
+    },
+    {
+      "id": "67796",
+      "groups": [
+        "stations"
+      ],
+      "reason": "attachment",
+      "parentId": "25544"
+    },
+    {
+      "id": "68689",
+      "groups": [
+        "stations"
+      ],
+      "reason": "attachment",
+      "parentId": "25544"
+    },
+    {
+      "id": "68837",
+      "groups": [
+        "stations"
+      ],
+      "reason": "attachment",
+      "parentId": "25544"
+    },
+    {
+      "id": "69049",
+      "groups": [
+        "stations"
+      ],
+      "reason": "attachment",
+      "parentId": "48274"
+    },
+    {
+      "id": "69180",
+      "groups": [
+        "stations"
+      ],
+      "reason": "attachment",
+      "parentId": "48274"
+    },
+    {
+      "id": "100057",
+      "groups": [
+        "stations"
+      ],
+      "reason": "attachment",
+      "parentId": "25544"
+    },
+    {
+      "id": "100712",
+      "groups": [
+        "stations"
+      ],
+      "reason": "attachment",
+      "parentId": "25544"
+    },
+    {
+      "id": "100882",
+      "groups": [
+        "stations"
+      ],
+      "reason": "attachment",
+      "parentId": "25544"
+    },
+    {
+      "id": "36402",
+      "groups": [
+        "gnss"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-09-22T09:38:57.658272Z"
+    },
+    {
+      "id": "36585",
+      "groups": [
+        "gnss"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-10-04T02:59:18.023424Z"
+    },
+    {
+      "id": "36828",
+      "groups": [
+        "gnss",
+        "geo"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-09-13T16:04:22.733184Z"
+    },
+    {
+      "id": "37847",
+      "groups": [
+        "gnss"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-10-06T05:18:15.632928Z"
+    },
+    {
+      "id": "37867",
+      "groups": [
+        "gnss"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-10-04T18:35:29.492160Z"
+    },
+    {
+      "id": "37869",
+      "groups": [
+        "gnss"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-09-24T12:34:31.425312Z"
+    },
+    {
+      "id": "37948",
+      "groups": [
+        "gnss",
+        "geo"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-10-05T20:54:21.750912Z"
+    },
+    {
+      "id": "38779",
+      "groups": [
+        "gnss",
+        "geo"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-10-06T11:22:10.736832Z"
+    },
+    {
+      "id": "38857",
+      "groups": [
+        "gnss"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-10-01T01:28:27.651360Z"
+    },
+    {
+      "id": "39199",
+      "groups": [
+        "gnss",
+        "geo"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-10-01T11:29:51.057888Z"
+    },
+    {
+      "id": "39635",
+      "groups": [
+        "gnss",
+        "geo"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-10-04T23:18:52.136064Z"
+    },
+    {
+      "id": "40128",
+      "groups": [
+        "gnss"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-09-18T15:52:21.413280Z"
+    },
+    {
+      "id": "40544",
+      "groups": [
+        "gnss"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-09-30T19:08:40.447104Z"
+    },
+    {
+      "id": "40545",
+      "groups": [
+        "gnss"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-09-15T19:15:45.218880Z"
+    },
+    {
+      "id": "40890",
+      "groups": [
+        "gnss"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-09-16T23:08:37.832928Z"
+    },
+    {
+      "id": "41174",
+      "groups": [
+        "gnss"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-10-02T23:17:50.746272Z"
+    },
+    {
+      "id": "41175",
+      "groups": [
+        "gnss"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-10-06T02:58:40.171584Z"
+    },
+    {
+      "id": "41549",
+      "groups": [
+        "gnss"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-10-05T15:51:37.439136Z"
+    },
+    {
+      "id": "41550",
+      "groups": [
+        "gnss"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-09-28T07:00:53.706528Z"
+    },
+    {
+      "id": "41859",
+      "groups": [
+        "gnss"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-09-19T18:32:24.937440Z"
+    },
+    {
+      "id": "41860",
+      "groups": [
+        "gnss"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-10-06T01:12:14.718240Z"
+    },
+    {
+      "id": "41861",
+      "groups": [
+        "gnss"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-09-15T07:12:15.355008Z"
+    },
+    {
+      "id": "41862",
+      "groups": [
+        "gnss"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-09-21T21:34:35.601888Z"
+    },
+    {
+      "id": "42965",
+      "groups": [
+        "gnss",
+        "geo"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-10-06T11:41:08.916864Z"
+    },
+    {
+      "id": "43056",
+      "groups": [
+        "gnss"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-09-18T13:45:14.728896Z"
+    },
+    {
+      "id": "43057",
+      "groups": [
+        "gnss"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-09-22T21:35:59.136000Z"
+    },
+    {
+      "id": "43286",
+      "groups": [
+        "gnss",
+        "geo"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-10-05T00:11:42.683424Z"
+    },
+    {
+      "id": "43564",
+      "groups": [
+        "gnss"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-09-22T10:30:30.279744Z"
+    },
+    {
+      "id": "43565",
+      "groups": [
+        "gnss"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-10-03T05:11:15.912960Z"
+    },
+    {
+      "id": "43566",
+      "groups": [
+        "gnss"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-10-06T08:52:32.729664Z"
+    },
+    {
+      "id": "43567",
+      "groups": [
+        "gnss"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-09-16T01:27:04.334112Z"
+    },
+    {
+      "id": "43581",
+      "groups": [
+        "gnss"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-10-05T04:23:41.400384Z"
+    },
+    {
+      "id": "44542",
+      "groups": [
+        "gnss"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-09-23T12:08:14.530272Z"
+    },
+    {
+      "id": "44850",
+      "groups": [
+        "gnss"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-10-05T18:35:30.647328Z"
+    },
+    {
+      "id": "49810",
+      "groups": [
+        "gnss"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-10-04T12:31:58.606176Z"
+    },
+    {
+      "id": "63130",
+      "groups": [
+        "gnss"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-10-05T21:14:21.942816Z"
+    },
+    {
+      "id": "64202",
+      "groups": [
+        "gnss"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-09-17T07:40:50.872800Z"
+    },
+    {
+      "id": "67160",
+      "groups": [
+        "gnss"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-10-03T11:04:17.764608Z"
+    },
+    {
+      "id": "67162",
+      "groups": [
+        "gnss"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-10-02T13:36:55.401696Z"
+    },
+    {
+      "id": "68791",
+      "groups": [
+        "gnss"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-09-21T07:15:48.401856Z"
+    },
+    {
+      "id": "100460",
+      "groups": [
+        "gnss"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-09-28T21:46:25.620672Z"
+    },
+    {
+      "id": "100744",
+      "groups": [
+        "gnss"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-09-19T03:55:40.421856Z"
+    },
+    {
+      "id": "19548",
+      "groups": [
+        "geo"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-10-03T05:31:22.469088Z"
+    },
+    {
+      "id": "21639",
+      "groups": [
+        "geo"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-10-06T06:24:54.266400Z"
+    },
+    {
+      "id": "22314",
+      "groups": [
+        "geo"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-10-04T01:18:38.067264Z"
+    },
+    {
+      "id": "25967",
+      "groups": [
+        "geo"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-10-06T02:18:47.841984Z"
+    },
+    {
+      "id": "28885",
+      "groups": [
+        "geo"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-09-11T12:27:56.057184Z"
+    },
+    {
+      "id": "36395",
+      "groups": [
+        "geo"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-10-04T02:51:36.046944Z"
+    },
+    {
+      "id": "39035",
+      "groups": [
+        "geo"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-10-06T10:25:46.144704Z"
+    },
+    {
+      "id": "39078",
+      "groups": [
+        "geo"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-10-06T10:27:03.946176Z"
+    },
+    {
+      "id": "41592",
+      "groups": [
+        "geo"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-10-06T10:27:04.006656Z"
+    },
+    {
+      "id": "41744",
+      "groups": [
+        "geo"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-10-06T06:26:24.099072Z"
+    },
+    {
+      "id": "41745",
+      "groups": [
+        "geo"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-10-06T09:02:39.115104Z"
+    },
+    {
+      "id": "41838",
+      "groups": [
+        "geo"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-10-06T01:03:17.583264Z"
+    },
+    {
+      "id": "42934",
+      "groups": [
+        "geo"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-09-29T09:19:53.251392Z"
+    },
+    {
+      "id": "43339",
+      "groups": [
+        "geo"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-10-04T23:39:36.614880Z"
+    },
+    {
+      "id": "44479",
+      "groups": [
+        "geo"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-10-06T05:55:19.579296Z"
+    },
+    {
+      "id": "44625",
+      "groups": [
+        "geo"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-10-06T03:09:50.448096Z"
+    },
+    {
+      "id": "44910",
+      "groups": [
+        "geo"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-10-06T02:36:46.119168Z"
+    },
+    {
+      "id": "44978",
+      "groups": [
+        "geo"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-10-05T23:30:41.462784Z"
+    },
+    {
+      "id": "45986",
+      "groups": [
+        "geo"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-09-20T03:36:55.923264Z"
+    },
+    {
+      "id": "49333",
+      "groups": [
+        "geo"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-10-03T23:19:06.042144Z"
+    },
+    {
+      "id": "55263",
+      "groups": [
+        "geo"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-10-05T06:00:21.142944Z"
+    },
+    {
+      "id": "55508",
+      "groups": [
+        "geo"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-10-03T11:08:43.227744Z"
+    },
+    {
+      "id": "56372",
+      "groups": [
+        "geo"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-10-05T21:41:27.703104Z"
+    },
+    {
+      "id": "57213",
+      "groups": [
+        "geo"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-10-05T22:58:37.884288Z"
+    },
+    {
+      "id": "57479",
+      "groups": [
+        "geo"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-10-06T05:21:18.759456Z"
+    },
+    {
+      "id": "64723",
+      "groups": [
+        "geo"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-10-06T05:50:27.546432Z"
+    },
+    {
+      "id": "67226",
+      "groups": [
+        "geo"
+      ],
+      "reason": "outside-age-window",
+      "epoch": "2026-10-06T07:05:09.935232Z"
+    }
+  ],
+  "release": {
+    "file": "data/orbital/cohorts-8ceb46133139.json",
+    "sha256": "8ceb461331394c874932790d9cbf1f9771b39ded787078f52e6dcd822103e6bf",
+    "bytes": 459048
+  }
+}

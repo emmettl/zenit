@@ -5,3 +5,5 @@ Basic SSA redistribution is permitted with appropriate citation: https://www.spa
 Provider usage policy: https://celestrak.org/usage-policy.php
 Changes: selected NORAD 25544; decimal-string identity; explicit documented Earth/TEME/UTC/SGP4 defaults; UTC epoch suffix; source fields otherwise retained.
 Positions, pass times and trails are calculated with SGP4, not observed tracks or optical visibility predictions.
+
+Cohort release: retained 7 October 2026 stations, GNSS and active geosynchronous GP inputs, with selected stations SATCAT fields. Group membership and attachment relationships are frozen provider snapshot facts, not complete orbital regimes or a docking history. Deduplicated by NORAD identity and latest epoch; all memberships retained; docked records attached to parents; invalid, expired and failed records recorded in the exclusion ledger. No optional operating-status enrichment is included.

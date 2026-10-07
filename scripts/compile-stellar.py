@@ -62,7 +62,7 @@ def compile_catalogue(source_path, captured_at, output_root):
     notice=data['licence']['attribution']+'\nSource: https://codeberg.org/astronexus/hyg at '+REVISION+'\nLicence: CC BY-SA 4.0, https://creativecommons.org/licenses/by-sa/4.0/\nChanges: '+data['licence']['changes']+'\n'
     (dest/'NOTICE.txt').write_text(notice)
     manifest_path=Path(output_root)/'public/data/zenit-manifest.json'
-    manifest=json.loads(manifest_path.read_text());has_orbit=manifest['evidence']['orbital']['records']>0;manifest['status']='iss-pass' if has_orbit else 'stellar-reference'
+    manifest=json.loads(manifest_path.read_text());has_orbit=manifest['evidence']['orbital']['records']>0;manifest['status']='orbital-families' if manifest['evidence']['orbital'].get('status')=='cohorts' else 'iss-pass' if has_orbit else 'stellar-reference'
     manifest['evidence']['stellar']={'status':'catalogue','records':len(rows),'file':'stellar/'+name,'sha256':digest,
       'source':'HYG 4.4','epoch':2000.0,'frame':data['frame'],'licence':'CC-BY-SA-4.0','notice':'stellar/NOTICE.txt'}
     manifest['sky']={'orientationTimeUtc':manifest['study']['initialUtc'] if has_orbit else '2026-10-07T21:00:00Z','model':manifest['sky']['model'] if has_orbit else 'Catalogue directions with precession, nutation and Earth rotation. Proper motion, annual aberration, parallax, refraction and observing conditions omitted.',

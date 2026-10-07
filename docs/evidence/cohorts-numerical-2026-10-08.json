@@ -1,0 +1,53 @@
+{
+  "recordedOn": "2026-10-08",
+  "payload": {
+    "bytes": 459048,
+    "gzipBytes": 54145
+  },
+  "population": {
+    "inputRows": 762,
+    "distinctIdentities": 716,
+    "duplicateMembershipRows": 46,
+    "independentMovers": 635,
+    "initialEligibleMovers": 616,
+    "attachments": 12,
+    "excludedIndependentIdentities": 69,
+    "ceiling": 1000,
+    "capExclusions": 0,
+    "missingStationMetadata": 0
+  },
+  "study": {
+    "startUtc": "2026-10-07T11:58:49.000Z",
+    "endUtc": "2026-10-07T23:58:49.000Z",
+    "initialUtc": "2026-10-07T17:57:19.000Z"
+  },
+  "model": {
+    "library": "satellite.js 7.1.0",
+    "constants": "WGS72",
+    "operationMode": "a",
+    "sampleProtocol": "One outstanding worker request; coalesce requested times; transferable Float64 positions plus per-identity availability. Manual seeks increment revision and discard old results. Displayed clock, stellar sky, selected record and all movers use the packet timestamp.",
+    "samplingIntervalMilliseconds": 33,
+    "interpolation": "None for position states. Selected model trail: 60 previous study seconds at 2-second spacing.",
+    "reference": "Python sgp4 2.27 / independent Vallado C++ for four actual station, navigation and deep-space records; 16 vector cases at positive and negative epoch offsets.",
+    "referencePositionToleranceKm": 0.0001,
+    "referenceVelocityToleranceKmPerSecond": 1e-7
+  },
+  "geometry": {
+    "maximumMeasuredRadiusKm": 45314.83523992107,
+    "radiusSamplingSeconds": 300,
+    "maximumMeasuredTrailChordErrorMetres": 4.227758444052896,
+    "chordSamplingSeconds": 300,
+    "meaning": "Chord error against direct model samples only, not source prediction accuracy. Scene distances are linear Earth-radius units."
+  },
+  "localBenchmark": {
+    "platform": "darwin",
+    "architecture": "arm64",
+    "node": "v26.10.0",
+    "iterations": 100,
+    "eligibleMovers": 616,
+    "medianMilliseconds": 0.4625830000000093,
+    "p95Milliseconds": 0.658332999999999,
+    "scope": "Propagation and Earth-fixed transforms only; excludes transfer, rendering and UI.",
+    "physicalPhoneMeasured": false
+  }
+}

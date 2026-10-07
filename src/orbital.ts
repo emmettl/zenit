@@ -10,7 +10,8 @@ export interface OrbitalRelease {
   study: {startUtc: string; endUtc: string; initialUtc: string}
   pass: {riseUtc: string; peakUtc: string; setUtc: string; maximumElevationDegrees: number; peakAzimuthDegrees: number; solarAltitudeDegrees: number}
 }
-export interface Orbit {release: OrbitalRelease; baseline: SatRec; epoch: number; start: number; end: number}
+export interface Propagator {baseline: SatRec; epoch: number; start: number; end: number}
+export interface Orbit extends Propagator {release: OrbitalRelease}
 export function readOrbit(value: unknown): Orbit {
   const r=value as OrbitalRelease
   if(!r||r.schemaVersion!==1||r.kind!=='orbital-snapshot'||r.elements?.length!==1||r.rights?.id!=='basic-ssa-citation'||r.model?.version!=='7.1.0'||r.model.gravity!=='WGS72'||r.model.operationMode!=='a'||r.model.maximumElementAgeHours!==24||r.model.trailSeconds!==60||r.model.trailSampleSeconds!==2)throw Error('Unsupported orbital release')
@@ -29,7 +30,7 @@ export function readOrbit(value: unknown): Orbit {
 }
 export async function loadOrbit(signal: AbortSignal): Promise<Orbit> {
   const response=await fetch('./data/zenit-manifest.json',{signal});if(!response.ok)throw Error('Orbital manifest unavailable')
-  const manifest=await response.json(),evidence=manifest.evidence?.orbital
+  const manifest=await response.json(),evidence=manifest.evidence?.iss??manifest.evidence?.orbital
   if(!/^orbital\/iss-[a-f0-9]{12}\.json$/.test(evidence?.file)||!/^([a-f0-9]{64})$/.test(evidence?.sha256)||evidence.records!==1)throw Error('Orbital release unavailable')
   const payload=await fetch('./data/'+evidence.file,{signal});if(!payload.ok)throw Error('Orbital release unavailable')
   const bytes=await payload.arrayBuffer();if(bytes.byteLength>100000)throw Error('Orbital release too large')
@@ -39,17 +40,21 @@ export async function loadOrbit(signal: AbortSignal): Promise<Orbit> {
   if(JSON.stringify(manifest.study)!==JSON.stringify(orbit.release.study))throw Error('Study does not match orbital release')
   return orbit
 }
-export function orbitalPosition(orbit: Orbit,time: number) {
+export function orbitalState(orbit: Propagator,time: number,earthRotation?:number) {
   if(!Number.isFinite(time)||time<orbit.start||time>orbit.end||Math.abs(time-orbit.epoch)>86400000)return null
-  // SGP4 mutates its record. Each evaluation starts from the frozen initial state,
-  // making direct seeks, reversed playback and trail samples order-independent.
+  // SGP4 mutates its record. Every sample starts from the same frozen initial state.
   const pv=sgp4({...orbit.baseline},(time-orbit.epoch)/60000)
   if(!pv||![...Object.values(pv.position),...Object.values(pv.velocity)].every(Number.isFinite))return null
-  const fixed=eciToEcf(pv.position,gstime(new Date(time)))
-  const look=ecfToLookAngles({latitude:OBSERVER.latitude*Math.PI/180,longitude:OBSERVER.longitude*Math.PI/180,height:OBSERVER.heightKm},fixed)
-  return {teme:pv.position,velocity:pv.velocity,fixed,world:new Vector3(fixed.x,fixed.z,-fixed.y).divideScalar(EARTH_RADIUS_KM),altitude:look.elevation*180/Math.PI,azimuth:look.azimuth*180/Math.PI,rangeKm:look.rangeSat,ageHours:(time-orbit.epoch)/3600000}
+  const fixed=eciToEcf(pv.position,earthRotation??gstime(new Date(time)))
+  return {teme:pv.position,velocity:pv.velocity,fixed,world:new Vector3(fixed.x,fixed.z,-fixed.y).divideScalar(EARTH_RADIUS_KM)}
 }
-export function orbitalTrail(orbit: Orbit,time: number): Vector3[] {
+export function orbitalPosition(orbit: Propagator,time: number) {
+  const state=orbitalState(orbit,time);if(!state)return null
+  const look=ecfToLookAngles({latitude:OBSERVER.latitude*Math.PI/180,longitude:OBSERVER.longitude*Math.PI/180,height:OBSERVER.heightKm},state.fixed)
+  return {...state,altitude:look.elevation*180/Math.PI,azimuth:look.azimuth*180/Math.PI,rangeKm:look.rangeSat,ageHours:(time-orbit.epoch)/3600000}
+}
+
+export function orbitalTrail(orbit: Propagator,time: number): Vector3[] {
   const points: Vector3[]=[]
   for(let seconds=60;seconds>=0;seconds-=2){const sample=orbitalPosition(orbit,time-seconds*1000);if(sample)points.push(sample.world)}
   return points
