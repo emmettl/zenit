@@ -27,4 +27,4 @@ Cloudflare uses a main-only `cloudflare` environment with `CLOUDFLARE_API_TOKEN`
 
 Retain a bounded orbital evidence release; validate SGP4/TEME and the common celestial frame; compile the visible-star catalogue; then join a declared night-side landing to real modelled passes. Keep age rules, attachments, licence records and the optical-visibility distinction explicit. Gaia stellar depth and motion over much longer clocks remain distant optional research.
 
-Code is MIT licensed. Future data artifacts must retain their own source licences and attribution; the code licence does not grant data rights.
+The build includes dependency and font licence notices under `licences/`. Code is MIT licensed. Future data artifacts must retain their own source licences and attribution; the code licence does not grant data rights.

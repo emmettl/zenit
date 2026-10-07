@@ -10,6 +10,7 @@ assert.equal(manifest.status, 'scaffold')
 assert.equal(manifest.evidence.orbital.records, 0)
 assert.equal(manifest.evidence.stellar.records, 0)
 assert.deepEqual(await readdir('dist/data'), ['zenit-manifest.json'])
+assert.equal((await readdir('dist/licences')).length, 7)
 let total = 0
 async function measure(dir) {
   for (const item of await readdir(dir, { withFileTypes: true })) {

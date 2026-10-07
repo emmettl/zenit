@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "ZENIT — an Earth-orbit Motion Studies edition",
+  "description": "ZENIT \u2014 an Earth-orbit Motion Studies edition",
   "license": "MIT",
   "engines": {
     "node": ">=24"
@@ -13,7 +13,7 @@
     "dev": "vite --host 127.0.0.1",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "build": "npm run typecheck && vite build && node scripts/check-publication.mjs",
+    "build": "npm run typecheck && vite build && node scripts/copy-licences.mjs && node scripts/check-publication.mjs",
     "check": "npm run test && npm run build",
     "preview": "vite preview --host 127.0.0.1",
     "test:browser": "playwright test"
