@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.wrangler/
+.hosting-assets/
+test-results/
+playwright-report/
+work/
+.env
+.env.*
+.DS_Store
+*.tsbuildinfo

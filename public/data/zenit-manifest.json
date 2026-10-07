@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "edition": "zenit",
+  "status": "scaffold",
+  "canonicalUrl": "https://zenit.motionstudies.app/",
+  "evidence": {
+    "orbital": {
+      "status": "pending",
+      "records": 0
+    },
+    "stellar": {
+      "status": "pending",
+      "records": 0
+    }
+  },
+  "scene": "Spherical Earth and geographic graticule for camera rehearsal only. No propagated positions or catalogue stars are displayed.",
+  "observerPreset": {
+    "name": "Zurich",
+    "latitude": 47.3769,
+    "longitude": 8.5417,
+    "use": "Camera composition only; no solar or visibility model."
+  },
+  "brief": "https://github.com/emmettl/motionstudies/blob/main/docs/ZENIT.md"
+}

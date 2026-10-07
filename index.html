@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#05090e" />
+    <meta name="description" content="ZENIT, an Earth-orbit Motion Studies edition. An early camera scaffold for the orbital view and the sky above an observer." />
+    <link rel="canonical" href="https://zenit.motionstudies.app/" />
+    <meta property="og:title" content="ZENIT · Motion Studies" />
+    <meta property="og:url" content="https://zenit.motionstudies.app/" />
+    <title>ZENIT · Motion Studies</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript>ZENIT needs JavaScript for its camera scene. This research scaffold contains no satellite or stellar dataset. Read the <a href="https://github.com/emmettl/motionstudies/blob/main/docs/ZENIT.md">study brief</a>.</noscript>
+    <script type="module" src="./src/main.tsx"></script>
+    <script>
+      if (window.location.hostname === 'emmettl.github.io') {
+        const beacon = document.createElement('script');
+        beacon.defer = true;
+        beacon.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+        beacon.setAttribute('data-cf-beacon', JSON.stringify({ token: 'd1a9e30966554da393c4d92da01d4a6b' }));
+        document.head.appendChild(beacon);
+      }
+    </script>
+  </body>
+</html>
