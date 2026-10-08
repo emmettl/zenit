@@ -1,12 +1,12 @@
 import {test,expect} from '@playwright/test'
 const start=Date.parse('2026-10-07T11:58:49Z'),end=Date.parse('2026-10-07T23:58:49Z')
 
-test('opens playing, wraps forward and reverse, and preserves camera and object selection',async({page})=>{
+test('automatic journey can hand over to free clock loops while preserving camera and selection',async({page})=>{
   await page.emulateMedia({reducedMotion:'no-preference'});await page.goto('/')
   const clock=page.getByRole('slider',{name:'Study time',exact:true}),canvas=page.locator('canvas')
   await expect(page.getByRole('button',{name:'Pause study',exact:true})).toBeVisible()
-  await expect.poll(async()=>Number(await clock.inputValue())).toBeGreaterThan(Date.parse('2026-10-07T17:57:19Z'))
-  await page.getByRole('button',{name:'Pause study',exact:true}).click()
+  await expect.poll(async()=>Number(await canvas.getAttribute('data-study-time'))).toBeGreaterThan(Date.parse('2026-10-07T16:37:19Z'))
+  await page.getByRole('button',{name:'Explore freely',exact:true}).click()
   const camera=await canvas.getAttribute('data-camera-position')
   await page.getByLabel('Satellite or attachment',{exact:true}).selectOption('36086')
   await clock.press('End');await expect(clock).toHaveValue(String(end))

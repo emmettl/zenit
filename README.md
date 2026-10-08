@@ -6,11 +6,11 @@ An Earth-orbit Motion Studies edition: the orbital population, its families, and
 
 ## Current state
 
-ZENIT now opens a three-family population: **635 retained independent movers**, with **616 eligible at the opening instant**, from CelesTrak's stations, GNSS and active geosynchronous groups. The 5,070-record HYG field and reversible twelve-second Sydney ISS descent remain available. Isolate families, select a satellite or attachment, switch whole-orbit / near-Earth framing, toggle the selected model trail, and pause, reverse or seek one shared clock.
+ZENIT now opens a three-family population: **635 retained independent movers**, with **616 eligible at the retained pass’s initial instant**, from CelesTrak's stations, GNSS and active geosynchronous groups. The 5,070-record HYG field and reversible twelve-second Sydney ISS descent remain available. Isolate families, select a satellite or attachment, switch whole-orbit / near-Earth framing, toggle the selected model trail, and pause, reverse or seek one shared clock.
 
-The overview opens paused at **600×**. Whole-orbit framing uses linear physical distances and pulls back enough for the outer population, adapting to portrait aspect ratio. Near-Earth framing uses the original close view. Station movers are cyan, navigation violet, geosynchronous amber; shared navigation/geosynchronous membership is mint. These are source groups rather than complete orbital-regime partitions.
+Visible, non-reduced-motion sessions open into the automatic **one-minute journey** at **600×**. Whole-orbit framing uses linear physical distances and pulls back enough for the outer population, adapting to portrait aspect ratio. Near-Earth framing uses the original close view. Station movers are cyan, navigation violet, geosynchronous amber; shared navigation/geosynchronous membership is mint. These are source groups rather than complete orbital-regime partitions.
 
-**Watch Sydney pass** seeks to 90 study seconds before culmination, pauses the study during descent, then starts 10× playback on arrival. Reduced motion jumps directly and stays paused. Clicking the culmination reading seeks to the peak without starting playback. Camera and clock controls remain independent; hidden tabs pause the study. Playback stops at the dated window boundaries.
+**Watch Sydney pass** seeks to 90 study seconds before culmination, pauses the study during descent, then starts 10× playback on arrival. Reduced motion jumps directly and stays paused. Clicking the culmination reading seeks to the peak without starting playback. Manual camera and clock controls remain available in exploration; hidden tabs pause both journey and clock. Free clock playback loops at the dated window boundaries.
 
 The frozen twelve-hour window is **7 October 2026, 11:58:49–23:58:49 UTC**. The modelled pass rises at **17:53:22.867**, culminates at **17:58:49** at **44.9° elevation**, and sets at **18:04:12.677 UTC**. The Sun is about **17.9° below the horizon** at culmination. The retained elements give Zurich daytime passes; Sydney supplies the first night-side composition. This is a replay from dated elements, not a live position service or an optical visibility prediction.
 
@@ -38,9 +38,22 @@ Reproduce offline with `node scripts/compile-cohorts.mjs`. The retained ISS grou
 
 ## Playback
 
-The dated study starts automatically at 600× after the source loaders settle and the first population packet is ready. It loops within the declared twelve-hour interval, carrying elapsed-time overshoot across either boundary; reverse playback loops back from the start to the end. The selected object, filters and camera view persist. The clock displays **Loop** so the repeated snapshot is explicit.
+The automatic **60-second journey** begins after the source loaders settle and the first population packet is ready:
 
-Reduced motion opens paused. Pause, direct seeking, reversing or choosing the Sydney cue cancels any pending initial start. Leaving the tab pauses playback; returning does not restart a study the viewer has already paused. The Sydney cue keeps its independent twelve-second camera timing, freezes the clock during the arrival and reveal, then starts 10× playback after completion.
+| Real time | Composition | Shared dated clock |
+| --- | --- | --- |
+| 0–8 s | Whole-orbit shells | 600×, from 16:37:19 to 17:57:19 UTC |
+| 8–20 s | Twelve-second descent, horizon hold and upward reveal | Held at 17:57:19 UTC |
+| 20–48 s | Sky above Sydney, selected ISS and its model trail | 10×; culmination nine seconds into the sky hold |
+| 48–60 s | Reverse the camera path back to orbit | Held at 18:01:59 UTC |
+
+A one-second fade out and one-second fade in around the orbital seam conceal the dated pass reset. Each repeat preserves elapsed-time overshoot. This is an authored camera composition around the retained modelled pass; orbital and stellar positions continue to use one coherent worker-packet UTC timestamp. The clock heading identifies **Journey** and **Clock held** explicitly.
+
+**Pause study** holds the camera and clock together; **Play study** resumes from that exact phase without counting paused time. **Explore freely** pauses the journey and restores the records and manual controls at the displayed time and camera pose. Manual seeking, selection, filters, framing, speed, camera gestures or keyboard navigation also hand over to exploration. **Show panels** opens inspection while the journey continues. **Replay journey** restores the whole-orbit framing, all source families, ISS selection, stars and trail, then starts the composition again.
+
+Reduced motion opens paused without automatic camera movement. Enabling it during a journey leaves the current pose and time paused in exploration; removing the preference does not restart playback. Replay under reduced motion restores the paused orbital overview. Manual play remains available for the shared clock. Pause, seeking and other manual interaction cancel a pending initial start. Leaving the tab pauses playback; returning does not restart an already-started session.
+
+Free exploration retains the twelve-hour clock loop, with forward and reverse wraparound and elapsed-time overshoot. The independent Sydney cue freezes the clock during its twelve-second arrival and reveal, then starts 10× after completion.
 
 ## Camera interaction
 
@@ -91,7 +104,7 @@ The compiler verifies source SHA-256 before parsing. The browser verifies the co
 Use Node 24 (`nvm use`) and npm 11.21.0. Run `npm ci`, then `npm run dev`.
 
 - `npm run check` validates ellipsoid clearance, catalogue integrity, independent stellar/orbital frames, horizon crossings, deterministic trails and reversible clock boundaries, TypeScript, the production build, relative asset URLs, canonical identity, evidence state and a two-megabyte compressed artifact ceiling.
-- `npx playwright install chromium webkit` then `npm run test:browser` checks desktop and phone layouts, drag/wheel/keyboard navigation, focus/follow and expiry, reversible custom-view descent, full animated cue, reduced motion, identity/time preservation, selection, reversal, forward/reverse loop boundaries, automatic start, manual pause, retry and tamper rejection.
+- `npx playwright install chromium webkit` then `npm run test:browser` checks desktop and phone layouts, drag/wheel/keyboard navigation, focus/follow and expiry, reversible custom-view descent, full animated cue, reduced motion, identity/time preservation, selection, reversal, forward/reverse loop boundaries, full automatic camera loop, pause/resume, exploration handover, replay, reduced motion, retry and tamper rejection.
 
 ## Publication
 

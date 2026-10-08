@@ -24,6 +24,7 @@ test('loads the verified stellar release and relative evidence manifest', async 
 test('reduced motion lands directly, seeks and returns to orbit', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/')
+  await expect(page.locator('canvas')).toHaveAttribute('data-orbital-count','616')
   await page.getByRole('button', { name: 'Descend to surface' }).click()
   await expect(page.getByRole('heading', { name: 'The sky above a place.' })).toBeVisible()
   await expect(page.locator('#descent')).toHaveValue('1')
@@ -35,7 +36,8 @@ test('reduced motion lands directly, seeks and returns to orbit', async ({ page 
 test('animated camera can be interrupted without a hidden time reset', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'no-preference' })
   await page.goto('/')
-  await expect(page.locator('canvas')).toHaveAttribute('data-orbital-count','616')
+  await expect(page.getByRole('button',{name:'Explore freely',exact:true})).toBeVisible()
+  await page.getByRole('button',{name:'Explore freely',exact:true}).click()
   await page.getByRole('button', { name: 'Descend to surface' }).click()
   await expect(page.getByRole('status')).toHaveText('Camera moving')
   await expect.poll(async () => Number(await page.locator('#descent').inputValue())).toBeGreaterThan(0)
@@ -159,6 +161,8 @@ test('the full animated pass cue starts the clock only after camera arrival',asy
   test.setTimeout(30000)
   await page.emulateMedia({reducedMotion:'no-preference'})
   await page.goto('/')
+  await expect(page.getByRole('button',{name:'Explore freely',exact:true})).toBeVisible()
+  await page.getByRole('button',{name:'Explore freely',exact:true}).click()
   await expect(page.getByRole('button',{name:'Watch Sydney pass'})).toBeEnabled()
   await page.getByRole('button',{name:'Watch Sydney pass'}).click()
   await expect(page.getByRole('status')).toHaveText('Camera moving')

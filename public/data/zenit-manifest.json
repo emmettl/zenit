@@ -90,9 +90,22 @@
     "limits": "Generalised global geography, not local coast accuracy, terrain, a Sydney skyline or observing conditions."
   },
   "playback": {
-    "autoplay": "Visible, non-reduced-motion sessions after source readiness; once per page load.",
+    "autoplay": "One-minute camera journey in visible, non-reduced-motion sessions after source readiness; once per page load.",
     "loop": "Declared study interval, forward and reverse, preserving elapsed-time overshoot.",
     "initialRate": 600,
-    "reducedMotion": "Paused; user can start playback explicitly."
+    "reducedMotion": "Paused; user can start playback explicitly.",
+    "journey": {
+      "durationSeconds": 60,
+      "overviewSeconds": 8,
+      "descentSeconds": 12,
+      "skySeconds": 28,
+      "ascentSeconds": 12,
+      "seamFadeSeconds": 1,
+      "overviewRate": 600,
+      "skyRate": 10,
+      "clockHeld": "Descent and ascent",
+      "repeat": "Scene fades to black at the orbital seam while the dated pass resets.",
+      "interaction": "Pause holds camera and clock; Explore freely or manual input leaves the journey at the displayed pose and time. Replay journey restores the retained composition."
+    }
   }
 }
