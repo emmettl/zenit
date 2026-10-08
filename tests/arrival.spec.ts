@@ -20,14 +20,16 @@ test('geographic globe and compact landing preserve pause, identity, time and pa
 })
 
 test('cinematic movement reaches, holds and reveals with a frozen study clock and an interruptible camera',async({page})=>{
-  test.setTimeout(60000);await page.emulateMedia({reducedMotion:'no-preference'});await page.goto('/')
+  test.setTimeout(60000);await page.emulateMedia({reducedMotion:'no-preference'});await page.clock.install({time:new Date('2026-10-08T12:00:00Z')});await page.clock.pauseAt('2026-10-08T12:00:01Z');await page.goto('/')
   const canvas=page.locator('canvas');await expect(page.getByRole('button',{name:'Explore freely',exact:true})).toBeVisible({timeout:15000})
   await page.getByRole('button',{name:'Explore freely',exact:true}).click();await expect(page.getByRole('button',{name:'Watch Sydney pass'})).toBeEnabled();await page.getByRole('button',{name:'Watch Sydney pass'}).click();await expect(page.getByRole('button',{name:'Pause camera'})).toBeVisible()
+  await page.clock.runFor(100);await page.clock.fastForward(8000);await page.clock.runFor(100)
   await expect(canvas).toHaveAttribute('data-camera-phase','Sydney horizon',{timeout:13000})
   await expect(page.getByTestId('study-time')).toHaveText('2026-10-07 17:57:19 UTC')
   await page.getByRole('button',{name:'Pause camera'}).click();const pose=await canvas.getAttribute('data-camera-position')
-  await expect(canvas).toHaveAttribute('data-camera-position',pose!)
+  await page.clock.runFor(1000);await expect(canvas).toHaveAttribute('data-camera-position',pose!)
   await page.getByRole('button',{name:'Descend to surface',exact:true}).click()
+  await page.clock.runFor(100);await page.clock.fastForward(5000);await page.clock.runFor(100)
   await expect(canvas).toHaveAttribute('data-camera-phase','Looking up',{timeout:7000})
   await expect(page.getByRole('button',{name:'Play study',exact:true})).toBeVisible()
   await expect(page.locator('.cinematic-object')).toContainText('NORAD 25544')
