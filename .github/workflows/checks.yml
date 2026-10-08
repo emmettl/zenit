@@ -8,7 +8,8 @@ permissions:
   contents: read
 jobs:
   check:
-    runs-on: macos-15
+    # Current stable native ARM image; pinned Playwright includes macOS 26 WebKit.
+    runs-on: macos-26
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
