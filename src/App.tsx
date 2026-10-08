@@ -20,21 +20,22 @@ export function App() {
   const [showStars,setShowStars]=useState(true),[showTrail,setShowTrail]=useState(true),[selectedId,setSelectedId]=useState<string|null>('iss:25544')
   const [time,setTime]=useState(Date.parse(SKY_TIME)),[playing,setPlaying]=useState(false),[rate,setRate]=useState(600),[cue,setCue]=useState(false)
   const [reduced,setReduced]=useState(()=>window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+  const [visible,setVisible]=useState(()=>!document.hidden)
+  const autoplayPending=useRef(!reduced)
   const current=useRef(progress);current.current=progress
   const reducedCurrent=useRef(reduced);reducedCurrent.current=reduced
   const fail=useCallback(()=>setFailed(true),[]),select=useCallback((id:string)=>{setSelectedId(id);setFollowing(current.current===0&&(id.startsWith('sat:')||id.startsWith('iss:')))},[])
   useEffect(()=>{const controller=new AbortController();setStarState('loading');loadCatalogue(controller.signal).then(value=>{setCatalogue(value);setStarState('ready')}).catch(()=>{if(!controller.signal.aborted)setStarState('error')});return()=>controller.abort()},[starAttempt])
   useEffect(()=>{const controller=new AbortController();setOrbitState('loading');loadOrbit(controller.signal).then(value=>{setOrbit(value);setTime(Date.parse(value.release.study.initialUtc));setRevision(x=>x+1);setOrbitState('ready')}).catch(()=>{if(!controller.signal.aborted)setOrbitState('error')});return()=>controller.abort()},[orbitAttempt])
   useEffect(()=>{const controller=new AbortController();setCohortState('loading');loadCohorts(controller.signal).then(value=>{setCohorts(value);setCohortState('ready')}).catch(()=>{if(!controller.signal.aborted)setCohortState('error')});return()=>controller.abort()},[cohortAttempt])
-  useEffect(()=>{const query=window.matchMedia('(prefers-reduced-motion: reduce)');const change=()=>{if(query.matches===reducedCurrent.current)return;setReduced(query.matches);setTarget(null);setPlaying(false);setCue(false)};query.addEventListener('change',change);return()=>query.removeEventListener('change',change)},[])
-  useEffect(()=>{const change=()=>{if(document.hidden)setPlaying(false)};document.addEventListener('visibilitychange',change);return()=>document.removeEventListener('visibilitychange',change)},[])
+  useEffect(()=>{const query=window.matchMedia('(prefers-reduced-motion: reduce)');const change=()=>{if(query.matches===reducedCurrent.current)return;autoplayPending.current=false;setReduced(query.matches);setTarget(null);setPlaying(false);setCue(false)};query.addEventListener('change',change);return()=>query.removeEventListener('change',change)},[])
+  useEffect(()=>{const change=()=>{setVisible(!document.hidden);if(document.hidden)setPlaying(false)};document.addEventListener('visibilitychange',change);return()=>document.removeEventListener('visibilitychange',change)},[])
   useEffect(()=>{
     if(!playing||!orbit)return
     let frame=0,last=performance.now()
     const tick=(now:number)=>{const elapsed=now-last;if(elapsed>=25){last=now;setTime(value=>advanceStudy(value,elapsed,rate,orbit.start,orbit.end))}frame=requestAnimationFrame(tick)}
     frame=requestAnimationFrame(tick);return()=>cancelAnimationFrame(frame)
   },[playing,rate,orbit])
-  useEffect(()=>{if(orbit&&playing&&((rate>0&&time>=orbit.end)||(rate<0&&time<=orbit.start)))setPlaying(false)},[time,playing,rate,orbit])
   useEffect(()=>{
     if(target===null)return
     const arrived=()=>{setTarget(null);if(cue&&target===1){setCue(false);if(!reduced)setPlaying(true)}}
@@ -45,6 +46,10 @@ export function App() {
   },[target,reduced,cue])
   const population=usePopulation(cohorts,time,revision,workerAttempt)
   const displayTime=population.frame?.time??time
+  useEffect(()=>{
+    if(!autoplayPending.current||!orbit||starState==='loading'||cohortState==='loading'||(cohorts&&!population.frame&&!population.failed)||!visible)return
+    autoplayPending.current=false;if(!reduced)setPlaying(true)
+  },[orbit,starState,cohortState,cohorts,population.frame,population.failed,visible,reduced])
   const named=useMemo(()=>(catalogue?.stars??[]).filter(x=>x.name).sort((a,b)=>a.name!.localeCompare(b.name!)||a.hyg-b.hyg),[catalogue])
   const selected=catalogue?.stars.find(x=>x.id===selectedId)??null
   const horizon=selected?horizonReading(skyDirections([selected],new Date(displayTime).toISOString())[0]):null
@@ -52,8 +57,8 @@ export function App() {
   const sunAltitude=solarAltitude(displayTime)
   const immersive=(progress>0||target!==null)&&!panelsOpen
   const view=target===0?'Returning to orbit':progress===0?'Earth-fixed orbital view':cameraPhase(progress)
-  const seek=(value:number)=>{setPlaying(false);setCue(false);setRevision(x=>x+1);setTime(value)}
-  const watchPass=()=>{if(!orbit)return;setPanelsOpen(false);setFollowing(false);setCameraReset(x=>x+1);window.scrollTo({top:0,behavior:'instant'});setPlaying(false);setRevision(x=>x+1);setGroups(x=>x.includes('stations')?x:[...x,'stations']);setTime(Date.parse(orbit.release.study.initialUtc));setRate(10);setSelectedId('iss:25544');if(progress===1){if(!reduced)setPlaying(true)}else{setCue(true);setTarget(1)}}
+  const seek=(value:number)=>{autoplayPending.current=false;setPlaying(false);setCue(false);setRevision(x=>x+1);setTime(value)}
+  const watchPass=()=>{if(!orbit)return;autoplayPending.current=false;setPanelsOpen(false);setFollowing(false);setCameraReset(x=>x+1);window.scrollTo({top:0,behavior:'instant'});setPlaying(false);setRevision(x=>x+1);setGroups(x=>x.includes('stations')?x:[...x,'stations']);setTime(Date.parse(orbit.release.study.initialUtc));setRate(10);setSelectedId('iss:25544');if(progress===1){if(!reduced)setPlaying(true)}else{setCue(true);setTarget(1)}}
   const satelliteId=selectedId?.startsWith('sat:')||selectedId==='iss:25544'?selectedId.split(':')[1]:null
   const attached=cohorts?.attachments.find(x=>x.id===satelliteId)??null
   const mover=cohorts?.movers.find(x=>x.id===(attached?.parentId??satelliteId))??null
@@ -102,11 +107,11 @@ export function App() {
     </section>
     <section className="controls" aria-label="Study and camera controls">
       <p className="cinematic-object">{satelliteId?`${attached?.name??(satelliteId==='25544'?'ISS / ZARYA':mover?.name??'Satellite')} · NORAD ${satelliteId}`:selected?.name??'Stellar sky'}<span>{cameraPhase(progress)} · {Math.round(progress*100)}%</span></p>
-      <div className="control-heading"><span>STUDY CLOCK</span><span>{playing?'Playing':'Paused'} · {rate>0?'+':''}{rate}×</span></div><p className="study-time" data-testid="study-time">{orbit||cohorts?utcLabel(displayTime):'Loading dated study…'}</p>
+      <div className="control-heading"><span>STUDY CLOCK</span><span>{playing?'Playing':'Paused'} · {rate>0?'+':''}{rate}× · Loop</span></div><p className="study-time" data-testid="study-time">{orbit||cohorts?utcLabel(displayTime):'Loading dated study…'}</p>
       <TimelineScrubber windowStart={orbit?.start??time} windowEnd={orbit?.end??time+1} time={displayTime} onSeek={seek} ariaLabel="Study time" ariaValueText={utcLabel(displayTime)} disabled={!orbit} step={1000}/>
       {cohorts&&!population.frame&&!population.failed&&<p className="position-state" aria-live="polite">Updating orbital positions…</p>}
       <div className="clock-window">{orbit&&<><span>{fmtTime(orbit.start)}</span><span>{fmtTime(orbit.end)}</span></>}</div>
-      <div className="buttons clock-buttons"><button disabled={!orbit} onClick={()=>{setCue(false);setPlaying(x=>!x)}}>{playing?'Pause study':'Play study'}</button><button disabled={!orbit} onClick={()=>{setCue(false);setTime(displayTime);setRevision(x=>x+1);setRate(x=>-x)}}>Reverse time</button><label className="speed-label">Speed<select aria-label="Study speed" value={Math.abs(rate)} onChange={e=>setRate(x=>Math.sign(x)*Number(e.target.value))}><option value="1">1×</option><option value="10">10×</option><option value="60">60×</option><option value="600">600×</option></select></label><button disabled={!orbit} onClick={watchPass}>Watch Sydney pass</button></div>
+      <div className="buttons clock-buttons"><button disabled={!orbit} onClick={()=>{autoplayPending.current=false;setCue(false);setPlaying(x=>!x)}}>{playing?'Pause study':'Play study'}</button><button disabled={!orbit} onClick={()=>{autoplayPending.current=false;setCue(false);setTime(displayTime);setRevision(x=>x+1);setRate(x=>-x)}}>Reverse time</button><label className="speed-label">Speed<select aria-label="Study speed" value={Math.abs(rate)} onChange={e=>setRate(x=>Math.sign(x)*Number(e.target.value))}><option value="1">1×</option><option value="10">10×</option><option value="60">60×</option><option value="600">600×</option></select></label><button disabled={!orbit} onClick={watchPass}>Watch Sydney pass</button></div>
       {orbit&&<p className="pass-note"><button className="pass-link" aria-label="Seek to pass peak" onClick={()=>{seek(Date.parse(orbit.release.pass.peakUtc));window.scrollTo({top:0,behavior:'instant'})}}>Culmination {fmtTime(Date.parse(orbit.release.pass.peakUtc))}</button> · {orbit.release.pass.maximumElevationDegrees.toFixed(1)}° elevation · Sun {orbit.release.pass.solarAltitudeDegrees.toFixed(1)}°</p>}
       <div className="camera-navigation"><button onClick={()=>setFollowing(x=>!x)} aria-pressed={following} disabled={!canFollow||progress!==0}>{following?'Stop following':'Focus and follow'}</button><button onClick={resetCamera} disabled={progress!==0}>Reset orbital view</button><button onClick={()=>setCameraZoom(x=>x+1)} disabled={progress!==0}>Zoom in</button><button onClick={()=>setCameraZoom(x=>x-1)} disabled={progress!==0}>Zoom out</button></div><p className="navigation-hint">{progress===0?(following?'Following the selected satellite. Drag to orbit it; scroll to zoom.':'Drag to orbit Earth · scroll to zoom · click a satellite to follow.'):'Orbital navigation resumes on return.'}<br/>Keyboard: arrow keys, + / −, Home to reset.</p>
       <div className="control-heading camera-heading"><span>CAMERA DESCENT</span><span>{Math.round(progress*100)}%</span></div><label className="sr-only" htmlFor="descent">Descent to surface</label><input id="descent" type="range" min="0" max="1" step="0.001" value={progress} onChange={e=>{setPanelsOpen(true);setTarget(null);setCue(false);setProgress(Number(e.target.value))}}/>

@@ -1,5 +1,7 @@
 import { test, expect } from '@playwright/test'
 
+test.beforeEach(async({page})=>{await page.emulateMedia({reducedMotion:'reduce'})})
+
 test('loads the verified stellar release and relative evidence manifest', async ({ page, request }) => {
   const errors: string[] = []
   page.on('pageerror', error => errors.push(error.message))
@@ -107,7 +109,7 @@ test('watch cue lands at the retained pass with reduced motion and preserves ide
   await expect(page.getByRole('article',{name:'Selected satellite'})).toContainText('NORAD 25544')
 })
 
-test('study playback, reversal and direct seeks keep one deterministic ISS position',async({page})=>{
+test('study playback, reversal, looping and direct seeks keep one deterministic ISS position',async({page})=>{
   await page.goto('/')
   await expect(page.locator('canvas')).toHaveAttribute('data-orbital-count','616')
   const clock=page.getByRole('slider',{name:'Study time',exact:true})
@@ -129,7 +131,8 @@ test('study playback, reversal and direct seeks keep one deterministic ISS posit
   await expect(clock).toHaveValue(String(Date.parse('2026-10-07T23:58:49Z')))
   await page.getByRole('button',{name:'Reverse time',exact:true}).click()
   await page.getByRole('button',{name:'Play study',exact:true}).click()
-  await expect(page.getByRole('button',{name:'Play study',exact:true})).toBeVisible()
+  await expect.poll(async()=>Number(await clock.inputValue())).toBeLessThan(Number(Date.parse('2026-10-07T12:00:49Z')))
+  await expect(page.getByRole('button',{name:'Pause study',exact:true})).toBeVisible()
 })
 
 test('orbital load failure and altered evidence leave stars and camera available',async({page})=>{

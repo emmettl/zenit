@@ -88,5 +88,11 @@
     "rightsUrl": "https://www.naturalearthdata.com/about/terms-of-use/",
     "delivery": "Bundled into the hashed application asset; offline reproduction, no provider fetch in CI or browsers.",
     "limits": "Generalised global geography, not local coast accuracy, terrain, a Sydney skyline or observing conditions."
+  },
+  "playback": {
+    "autoplay": "Visible, non-reduced-motion sessions after source readiness; once per page load.",
+    "loop": "Declared study interval, forward and reverse, preserving elapsed-time overshoot.",
+    "initialRate": 600,
+    "reducedMotion": "Paused; user can start playback explicitly."
   }
 }

@@ -44,7 +44,11 @@ describe('SGP4 and frame evidence',()=>{
     expect(blockedByEarth(camera,direction,2.9)).toBe(false);expect(blockedByEarth(camera,direction,5.1)).toBe(true)
     const pose=cameraPose(1);expect(blockedByEarth(pose.position,observerNormal(OBSERVER.latitude,OBSERVER.longitude))).toBe(false)
   })
-  it('advances a reversible bounded clock without wrapping or leaking negative elapsed time',()=>{
-    expect(advanceStudy(500,10,10,0,1000)).toBe(600);expect(advanceStudy(600,10,-10,0,1000)).toBe(500);expect(advanceStudy(990,10,10,0,1000)).toBe(1000);expect(advanceStudy(10,10,-10,0,1000)).toBe(0);expect(advanceStudy(500,-10,10,0,1000)).toBe(500)
+  it('loops the bounded clock in either direction, preserves overshoot and rejects negative elapsed time',()=>{
+    expect(advanceStudy(500,10,10,0,1000)).toBe(600);expect(advanceStudy(600,10,-10,0,1000)).toBe(500);expect(advanceStudy(990,10,10,0,1000)).toBe(90);expect(advanceStudy(10,10,-10,0,1000)).toBe(910);expect(advanceStudy(500,-10,10,0,1000)).toBe(500)
+    expect(advanceStudy(990,1,10,0,1000)).toBe(0);expect(advanceStudy(10,1,-10,0,1000)).toBe(1000)
+    expect(advanceStudy(990,310,10,0,1000)).toBe(90);expect(advanceStudy(10,310,-10,0,1000)).toBe(910)
+    expect(advanceStudy(0,0,-10,0,1000)).toBe(0);expect(advanceStudy(1000,0,10,0,1000)).toBe(1000)
+    expect(advanceStudy(5,100,10,5,5)).toBe(5)
   })
 })

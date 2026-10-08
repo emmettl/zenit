@@ -60,6 +60,11 @@ export function orbitalTrail(orbit: Propagator,time: number): Vector3[] {
   return points
 }
 export function advanceStudy(time: number,elapsed: number,rate: number,start: number,end: number) {
-  return Math.max(start,Math.min(end,time+Math.max(0,elapsed)*rate))
+  const current=Math.max(start,Math.min(end,time)),span=end-start,delta=Math.max(0,elapsed)*rate
+  if(span<=0||!Number.isFinite(delta))return current
+  const next=current+delta
+  if(delta>0&&next>=end)return start+(next-start)%span
+  if(delta<0&&next<=start)return end-(start-next)%span
+  return next
 }
 export function utcLabel(time: number) {return new Date(time).toISOString().replace('T',' ').slice(0,19)+' UTC'}

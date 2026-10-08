@@ -36,6 +36,12 @@ The cohort payload is about **54 KB gzip**. A local arm64 Node benchmark of 616 
 
 Reproduce offline with `node scripts/compile-cohorts.mjs`. The retained ISS group element set is identical to the existing pass input, so the signature sequence is preserved. Independent cohort, ISS and stellar load failures have explicit retry states. The compiler and browser verify each published data hash; CI and visitors do not contact providers.
 
+## Playback
+
+The dated study starts automatically at 600× after the source loaders settle and the first population packet is ready. It loops within the declared twelve-hour interval, carrying elapsed-time overshoot across either boundary; reverse playback loops back from the start to the end. The selected object, filters and camera view persist. The clock displays **Loop** so the repeated snapshot is explicit.
+
+Reduced motion opens paused. Pause, direct seeking, reversing or choosing the Sydney cue cancels any pending initial start. Leaving the tab pauses playback; returning does not restart a study the viewer has already paused. The Sydney cue keeps its independent twelve-second camera timing, freezes the clock during the arrival and reveal, then starts 10× playback after completion.
+
 ## Camera interaction
 
 Drag the sky to orbit Earth and scroll to zoom. Clicking a visible satellite selects and follows it; the object selector and **Focus and follow** button provide the same route without precision pointing. Attachments focus on their parent station. While following, drag around the selected object and zoom toward or away from it. **Stop following** returns to the previous Earth view; **Reset orbital view** restores the chosen whole/near framing. Zoom buttons support touch screens. Focus the sky for arrow-key orbiting, plus/minus zoom and Home reset.
@@ -85,7 +91,7 @@ The compiler verifies source SHA-256 before parsing. The browser verifies the co
 Use Node 24 (`nvm use`) and npm 11.21.0. Run `npm ci`, then `npm run dev`.
 
 - `npm run check` validates ellipsoid clearance, catalogue integrity, independent stellar/orbital frames, horizon crossings, deterministic trails and reversible clock boundaries, TypeScript, the production build, relative asset URLs, canonical identity, evidence state and a two-megabyte compressed artifact ceiling.
-- `npx playwright install chromium webkit` then `npm run test:browser` checks desktop and phone layouts, drag/wheel/keyboard navigation, focus/follow and expiry, reversible custom-view descent, full animated cue, reduced motion, identity/time preservation, selection, reversal, boundary stops, retry and tamper rejection.
+- `npx playwright install chromium webkit` then `npm run test:browser` checks desktop and phone layouts, drag/wheel/keyboard navigation, focus/follow and expiry, reversible custom-view descent, full animated cue, reduced motion, identity/time preservation, selection, reversal, forward/reverse loop boundaries, automatic start, manual pause, retry and tamper rejection.
 
 ## Publication
 

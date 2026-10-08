@@ -1,5 +1,7 @@
 import {test,expect} from '@playwright/test'
 
+test.beforeEach(async({page})=>{await page.emulateMedia({reducedMotion:'reduce'})})
+
 test('orbit, zoom and reset leave the study clock and identity unchanged',async({page,isMobile})=>{
   await page.goto('/')
   const canvas=page.locator('canvas')
