@@ -110,6 +110,8 @@ The 1200×630 share card is a content-addressed PNG captured from the production
 
 Regenerate manually after building and starting a local preview with `node scripts/social-card.mjs http://127.0.0.1:4200/`, review the image, then update the HTML URLs to its new content hash. This does not run during builds or fetch providers. Publication checks enforce the static tags, image bytes/hash/dimensions, schema identity and icon sizes.
 
+Manual time scrubbing keeps the last complete orbital packet visible while the worker calculates the latest requested instant. The slider follows the requested time immediately; scene geometry, the stellar clock and selected-object readings switch together when the matching packet arrives. Superseded seek results are discarded. Source replacement, calculation failure and retries clear the retained packet.
+
 ## Development
 
 Use Node 24 (`nvm use`) and npm 11.21.0. Run `npm ci`, then `npm run dev`.
