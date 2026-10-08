@@ -57,7 +57,7 @@ export function App() {
   const mover=cohorts?.movers.find(x=>x.id===(attached?.parentId??satelliteId))??null
   const traced=useMemo<Propagator|null>(()=>mover?{baseline:json2satrec(mover.element,'a'),epoch:Date.parse(mover.element.EPOCH),start:Date.parse(mover.eligibleStartUtc),end:Date.parse(mover.eligibleEndUtc)}:satelliteId==='25544'?orbit:null,[mover,orbit,satelliteId])
   const selectedPosition=traced?orbitalPosition(traced,displayTime):null
-  const canFollow=Boolean(satelliteId&&selectedPosition&&(!mover||enabledMover(mover,groups)))
+  const canFollow=Boolean(satelliteId&&selectedPosition&&(!mover||enabledMover(mover,groups))&&((satelliteId==='25544'&&orbit)||!population.failed))
   useEffect(()=>{if(following&&!canFollow)setFollowing(false)},[following,canFollow])
   const resetCamera=()=>{setFollowing(false);setCameraReset(x=>x+1)}
   const eligible=population.frame?Array.from(population.frame.availability).filter(x=>x===1).length:cohorts?null:position?1:0
