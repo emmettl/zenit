@@ -13,6 +13,8 @@ test('compact sky gives isolated mid and faint catalogue stars a readable raster
   await page.getByRole('button',{name:'Watch Sydney pass'}).click();await page.getByRole('button',{name:'Show panels',exact:true}).click();await page.getByRole('button',{name:'Seek to pass peak'}).click()
   await expect(canvas).toHaveAttribute('data-study-time',String(Date.parse('2026-10-07T17:58:49Z')))
   await page.getByRole('button',{name:'Hide panels',exact:true}).click();await page.evaluate(()=>document.fonts.ready)
+  // Sample an explored sky direction, away from the compass's instruction strip.
+  for(let i=0;i<5;i++)await canvas.press('ArrowRight')
   const camera=new PerspectiveCamera(100,390/664,.1,2);camera.quaternion.copy(new Quaternion(...(await canvas.getAttribute('data-camera-rotation'))!.split(',').map(Number) as [number,number,number,number]));camera.updateMatrixWorld()
   const rays=skyDirections(catalogue.stars,'2026-10-07T17:58:49Z')
   const points=rays.flatMap((ray,i)=>{const ndc=ray.clone().project(camera);return ndc.z> -1&&ndc.z<1&&horizonReading(ray).altitude>5?[{star:catalogue.stars[i],x:(ndc.x+1)*195,y:(1-ndc.y)*332}]:[]})

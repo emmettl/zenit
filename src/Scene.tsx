@@ -6,15 +6,18 @@ import {blockedByEarth,type Catalogue,catalogueDirection,stellarRotation,starCol
 import {type Orbit,type Propagator,orbitalPosition,orbitalTrail} from './orbital'
 import {earthTexture,earthGeometry,land} from './geography'
 import {type Reveal,moverEmphasis} from './introduction'
+import {skyView,turnSky,skyPose,type SkyView} from './sky-camera'
 import {brightAnchors,compassBearing,COMPASS_POINTS,orientationOpacity,surfaceLabels,type ScreenBox} from './orientation'
 import {type Cohorts,type PopulationFrame,type GroupId,enabledMover,groupColour} from './cohorts'
-interface Props {panelsOpen:boolean;reveal:Reveal|null;onInteraction:()=>void;opacity:number;cameraZoom:number;following:boolean;cameraReset:number;onReset:()=>void;progress:number; time:number; catalogue:Catalogue|null; orbit:Orbit|null; showStars:boolean; showTrail:boolean; cohorts:Cohorts|null; frame:PopulationFrame|null; groups:GroupId[]; scale:'whole'|'near'; traced:Propagator|null; selectedId:string|null; onSelect:(id:string)=>void; onFailure:()=>void}
-export function SceneView({panelsOpen,reveal,onInteraction,opacity,progress,time,catalogue,orbit,showStars,showTrail,cohorts,frame,groups,scale,traced,selectedId,onSelect,onFailure,following,cameraReset,cameraZoom,onReset}:Props) {
-  const host=useRef<HTMLDivElement>(null),values=useRef({panelsOpen,reveal,progress,time,showStars,showTrail,selectedId,frame,groups,scale,traced,following,cameraReset,cameraZoom}),redraw=useRef<(()=>void)|null>(null)
-  const navigation=useRef<{orbit:OrbitalView|null;follow:OrbitalView|null;followId:string|null;start:CameraPose|null;last:CameraPose|null;reset:number;scale:string;zoom:number}>({orbit:null,follow:null,followId:null,start:null,last:null,reset:cameraReset,scale,zoom:cameraZoom})
+interface Props {skyCentre:number;onSkyInteraction:()=>void;onCentreSky:()=>void;panelsOpen:boolean;reveal:Reveal|null;onInteraction:()=>void;opacity:number;cameraZoom:number;following:boolean;cameraReset:number;onReset:()=>void;progress:number; time:number; catalogue:Catalogue|null; orbit:Orbit|null; showStars:boolean; showTrail:boolean; cohorts:Cohorts|null; frame:PopulationFrame|null; groups:GroupId[]; scale:'whole'|'near'; traced:Propagator|null; selectedId:string|null; onSelect:(id:string)=>void; onFailure:()=>void}
+export function SceneView({skyCentre,onSkyInteraction,onCentreSky,panelsOpen,reveal,onInteraction,opacity,progress,time,catalogue,orbit,showStars,showTrail,cohorts,frame,groups,scale,traced,selectedId,onSelect,onFailure,following,cameraReset,cameraZoom,onReset}:Props) {
+  const host=useRef<HTMLDivElement>(null),values=useRef({skyCentre,panelsOpen,reveal,progress,time,showStars,showTrail,selectedId,frame,groups,scale,traced,following,cameraReset,cameraZoom}),redraw=useRef<(()=>void)|null>(null)
+  const navigation=useRef<{surface:SkyView|null;centre:number;orbit:OrbitalView|null;follow:OrbitalView|null;followId:string|null;start:CameraPose|null;last:CameraPose|null;reset:number;scale:string;zoom:number}>({surface:null,centre:skyCentre,orbit:null,follow:null,followId:null,start:null,last:null,reset:cameraReset,scale,zoom:cameraZoom})
   const resetHandler=useRef(onReset);resetHandler.current=onReset
+  const skyHandler=useRef(onSkyInteraction);skyHandler.current=onSkyInteraction
+  const centreHandler=useRef(onCentreSky);centreHandler.current=onCentreSky
   const interactionHandler=useRef(onInteraction);interactionHandler.current=onInteraction
-  useEffect(()=>{values.current={panelsOpen,reveal,progress,time,showStars,showTrail,selectedId,frame,groups,scale,traced,following,cameraReset,cameraZoom};redraw.current?.()},[panelsOpen,reveal,progress,time,showStars,showTrail,selectedId,frame,groups,scale,traced,following,cameraReset,cameraZoom])
+  useEffect(()=>{values.current={skyCentre,panelsOpen,reveal,progress,time,showStars,showTrail,selectedId,frame,groups,scale,traced,following,cameraReset,cameraZoom};redraw.current?.()},[skyCentre,panelsOpen,reveal,progress,time,showStars,showTrail,selectedId,frame,groups,scale,traced,following,cameraReset,cameraZoom])
   useEffect(()=>{
     const element=host.current;if(!element)return
     let renderer:WebGLRenderer
@@ -67,6 +70,7 @@ export function SceneView({panelsOpen,reveal,onInteraction,opacity,progress,time
     const place=document.createElement('span');place.className='compass-place';place.textContent='SYDNEY HORIZON';compass.appendChild(place)
     const bearing=document.createElement('span');bearing.className='compass-bearing';compass.appendChild(bearing)
     const tape=document.createElement('div');tape.className='compass-tape';tape.setAttribute('aria-hidden','true');compass.appendChild(tape)
+    const help=document.createElement('span');help.className='compass-help';help.textContent='Drag / swipe to explore';compass.appendChild(help)
     const ticks=COMPASS_POINTS.map(point=>{const tick=document.createElement('span');tick.textContent=point;tape.appendChild(tick);return tick})
     const labels=Array.from({length:4},()=>{const label=document.createElement('span');label.className='sky-star-label';label.hidden=true;orientation.appendChild(label);return label}),anchors=brightAnchors(catalogue?.stars??[])
     const ui=Array.from(element.parentElement!.querySelectorAll<HTMLElement>('header,.edition-state,.composition,.controls,.stellar-panel'))
@@ -84,12 +88,12 @@ export function SceneView({panelsOpen,reveal,onInteraction,opacity,progress,time
       const packetTarget=selectedIndex>=0&&value.frame?.availability[selectedIndex]===1&&enabledMover(cohorts!.movers[selectedIndex],value.groups)?new Vector3().fromArray(value.frame.positions,selectedIndex*3):null
       const followed=selectedBodyId==='25544'&&issEnabled&&position?position.world:packetTarget
       const nav=navigation.current,baseRadius=value.scale==='whole'&&cohorts?24*Math.max(1,1/camera.aspect):4.2
-      if(nav.reset!==value.cameraReset){nav.orbit=null;nav.follow=null;nav.followId=null;nav.reset=value.cameraReset;if(value.progress===0)nav.start=null}
+      if(nav.reset!==value.cameraReset){nav.surface=null;nav.orbit=null;nav.follow=null;nav.followId=null;nav.reset=value.cameraReset;if(value.progress===0)nav.start=null}
       if(nav.scale!==value.scale){nav.orbit=null;nav.scale=value.scale}
       const zoomDelta=value.cameraZoom-nav.zoom;nav.zoom=value.cameraZoom
       let pose:CameraPose
       if(value.progress===0){
-        nav.start=null
+        nav.start=null;nav.surface=null
         if(value.following&&followed){
           if(nav.followId!==selectedBodyId||!nav.follow){nav.follow={yaw:0,pitch:0,distance:2.5};nav.followId=selectedBodyId??null}
           if(zoomDelta)nav.follow.distance=Math.max(.15,Math.min(60,nav.follow.distance*Math.exp(-zoomDelta*.2)))
@@ -97,7 +101,12 @@ export function SceneView({panelsOpen,reveal,onInteraction,opacity,progress,time
         }else {nav.follow=null;nav.followId=null;if(zoomDelta){nav.orbit??=orbitView(cameraPose(0,aim,baseRadius).position);nav.orbit.distance=Math.max(1.08,Math.min(60,nav.orbit.distance*Math.exp(-zoomDelta*.2)))}pose=nav.orbit?orbitalCamera(nav.orbit):cameraPose(0,aim,baseRadius)}
         nav.last={position:pose.position.clone(),rotation:pose.rotation.clone(),fieldOfView:pose.fieldOfView}
       }else {nav.start??=nav.last;pose=cameraPose(value.progress,aim,baseRadius,nav.start??undefined)}
-      renderer.domElement.style.touchAction=value.progress===0?'none':'pan-y';renderer.domElement.style.cursor=value.progress===0?'grab':'default'
+      if(nav.centre!==value.skyCentre){nav.centre=value.skyCentre;if(value.progress>=ARRIVAL&&position&&position.altitude>0&&issEnabled)nav.surface={altitude:position.altitude,azimuth:position.azimuth}}
+      if(nav.surface&&value.progress>0)pose=skyPose(pose,nav.surface,value.progress)
+      const navigable=value.progress===0||value.progress>=ARRIVAL
+      renderer.domElement.style.touchAction=navigable?'none':'pan-y';renderer.domElement.style.cursor=navigable?'grab':'default'
+      renderer.domElement.setAttribute('aria-label',value.progress>=ARRIVAL?'Sydney sky: drag or swipe to look around; arrow keys pan; Home re-centres on ISS':'Orbital camera: arrow keys to orbit, plus and minus to zoom, Home to reset')
+      renderer.domElement.dataset.skyView=nav.surface?'free':'composed'
       renderer.domElement.dataset.cameraPosition=pose.position.toArray().map(x=>x.toFixed(9)).join(',');renderer.domElement.dataset.cameraRotation=pose.rotation.toArray().map(x=>x.toFixed(9)).join(',');renderer.domElement.dataset.cameraTarget=value.progress===0&&value.following&&followed?followed.toArray().map(x=>x.toFixed(9)).join(','):'0,0,0';renderer.domElement.dataset.following=value.progress===0&&value.following&&followed?selectedBodyId??'':'none'
       camera.position.copy(pose.position);camera.quaternion.copy(pose.rotation);camera.fov=skyCamera.fov=pose.fieldOfView;camera.near=Math.min(.05,Math.max(.0000001,(new Vector3(pose.position.x,pose.position.y/POLAR_RATIO,pose.position.z).length()-1)*.15));camera.updateProjectionMatrix();camera.updateMatrixWorld()
       const groundAmount=smoothBetween(.60,ARRIVAL,value.progress);earth.visible=groundAmount<1;material.opacity=1-groundAmount;gridMaterial.opacity=.42*(1-groundAmount);groundMaterial.uniforms.amount.value=groundAmount;groundMaterial.uniforms.origin.value.copy(pose.position);groundMaterial.uniforms.cameraWorld.value.copy(camera.matrixWorld);groundMaterial.uniforms.inverseProjection.value.copy(camera.projectionMatrixInverse);renderer.domElement.dataset.cameraPhase=cameraPhase(value.progress);renderer.domElement.dataset.groundOpacity=groundAmount.toFixed(3)
@@ -155,16 +164,17 @@ export function SceneView({panelsOpen,reveal,onInteraction,opacity,progress,time
       if(best>=0)onSelect(catalogue.stars[best].id)
     }
     const canvas=renderer.domElement
-    let gesture:{id:number;x:number;y:number;travel:number}|null=null
+    let gesture:{id:number;x:number;y:number;travel:number;surface:boolean;explored:boolean}|null=null
     const activeView=()=>{const nav=navigation.current;if(values.current.following&&nav.follow)return nav.follow;return nav.orbit??=orbitView(camera.position)}
     const turn=(dx:number,dy:number)=>{const view=activeView();view.yaw-=dx;view.pitch=Math.max(-Math.PI/2+.02,Math.min(Math.PI/2-.02,view.pitch+dy));draw()}
     const zoom=(delta:number)=>{const view=activeView();view.distance=Math.max(values.current.following ? .15 : 1.08,Math.min(60,view.distance*Math.exp(delta)));draw()}
-    const down=(event:PointerEvent)=>{if(values.current.progress!==0||event.button!==0||gesture)return;interactionHandler.current();gesture={id:event.pointerId,x:event.clientX,y:event.clientY,travel:0};canvas.setPointerCapture(event.pointerId);canvas.focus({preventScroll:true})}
-    const move=(event:PointerEvent)=>{if(!gesture||gesture.id!==event.pointerId)return;const dx=event.clientX-gesture.x,dy=event.clientY-gesture.y;gesture.travel+=Math.hypot(dx,dy);gesture.x=event.clientX;gesture.y=event.clientY;if(values.current.progress===0&&gesture.travel>5)turn(dx*.006,dy*.006)}
-    const upPointer=(event:PointerEvent)=>{if(event.button!==0||(values.current.progress===0&&!gesture)||(gesture&&gesture.id!==event.pointerId))return;const moved=gesture?.travel??0;gesture=null;if(canvas.hasPointerCapture(event.pointerId))canvas.releasePointerCapture(event.pointerId);if(moved<=5)pick(event)}
-    const cancel=()=>{gesture=null}
+    const turnSurface=(horizontal:number,vertical:number)=>{const nav=navigation.current;nav.surface??=skyView(camera.quaternion);nav.surface=turnSky(nav.surface,horizontal,vertical);draw()}
+    const down=(event:PointerEvent)=>{const surface=values.current.progress>=ARRIVAL;if((values.current.progress!==0&&!surface)||event.button!==0||!event.isPrimary||gesture)return;if(!surface)interactionHandler.current();gesture={id:event.pointerId,x:event.clientX,y:event.clientY,travel:0,surface,explored:false};canvas.setPointerCapture(event.pointerId);canvas.focus({preventScroll:true})}
+    const move=(event:PointerEvent)=>{if(!gesture||gesture.id!==event.pointerId)return;const dx=event.clientX-gesture.x,dy=event.clientY-gesture.y;gesture.travel+=Math.hypot(dx,dy);gesture.x=event.clientX;gesture.y=event.clientY;if(gesture.travel<=5)return;if(gesture.surface){if(!gesture.explored){navigation.current.surface??=skyView(camera.quaternion);gesture.explored=true;skyHandler.current()}const sensitivity=camera.fov/Math.max(1,canvas.clientHeight);turnSurface(-dx*sensitivity,dy*sensitivity)}else if(values.current.progress===0)turn(dx*.006,dy*.006)}
+    const upPointer=(event:PointerEvent)=>{if(event.button!==0||!gesture||gesture.id!==event.pointerId)return;const moved=gesture.travel;gesture=null;if(canvas.hasPointerCapture(event.pointerId))canvas.releasePointerCapture(event.pointerId);if(moved<=5)pick(event)}
+    const cancel=(event:PointerEvent)=>{if(gesture?.id===event.pointerId)gesture=null}
     const wheel=(event:WheelEvent)=>{if(values.current.progress!==0)return;event.preventDefault();interactionHandler.current();zoom(Math.max(-.5,Math.min(.5,event.deltaY*(event.deltaMode===1?.03:event.deltaMode===2?.4:.0015))))}
-    const keyboard=(event:KeyboardEvent)=>{if(values.current.progress!==0||event.target!==canvas)return;const actions:Record<string,()=>void>={ArrowLeft:()=>turn(-.08,0),ArrowRight:()=>turn(.08,0),ArrowUp:()=>turn(0,-.08),ArrowDown:()=>turn(0,.08),'+':()=>zoom(-.15),'=':()=>zoom(-.15),'-':()=>zoom(.15),Home:()=>resetHandler.current()};if(actions[event.key]){event.preventDefault();interactionHandler.current();actions[event.key]()}}
+    const keyboard=(event:KeyboardEvent)=>{if(event.target!==canvas)return;if(values.current.progress>=ARRIVAL){const steps:Record<string,[number,number]>={ArrowLeft:[-3,0],ArrowRight:[3,0],ArrowUp:[0,3],ArrowDown:[0,-3]};if(steps[event.key]){event.preventDefault();navigation.current.surface??=skyView(camera.quaternion);skyHandler.current();turnSurface(...steps[event.key])}else if(event.key==='Home'){event.preventDefault();centreHandler.current()}return}if(values.current.progress!==0)return;const actions:Record<string,()=>void>={ArrowLeft:()=>turn(-.08,0),ArrowRight:()=>turn(.08,0),ArrowUp:()=>turn(0,-.08),ArrowDown:()=>turn(0,.08),'+':()=>zoom(-.15),'=':()=>zoom(-.15),'-':()=>zoom(.15),Home:()=>resetHandler.current()};if(actions[event.key]){event.preventDefault();interactionHandler.current();actions[event.key]()}}
     const lost=(event:Event)=>{event.preventDefault();onFailure()};canvas.addEventListener('webglcontextlost',lost);canvas.addEventListener('pointerdown',down);canvas.addEventListener('pointermove',move);canvas.addEventListener('pointerup',upPointer);canvas.addEventListener('pointercancel',cancel);canvas.addEventListener('lostpointercapture',cancel);canvas.addEventListener('wheel',wheel,{passive:false});canvas.addEventListener('keydown',keyboard)
     const scroll=()=>{if(values.current.progress>ARRIVAL)draw()};window.addEventListener('scroll',scroll,{passive:true})
     const observer=new ResizeObserver(resize);observer.observe(element);redraw.current=draw;resize()
