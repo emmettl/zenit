@@ -1,4 +1,5 @@
 import {gstime,json2satrec,type OMMJsonObject} from 'satellite.js'
+import {sampleSurfaceTrails,type SurfaceTrail} from './surface-trails'
 import {orbitalState,type Propagator} from './orbital'
 export const GROUP_IDS=['stations','gnss','geo'] as const
 export type GroupId=typeof GROUP_IDS[number]
@@ -8,7 +9,7 @@ export interface Mover {id:string;name:string;groups:GroupId[];element:OMMJsonOb
 export interface Attachment {id:string;name:string;parentId:string;groups:GroupId[];elementEpoch:string;metadata:SourceMetadata}
 export interface Cohorts {schemaVersion:1;kind:'orbital-cohorts';groups:{id:GroupId;label:string;description:string;inputRows:number;retainedMovers:number;initialEligibleMovers:number;attachments:number;excluded:number}[];statistics:{inputRows:number;distinctIdentities:number;duplicateMembershipRows:number;independentMovers:number;initialEligibleMovers:number;attachments:number;excludedIndependentIdentities:number;ceiling:number};movers:Mover[];attachments:Attachment[];exclusionLedger:{id:string;groups:GroupId[];reason:string;parentId?:string}[];study:{startUtc:string;endUtc:string;initialUtc:string};source:{sources:{id:string;sha256:string;responseDateUtc:string}[]};rights:{id:string};model:{version:string;operationMode:string;gravity:string;maximumElementAgeHours:number}}
 export interface Population {snapshot:Cohorts;propagators:Propagator[]}
-export interface PopulationFrame {time:number;revision:number;positions:Float64Array;availability:Uint8Array}
+export interface PopulationFrame {time:number;revision:number;positions:Float64Array;availability:Uint8Array;trailsRequested:boolean;surfaceTrails:SurfaceTrail[]}
 export function readCohorts(value:unknown):Cohorts {
   const r=value as Cohorts
   if(!r||r.schemaVersion!==1||r.kind!=='orbital-cohorts'||r.model?.version!=='7.1.0'||r.model.operationMode!=='a'||r.model.gravity!=='WGS72'||r.model.maximumElementAgeHours!==24||r.rights?.id!=='basic-ssa-citation'||!Array.isArray(r.movers)||r.movers.length>1000||r.movers.length!==r.statistics?.independentMovers||r.statistics.ceiling!==1000||!Array.isArray(r.attachments)||r.attachments.length!==r.statistics.attachments||r.groups?.length!==3)throw Error('Unsupported cohort release')
@@ -39,12 +40,14 @@ export async function loadCohorts(signal:AbortSignal):Promise<Cohorts> {
   return result
 }
 export function createPopulation(snapshot:Cohorts):Population {return {snapshot,propagators:snapshot.movers.map(mover=>({baseline:json2satrec(mover.element,'a'),epoch:Date.parse(mover.element.EPOCH),start:Date.parse(mover.eligibleStartUtc),end:Date.parse(mover.eligibleEndUtc)}))}}
-export function populationFrame(population:Population,time:number,revision=0):PopulationFrame {
+export function populationFrame(population:Population,time:number,revision=0,trailsRequested=false):PopulationFrame {
   if(!Number.isFinite(time)||time<Date.parse(population.snapshot.study.startUtc)||time>Date.parse(population.snapshot.study.endUtc))throw Error('Sample outside the frozen study')
   const rotation=gstime(new Date(time))
   const positions=new Float64Array(population.propagators.length*3),availability=new Uint8Array(population.propagators.length)
   population.propagators.forEach((propagator,i)=>{if(time<propagator.start||time>propagator.end)return;const state=orbitalState(propagator,time,rotation);if(!state){availability[i]=2;return}availability[i]=1;positions.set(state.world.toArray(),i*3)})
-  return {time,revision,positions,availability}
+  const frame:PopulationFrame={time,revision,positions,availability,trailsRequested,surfaceTrails:[]}
+  if(trailsRequested)frame.surfaceTrails=sampleSurfaceTrails(population,frame)
+  return frame
 }
 export function enabledMover(mover:Mover,groups:readonly GroupId[]):boolean {return mover.groups.some(x=>groups.includes(x))}
 export function groupColour(mover:Mover):[number,number,number] {if(mover.groups.length===1)return GROUP_COLOURS[mover.groups[0]];return [.65,.88,.72]}
