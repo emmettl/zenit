@@ -94,7 +94,7 @@ h1 { font-size: clamp(44px,5vw,64px); margin-top: 18px; }
 .attachment-note { font-size: 11px; color: #a6b9c5; line-height: 1.7; }
 .attachments { font-size: 10px; color: #a6b9c5; margin: 16px 0; } .attachments summary { cursor: pointer; padding: 8px 0; }
 .attachments button { display: block; width: 100%; margin: 4px 0; text-align: left; }
-.position-state { font: 9px 'DM Mono',monospace; color: #b7d7e6; }
+.position-state { min-height:12px; margin:4px 0 6px; font:9px/12px 'DM Mono',monospace; color:#b7d7e6; }
 
 .camera-navigation { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
 .navigation-hint { font:9px/1.7 'DM Mono',monospace; color:#8b9daa; margin:10px 0; }

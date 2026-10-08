@@ -26,6 +26,9 @@ test('rapid seeks retain one coherent scene, reject superseded packets and settl
   await expect(canvas).toHaveAttribute('data-orbital-count','616')
   await page.getByLabel('Satellite or attachment',{exact:true}).selectOption('26407')
   await page.getByRole('button',{name:'Focus and follow',exact:true}).click()
+  await page.evaluate(()=>document.fonts.ready)
+  const layout=()=>clock.evaluate(node=>{const scrubber=node.getBoundingClientRect(),panel=node.closest('.controls')!.getBoundingClientRect();return {scrubberTop:scrubber.top+scrollY,panelHeight:panel.height}})
+  const settledLayout=await layout()
   const initial=await canvas.getAttribute('data-study-time'),iss=await canvas.getAttribute('data-iss-position'),target=await canvas.getAttribute('data-camera-target')
   const first=Number(initial)+60000,latest=Number(initial)+90000
   await page.evaluate(()=>{
@@ -41,6 +44,7 @@ test('rapid seeks retain one coherent scene, reject superseded packets and settl
   await expect(canvas).toHaveAttribute('data-iss-position',iss!)
   await expect(canvas).toHaveAttribute('data-camera-target',target!)
   await expect(page.getByText('Updating orbital positions…',{exact:true})).toBeVisible()
+  expect(await layout()).toEqual(settledLayout)
   await clock.fill(String(Number(initial)+120000));await clock.fill(String(latest))
   await expect(clock).toHaveValue(String(latest))
   await page.evaluate(()=>(window as unknown as {populationGate:{release:()=>void}}).populationGate.release())
@@ -55,5 +59,6 @@ test('rapid seeks retain one coherent scene, reject superseded packets and settl
   await expect(canvas).not.toHaveAttribute('data-camera-target',target!)
   await expect(canvas).toHaveAttribute('data-following','26407')
   await expect(page.getByText('Updating orbital positions…',{exact:true})).toHaveCount(0)
+  expect(await layout()).toEqual(settledLayout)
   expect(await page.evaluate(()=>(window as unknown as {blankFrames:number}).blankFrames)).toBe(0)
 })
