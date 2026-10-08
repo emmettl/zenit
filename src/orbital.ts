@@ -1,6 +1,7 @@
 import {eciToEcf, ecfToLookAngles, gstime, json2satrec, sgp4, type OMMJsonObject, type SatRec} from 'satellite.js'
 import {Vector3} from 'three'
 import {EARTH_RADIUS_KM, OBSERVER} from './camera'
+import type {ObserverLocation} from './observer'
 export interface OrbitalRelease {
   schemaVersion: number; kind: string
   source: {provider: string; upstream: string; capturedAt: string; sha256: string; url: string}
@@ -28,8 +29,8 @@ export function readOrbit(value: unknown): Orbit {
   if(baseline.error||!sgp4({...baseline},0))throw Error('Unpropagatable element set')
   return {release:r,baseline,epoch,start,end}
 }
-export async function loadOrbit(signal: AbortSignal): Promise<Orbit> {
-  const response=await fetch('./data/zenit-manifest.json',{signal});if(!response.ok)throw Error('Orbital manifest unavailable')
+export async function loadOrbit(signal: AbortSignal,manifestPath='./data/zenit-manifest.json'): Promise<Orbit> {
+  const response=await fetch(manifestPath,{signal});if(!response.ok)throw Error('Orbital manifest unavailable')
   const manifest=await response.json(),evidence=manifest.evidence?.iss??manifest.evidence?.orbital
   if(!/^orbital\/iss-[a-f0-9]{12}\.json$/.test(evidence?.file)||!/^([a-f0-9]{64})$/.test(evidence?.sha256)||evidence.records!==1)throw Error('Orbital release unavailable')
   const payload=await fetch('./data/'+evidence.file,{signal});if(!payload.ok)throw Error('Orbital release unavailable')
@@ -48,9 +49,9 @@ export function orbitalState(orbit: Propagator,time: number,earthRotation?:numbe
   const fixed=eciToEcf(pv.position,earthRotation??gstime(new Date(time)))
   return {teme:pv.position,velocity:pv.velocity,fixed,world:new Vector3(fixed.x,fixed.z,-fixed.y).divideScalar(EARTH_RADIUS_KM)}
 }
-export function orbitalPosition(orbit: Propagator,time: number) {
+export function orbitalPosition(orbit: Propagator,time: number,observer:ObserverLocation=OBSERVER) {
   const state=orbitalState(orbit,time);if(!state)return null
-  const look=ecfToLookAngles({latitude:OBSERVER.latitude*Math.PI/180,longitude:OBSERVER.longitude*Math.PI/180,height:OBSERVER.heightKm},state.fixed)
+  const look=ecfToLookAngles({latitude:observer.latitude*Math.PI/180,longitude:observer.longitude*Math.PI/180,height:observer.heightKm},state.fixed)
   return {...state,altitude:look.elevation*180/Math.PI,azimuth:look.azimuth*180/Math.PI,rangeKm:look.rangeSat,ageHours:(time-orbit.epoch)/3600000}
 }
 

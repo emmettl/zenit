@@ -7,3 +7,5 @@ Changes: selected NORAD 25544; decimal-string identity; explicit documented Eart
 Positions, pass times and trails are calculated with SGP4, not observed tracks or optical visibility predictions.
 
 Cohort release: retained 7 October 2026 stations, GNSS and active geosynchronous GP inputs, with selected stations SATCAT fields. Group membership and attachment relationships are frozen provider snapshot facts, not complete orbital regimes or a docking history. Deduplicated by NORAD identity and latest epoch; all memberships retained; docked records attached to parents; invalid, expired and failed records recorded in the exclusion ledger. No optional operating-status enrichment is included.
+
+Observer windows: additional 8 October evening and 9 October morning studies compiled offline from four retained 8 October 2026 captures. Original source epochs, hashes, capture dates and exclusion ledgers are retained. Source fields and attachment relationships are frozen snapshot facts. Night/day station passages and observer readings are calculated; no optical visibility, terrain, observing conditions or docking history is reconstructed.

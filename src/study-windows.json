@@ -1,0 +1,264 @@
+{
+  "schemaVersion": 1,
+  "observers": [
+    {
+      "id": "sydney",
+      "name": "Sydney",
+      "latitude": -33.8688,
+      "longitude": 151.2093,
+      "heightKm": 0.058
+    },
+    {
+      "id": "zurich",
+      "name": "Zurich",
+      "latitude": 47.3769,
+      "longitude": 8.5417,
+      "heightKm": 0.408
+    },
+    {
+      "id": "toronto",
+      "name": "Toronto",
+      "latitude": 43.6532,
+      "longitude": -79.3832,
+      "heightKm": 0.076
+    },
+    {
+      "id": "singapore",
+      "name": "Singapore",
+      "latitude": 1.3521,
+      "longitude": 103.8198,
+      "heightKm": 0.015
+    },
+    {
+      "id": "cape-town",
+      "name": "Cape Town",
+      "latitude": -33.9249,
+      "longitude": 18.4241,
+      "heightKm": 0.058
+    }
+  ],
+  "windows": [
+    {
+      "id": "original-2026-10-07",
+      "label": "7 Oct 2026 · original",
+      "manifest": "./data/zenit-manifest.json",
+      "manifestSha256": "8ce5407b37f82fdbca9f5f923c2b3a848a0672774f29294dd9a6cb30400fd53d",
+      "study": {
+        "startUtc": "2026-10-07T11:58:49.000Z",
+        "endUtc": "2026-10-07T23:58:49.000Z",
+        "initialUtc": "2026-10-07T17:57:19.000Z"
+      },
+      "sequences": {
+        "sydney": {
+          "riseUtc": "2026-10-07T17:53:22.867Z",
+          "peakUtc": "2026-10-07T17:58:49.000Z",
+          "setUtc": "2026-10-07T18:04:12.677Z",
+          "maximumElevationDegrees": 44.881783015395555,
+          "peakAzimuthDegrees": 312.19564958234974,
+          "peakRangeKm": 590.1395344674711,
+          "solarAltitudeDegrees": -17.884055771093873,
+          "rule": "Highest culmination >= 20 degrees with Sun below -6 degrees over Sydney in the 18 hours after the element epoch. One-second peak sampling; horizon crossings bisected to milliseconds. Geometric pass, not an optical visibility prediction.",
+          "objectId": "25544",
+          "name": "ISS / ZARYA",
+          "night": true
+        },
+        "zurich": {
+          "objectId": "25544",
+          "name": "ISS (ZARYA)",
+          "riseUtc": "2026-10-07T13:55:25.413Z",
+          "peakUtc": "2026-10-07T14:00:52.000Z",
+          "setUtc": "2026-10-07T14:06:14.756Z",
+          "maximumElevationDegrees": 48.38285763095489,
+          "peakAzimuthDegrees": 212.09842088203752,
+          "peakRangeKm": 557.087498043871,
+          "solarAltitudeDegrees": 25.461568488782518,
+          "night": false
+        },
+        "toronto": {
+          "objectId": "25544",
+          "name": "ISS (ZARYA)",
+          "riseUtc": "2026-10-07T20:08:38.965Z",
+          "peakUtc": "2026-10-07T20:14:06.000Z",
+          "setUtc": "2026-10-07T20:19:29.776Z",
+          "maximumElevationDegrees": 52.62767366973421,
+          "peakAzimuthDegrees": 217.4998914877637,
+          "peakRangeKm": 526.3338188933882,
+          "solarAltitudeDegrees": 24.83071524685839,
+          "night": false
+        },
+        "singapore": {
+          "objectId": "48274",
+          "name": "CSS (TIANHE)",
+          "riseUtc": "2026-10-07T16:34:52.068Z",
+          "peakUtc": "2026-10-07T16:39:48.000Z",
+          "setUtc": "2026-10-07T16:44:43.774Z",
+          "maximumElevationDegrees": 24.021274944461233,
+          "peakAzimuthDegrees": 316.43156741004753,
+          "peakRangeKm": 837.7804312080636,
+          "solarAltitudeDegrees": -84.62640104246105,
+          "night": true
+        },
+        "cape-town": {
+          "objectId": "25544",
+          "name": "ISS (ZARYA)",
+          "riseUtc": "2026-10-07T19:03:25.241Z",
+          "peakUtc": "2026-10-07T19:08:48.000Z",
+          "setUtc": "2026-10-07T19:14:14.687Z",
+          "maximumElevationDegrees": 41.9726217143249,
+          "peakAzimuthDegrees": 219.25236973346583,
+          "peakRangeKm": 615.9685662473462,
+          "solarAltitudeDegrees": -27.40757243546004,
+          "night": true
+        }
+      }
+    },
+    {
+      "id": "evening-2026-10-08",
+      "label": "8 Oct 2026 · evening",
+      "start": "2026-10-08T12:00:00Z",
+      "manifest": "./data/orbital/window-56773faa0a8b.json",
+      "manifestSha256": "56773faa0a8b0eb955728ee5d01caafb5d037824cb11b33b2015d1e4a9e42eca",
+      "study": {
+        "startUtc": "2026-10-08T12:00:00.000Z",
+        "endUtc": "2026-10-09T00:00:00.000Z",
+        "initialUtc": "2026-10-08T17:10:09.000Z"
+      },
+      "sequences": {
+        "sydney": {
+          "objectId": "25544",
+          "name": "ISS (ZARYA)",
+          "riseUtc": "2026-10-08T17:06:06.518Z",
+          "peakUtc": "2026-10-08T17:11:39.000Z",
+          "setUtc": "2026-10-08T17:17:07.500Z",
+          "maximumElevationDegrees": 89.01069561221225,
+          "peakAzimuthDegrees": 334.72804421233803,
+          "peakRangeKm": 429.7029536980813,
+          "solarAltitudeDegrees": -26.517594547321757,
+          "night": true
+        },
+        "zurich": {
+          "objectId": "25544",
+          "name": "ISS (ZARYA)",
+          "riseUtc": "2026-10-08T13:08:10.370Z",
+          "peakUtc": "2026-10-08T13:13:41.000Z",
+          "setUtc": "2026-10-08T13:19:07.923Z",
+          "maximumElevationDegrees": 72.53578329453764,
+          "peakAzimuthDegrees": 206.74168230693536,
+          "peakRangeKm": 446.61273502806426,
+          "solarAltitudeDegrees": 30.372828274200344,
+          "night": false
+        },
+        "toronto": {
+          "objectId": "25544",
+          "name": "ISS (ZARYA)",
+          "riseUtc": "2026-10-08T19:21:23.440Z",
+          "peakUtc": "2026-10-08T19:26:54.000Z",
+          "setUtc": "2026-10-08T19:32:21.744Z",
+          "maximumElevationDegrees": 85.9274887801521,
+          "peakAzimuthDegrees": 216.267771348641,
+          "peakRangeKm": 427.68048621337624,
+          "solarAltitudeDegrees": 30.818853132572126,
+          "night": false
+        },
+        "singapore": {
+          "objectId": "48274",
+          "name": "CSS (TIANHE)",
+          "riseUtc": "2026-10-08T15:35:31.771Z",
+          "peakUtc": "2026-10-08T15:40:45.000Z",
+          "setUtc": "2026-10-08T15:45:56.989Z",
+          "maximumElevationDegrees": 69.08441532765383,
+          "peakAzimuthDegrees": 316.0499665611154,
+          "peakRangeKm": 410.352902881944,
+          "solarAltitudeDegrees": -71.56054147856076,
+          "night": true
+        },
+        "cape-town": {
+          "objectId": "25544",
+          "name": "ISS (ZARYA)",
+          "riseUtc": "2026-10-08T18:16:05.775Z",
+          "peakUtc": "2026-10-08T18:21:33.000Z",
+          "setUtc": "2026-10-08T18:27:03.941Z",
+          "maximumElevationDegrees": 79.5005783993542,
+          "peakAzimuthDegrees": 221.41893965309694,
+          "peakRangeKm": 433.23974043254543,
+          "solarAltitudeDegrees": -18.331030783807325,
+          "night": true
+        }
+      }
+    },
+    {
+      "id": "morning-2026-10-09",
+      "label": "9 Oct 2026 · morning",
+      "start": "2026-10-09T00:00:00Z",
+      "manifest": "./data/orbital/window-839c1bc75069.json",
+      "manifestSha256": "839c1bc75069ffc7b548bdec6c5d145f1e0cd7d9461968f0abafd8f061a66a99",
+      "study": {
+        "startUtc": "2026-10-09T00:00:00.000Z",
+        "endUtc": "2026-10-09T12:00:00.000Z",
+        "initialUtc": "2026-10-09T09:50:43.000Z"
+      },
+      "sequences": {
+        "sydney": {
+          "objectId": "25544",
+          "name": "ISS (ZARYA)",
+          "riseUtc": "2026-10-09T09:46:55.198Z",
+          "peakUtc": "2026-10-09T09:52:13.000Z",
+          "setUtc": "2026-10-09T09:57:33.963Z",
+          "maximumElevationDegrees": 31.34628298449436,
+          "peakAzimuthDegrees": 217.0946622640198,
+          "peakRangeKm": 762.4392242016986,
+          "solarAltitudeDegrees": -22.397610889718994,
+          "night": true
+        },
+        "zurich": {
+          "objectId": "48274",
+          "name": "CSS (TIANHE)",
+          "riseUtc": "2026-10-09T02:40:56.584Z",
+          "peakUtc": "2026-10-09T02:45:53.000Z",
+          "setUtc": "2026-10-09T02:50:50.495Z",
+          "maximumElevationDegrees": 24.923481463814745,
+          "peakAzimuthDegrees": 171.53074659225814,
+          "peakRangeKm": 823.2843751811997,
+          "solarAltitudeDegrees": -28.91141809186422,
+          "night": true
+        },
+        "toronto": {
+          "objectId": "48274",
+          "name": "CSS (TIANHE)",
+          "riseUtc": "2026-10-09T08:50:20.177Z",
+          "peakUtc": "2026-10-09T08:55:33.000Z",
+          "setUtc": "2026-10-09T09:00:45.499Z",
+          "maximumElevationDegrees": 56.25918397644497,
+          "peakAzimuthDegrees": 175.14006775933711,
+          "peakRangeKm": 461.62028814279023,
+          "solarAltitudeDegrees": -27.4286508871052,
+          "night": true
+        },
+        "singapore": {
+          "objectId": "48274",
+          "name": "CSS (TIANHE)",
+          "riseUtc": "2026-10-09T03:05:26.951Z",
+          "peakUtc": "2026-10-09T03:10:40.000Z",
+          "setUtc": "2026-10-09T03:15:54.635Z",
+          "maximumElevationDegrees": 80.95894748505101,
+          "peakAzimuthDegrees": 224.82798429847125,
+          "peakRangeKm": 391.1115723408199,
+          "solarAltitudeDegrees": 63.568873429539494,
+          "night": false
+        },
+        "cape-town": {
+          "objectId": "25544",
+          "name": "ISS (ZARYA)",
+          "riseUtc": "2026-10-09T02:25:10.045Z",
+          "peakUtc": "2026-10-09T02:30:29.000Z",
+          "setUtc": "2026-10-09T02:35:44.999Z",
+          "maximumElevationDegrees": 31.584570021881003,
+          "peakAzimuthDegrees": 310.82179379396126,
+          "peakRangeKm": 759.2981432545376,
+          "solarAltitudeDegrees": -21.21428359929906,
+          "night": true
+        }
+      }
+    }
+  ]
+}

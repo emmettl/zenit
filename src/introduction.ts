@@ -15,19 +15,19 @@ export function openingReveal(elapsed:number):Reveal|null {
   for(let i=1;i<4;i++){const blend=smoothBetween(i*4000-300,i*4000+300,elapsed);weights[REVEAL_BEATS[i-1].focus]*=1-blend;weights[REVEAL_BEATS[i].focus]=blend}
   return {elapsed,focus:REVEAL_BEATS[index].focus,index,weights}
 }
-export function moverEmphasis(groups:readonly GroupId[],id:string,reveal:Reveal|null):number {
+export function moverEmphasis(groups:readonly GroupId[],id:string,reveal:Reveal|null,heroId='25544'):number {
   if(!reveal)return 1
-  return Math.max(id==='25544'?reveal.weights.iss:0,...groups.map(group=>reveal.weights[group]))
+  return Math.max(id===heroId?reveal.weights.iss:0,...groups.map(group=>reveal.weights[group]))
 }
 /** Caption medians use only eligible independent identities in the displayed
  * worker packet. Membership may overlap; an identity occurs once per group.
  * Input axes are Earth-fixed X / north-Y / west-Z in equatorial Earth radii.
  */
-export function familyReading(snapshot:Cohorts|null,frame:PopulationFrame|null,focus:RevealFocus) {
+export function familyReading(snapshot:Cohorts|null,frame:PopulationFrame|null,focus:RevealFocus,heroId='25544') {
   if(!snapshot||!frame)return null
   const heights:number[]=[],periods:number[]=[]
   snapshot.movers.forEach((mover,i)=>{
-    if(frame.availability[i]!==1||(focus==='iss'?mover.id!=='25544':!mover.groups.includes(focus)))return
+    if(frame.availability[i]!==1||(focus==='iss'?mover.id!==heroId:!mover.groups.includes(focus)))return
     const x=frame.positions[i*3]*EARTH_RADIUS_KM,y=-frame.positions[i*3+2]*EARTH_RADIUS_KM,z=frame.positions[i*3+1]*EARTH_RADIUS_KM
     // A zero rotation converts the already Earth-fixed vector to WGS84 height.
     const height=eciToGeodetic({x,y,z},0).height,period=1440/Number(mover.element.MEAN_MOTION)

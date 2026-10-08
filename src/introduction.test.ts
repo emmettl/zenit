@@ -17,7 +17,7 @@ describe('orbital introduction',()=>{
   it('reports WGS84 height and mean period only for eligible independent identities',()=>{
     const snapshot={...source,movers:source.movers.slice(0,3).map((m,i)=>({...m,id:i===0?'25544':String(100+i),groups:i===0?['stations' as const]:i===1?['gnss' as const,'geo' as const]:['gnss' as const],element:{...m.element,MEAN_MOTION:i===0?16:i===1?2:1}}))}
     const at=(height:number)=>earthSurface(45,30).addScaledVector(observerNormal(45,30),height/EARTH_RADIUS_KM).toArray()
-    const frame:PopulationFrame={trailsRequested:false,surfaceTrails:[],time:1234,revision:0,positions:new Float64Array([...at(400),...at(20000),...at(36000)]),availability:new Uint8Array([1,1,0])}
+    const frame:PopulationFrame={observerKey:'-33.8688,151.2093,0.058',trailsRequested:false,surfaceTrails:[],time:1234,revision:0,positions:new Float64Array([...at(400),...at(20000),...at(36000)]),availability:new Uint8Array([1,1,0])}
     expect(familyReading(snapshot,frame,'stations')!.heightKm).toBeCloseTo(400,6)
     expect(familyReading(snapshot,frame,'iss')).toMatchObject({count:1,meanPeriodMinutes:90,time:1234})
     expect(familyReading(snapshot,frame,'gnss')).toMatchObject({count:1,meanPeriodMinutes:720,time:1234})

@@ -78,7 +78,22 @@ assert.deepEqual(cohorts.source.sources.map(x=>x.sha256),['9a8dd20063818e9782e17
 assert.equal(cohorts.statistics.distinctIdentities,716);assert.equal(cohorts.statistics.inputRows,762)
 assert.equal(cohorts.movers.length,635);assert.equal(new Set(cohorts.movers.map(x=>x.id)).size,635)
 assert.deepEqual(cohorts.study,manifest.study)
-assert.deepEqual((await readdir('dist/data/orbital')).sort(),['NOTICE.txt',orbitalFile.split('/')[1],cohortFile.split('/')[1]].sort())
+const studyIndex=JSON.parse(await readFile('src/study-windows.json','utf8')),allowedOrbital=new Set(['NOTICE.txt',orbitalFile.split('/')[1],cohortFile.split('/')[1]])
+assert.equal(studyIndex.schemaVersion,1);assert.equal(studyIndex.windows.length,3);assert.equal(studyIndex.observers.length,5)
+const nightPlaces=new Set()
+for(const window of studyIndex.windows){
+ const path=window.manifest.replace('./',''),body=await readFile('dist/'+path);assert.equal(createHash('sha256').update(body).digest('hex'),window.manifestSha256);const m=JSON.parse(body)
+ assert.deepEqual(m.study,window.study);assert.deepEqual(m.evidence.stellar,manifest.evidence.stellar);assert.equal(Date.parse(m.study.endUtc)-Date.parse(m.study.startUtc),43200000)
+ if(path!=='data/zenit-manifest.json'){assert.match(path,/^data\/orbital\/window-[a-f0-9]{12}\.json$/);allowedOrbital.add(path.split('/').at(-1))}
+ const releases={}
+ for(const kind of ['iss','orbital']){const e=m.evidence[kind];assert.match(e.file,/^orbital\/(iss|cohorts)-[a-f0-9]{12}\.json$/);const b=await readFile('dist/data/'+e.file);assert.equal(createHash('sha256').update(b).digest('hex'),e.sha256);allowedOrbital.add(e.file.split('/').at(-1));releases[kind]=JSON.parse(b);assert.deepEqual(releases[kind].study,m.study);assert.equal(releases[kind].rights.id,'basic-ssa-citation');assert.equal(releases[kind].model.gravity,'WGS72');assert.equal(releases[kind].model.operationMode,'a');assert.equal(releases[kind].model.maximumElementAgeHours,24)}
+ const c=releases.orbital;assert.ok(c.movers.length<=1000);assert.equal(c.movers.length,m.evidence.orbital.records);assert.equal(c.statistics.distinctIdentities,c.movers.length+c.attachments.length+c.statistics.excludedIndependentIdentities);assert.deepEqual(c.movers.find(x=>x.id==='25544').element,releases.iss.elements[0])
+ for(const mover of c.movers){const ep=Date.parse(mover.element.EPOCH);assert.equal(Date.parse(mover.eligibleStartUtc),Math.max(Date.parse(m.study.startUtc),ep-86400000));assert.equal(Date.parse(mover.eligibleEndUtc),Math.min(Date.parse(m.study.endUtc),ep+86400000))}
+ for(const [id,pass] of Object.entries(window.sequences)){assert.ok(studyIndex.observers.some(x=>x.id===id));const mover=c.movers.find(x=>x.id===pass.objectId);assert.ok(mover);assert.ok(pass.maximumElevationDegrees>=20);assert.equal(pass.night,pass.solarAltitudeDegrees<=-6);assert.ok(Date.parse(pass.riseUtc)<Date.parse(pass.peakUtc)&&Date.parse(pass.peakUtc)<Date.parse(pass.setUtc));assert.ok(Date.parse(pass.riseUtc)>=Date.parse(m.study.startUtc)&&Date.parse(pass.setUtc)<=Date.parse(m.study.endUtc));assert.ok(Math.abs(Date.parse(pass.peakUtc)-Date.parse(mover.element.EPOCH))<=86400000);if(pass.night)nightPlaces.add(id)}
+}
+assert.equal(nightPlaces.size,5)
+assert.deepEqual((await readdir('dist/data/orbital')).sort(),[...allowedOrbital].sort())
+console.log('Observer publication checked: five declared places, three immutable dated windows, complete geometric night sequences, source hashes and per-object 24-hour bounds.')
 assert.match(await readFile('dist/data/orbital/NOTICE.txt','utf8'),/USSPACECOM/)
 assert.deepEqual(manifest.study,orbital.study)
 const epoch=Date.parse(orbital.elements[0].EPOCH)

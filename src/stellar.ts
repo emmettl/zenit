@@ -1,6 +1,7 @@
 import { Body, GeoVector, MakeTime, Observer, RotateVector, Rotation_EQJ_HOR, Vector as AstroVector } from 'astronomy-engine'
 import { Matrix4, Vector3 } from 'three'
-import { OBSERVER, POLAR_RATIO, observerNormal } from './camera'
+import type {ObserverLocation} from './observer'
+import { OBSERVER, POLAR_RATIO, observerBasis } from './camera'
 
 export const SKY_TIME = '2026-10-07T21:00:00Z'
 export interface Star {
@@ -74,9 +75,7 @@ export function skyDirections(stars: Star[],time=SKY_TIME): Vector3[] {
 }
 
 export function horizonReading(direction: Vector3, latitude=OBSERVER.latitude, longitude=OBSERVER.longitude) {
-  const up=observerNormal(latitude,longitude)
-  const north=new Vector3(0,1,0).addScaledVector(up,-up.y).normalize()
-  const east=new Vector3().crossVectors(north,up).normalize()
+  const {up,north,east}=observerBasis(latitude,longitude)
   return { altitude: Math.asin(Math.max(-1,Math.min(1,direction.dot(up))))*180/Math.PI,
     azimuth: (Math.atan2(direction.dot(east),direction.dot(north))*180/Math.PI+360)%360 }
 }
@@ -105,7 +104,7 @@ export function blockedByEarth(position: Vector3,direction: Vector3,maximumDista
 export function twilightOpacity(solarAltitude: number): number {
   return Math.max(0,Math.min(1,(-solarAltitude-6)/12))
 }
-export function solarAltitude(time: number): number {
+export function solarAltitude(time: number,observer:ObserverLocation=OBSERVER): number {
   const vector=GeoVector(Body.Sun,new Date(time),false)
-  return horizonReading(new Vector3(vector.x,vector.y,vector.z).applyMatrix4(stellarRotation(new Date(time).toISOString())).normalize()).altitude
+  return horizonReading(new Vector3(vector.x,vector.y,vector.z).applyMatrix4(stellarRotation(new Date(time).toISOString())).normalize(),observer.latitude,observer.longitude).altitude
 }

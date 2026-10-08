@@ -1,6 +1,7 @@
 import { Matrix4, Quaternion, Vector3 } from 'three'
 // Earth-fixed view: X Greenwich/equator, Y north pole, Z 90 degrees west.
-export const OBSERVER = { name: 'Sydney', latitude: -33.8688, longitude: 151.2093, heightKm: 0.058 }
+import {DEFAULT_OBSERVER,type ObserverLocation} from './observer'
+export const OBSERVER=DEFAULT_OBSERVER
 export const EARTH_RADIUS_KM = 6378.137
 export const POLAR_RATIO = 1-1/298.257223563 // WGS84 ellipsoid
 export const LANDING_HEIGHT = OBSERVER.heightKm/EARTH_RADIUS_KM
@@ -12,8 +13,9 @@ export function earthSurface(latitude: number,longitude: number): Vector3 {
   const normal=observerNormal(latitude,longitude),e2=1-POLAR_RATIO*POLAR_RATIO,n=1/Math.sqrt(1-e2*normal.y*normal.y)
   return new Vector3(n*normal.x,n*(1-e2)*normal.y,n*normal.z)
 }
-export function horizonDirection(altitude: number,azimuth: number): Vector3 {
-  const up=observerNormal(OBSERVER.latitude,OBSERVER.longitude),north=new Vector3(0,1,0).addScaledVector(up,-up.y).normalize(),east=new Vector3().crossVectors(north,up).normalize()
+export function observerBasis(latitude:number,longitude:number){const lat=latitude*Math.PI/180,lon=longitude*Math.PI/180;return {up:observerNormal(latitude,longitude),north:new Vector3(-Math.sin(lat)*Math.cos(lon),Math.cos(lat),Math.sin(lat)*Math.sin(lon)),east:new Vector3(-Math.sin(lon),0,-Math.cos(lon))}}
+export function horizonDirection(altitude: number,azimuth: number,observer:ObserverLocation=OBSERVER): Vector3 {
+  const {up,north,east}=observerBasis(observer.latitude,observer.longitude)
   const alt=altitude*Math.PI/180,az=azimuth*Math.PI/180
   return north.multiplyScalar(Math.cos(alt)*Math.cos(az)).addScaledVector(east,Math.cos(alt)*Math.sin(az)).addScaledVector(up,Math.sin(alt)).normalize()
 }
@@ -35,16 +37,17 @@ export function orbitalCamera(view:OrbitalView,target=new Vector3(),localFrame=f
 }
 export const ARRIVAL=0.64,LOOK_UP=0.78
 export function smoothBetween(start:number,end:number,value:number):number {const t=Math.max(0,Math.min(1,(value-start)/(end-start)));return t*t*(3-2*t)}
-export function cameraPhase(progress:number):string {return progress<=0?'Orbit':progress<ARRIVAL?'Approaching Sydney':progress<LOOK_UP?'Sydney horizon':progress<1?'Lifting toward the sky':'Looking up'}
-export function cameraPose(progress: number,aim=horizonDirection(30,0),startRadius=4.2,from?:CameraPose):CameraPose {
-  const p=Math.max(0,Math.min(1,progress)),travel=smoothBetween(0,ARRIVAL,p),normal=observerNormal(OBSERVER.latitude,OBSERVER.longitude)
+export function cameraPhase(progress:number,observer:ObserverLocation=OBSERVER):string {return progress<=0?'Orbit':progress<ARRIVAL?`Approaching ${observer.name}`:progress<LOOK_UP?`${observer.name} horizon`:progress<1?'Lifting toward the sky':'Looking up'}
+export function cameraPose(progress: number,aim:Vector3|undefined=undefined,startRadius=4.2,from?:CameraPose,observer:ObserverLocation=OBSERVER):CameraPose {
+  aim??=horizonDirection(30,0,observer)
+  const landingHeight=observer.heightKm/EARTH_RADIUS_KM,p=Math.max(0,Math.min(1,progress)),travel=smoothBetween(0,ARRIVAL,p),normal=observerNormal(observer.latitude,observer.longitude)
   const start=from?.position.clone()??new Vector3(-0.7,-0.35,-1).normalize().multiplyScalar(startRadius)
-  const landing=earthSurface(OBSERVER.latitude,OBSERVER.longitude).addScaledVector(normal,LANDING_HEIGHT)
+  const landing=earthSurface(observer.latitude,observer.longitude).addScaledVector(normal,landingHeight)
   const startDirection=start.clone().normalize(),arc=new Quaternion().setFromUnitVectors(startDirection,landing.clone().normalize())
   const radial=startDirection.applyQuaternion(new Quaternion().slerp(arc,travel))
   const position=radial.multiplyScalar(Math.exp(Math.log(start.length())*(1-travel)+Math.log(landing.length())*travel))
   const ellipsoid=new Vector3(position.x,position.y/POLAR_RATIO,position.z).length()
-  if(ellipsoid<1+LANDING_HEIGHT/2)position.multiplyScalar((1+LANDING_HEIGHT/2)/ellipsoid)
+  if(ellipsoid<1+landingHeight/2)position.multiplyScalar((1+landingHeight/2)/ellipsoid)
   const orbital=new Quaternion().setFromRotationMatrix(new Matrix4().lookAt(position,new Vector3(),new Vector3(0,1,0)))
   if(from)orbital.copy(from.rotation).slerp(new Quaternion().setFromRotationMatrix(new Matrix4().lookAt(position,new Vector3(),new Vector3(0,1,0))),travel)
   const horizontal=aim.clone().addScaledVector(normal,-aim.dot(normal)).normalize()

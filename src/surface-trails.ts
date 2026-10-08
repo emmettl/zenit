@@ -1,14 +1,15 @@
 import {PerspectiveCamera,Vector3} from 'three'
-import {EARTH_RADIUS_KM,OBSERVER,earthSurface,observerNormal} from './camera'
+import {EARTH_RADIUS_KM,earthSurface,observerNormal} from './camera'
 import {orbitalState} from './orbital'
 import {enabledMover,groupColour,type Population,type PopulationFrame,type Cohorts,type GroupId} from './cohorts'
 import {earthFixedSun,illumination,illuminationWeight} from './illumination'
+import {DEFAULT_OBSERVER,observerKey,type ObserverLocation} from './observer'
 import type {ScreenBox} from './orientation'
 export const SURFACE_TRAIL_SECONDS=45,SURFACE_TRAIL_STEP=3,SURFACE_TRAIL_SAMPLES=16,SURFACE_TRAIL_CANDIDATES=24
 export interface SurfaceTrail {index:number;positions:Float64Array;valid:Uint8Array}
-const up=observerNormal(OBSERVER.latitude,OBSERVER.longitude),site=earthSurface(OBSERVER.latitude,OBSERVER.longitude).addScaledVector(up,OBSERVER.heightKm/EARTH_RADIUS_KM)
 /** Frozen direct SGP4 samples. No accumulated history, duplicated attachments or inferred velocity. */
-export function sampleSurfaceTrails(population:Population,frame:PopulationFrame):SurfaceTrail[] {
+export function sampleSurfaceTrails(population:Population,frame:PopulationFrame,observer:ObserverLocation=DEFAULT_OBSERVER):SurfaceTrail[] {
+  const up=observerNormal(observer.latitude,observer.longitude),site=earthSurface(observer.latitude,observer.longitude).addScaledVector(up,observer.heightKm/EARTH_RADIUS_KM)
   const candidates:{index:number;motion:number}[]=[]
   population.propagators.forEach((orbit,index)=>{
     if(frame.availability[index]!==1||population.snapshot.movers[index].id==='25544')return
@@ -29,11 +30,12 @@ export function sampleSurfaceTrails(population:Population,frame:PopulationFrame)
   })
 }
 export function validSurfaceTrails(frame:PopulationFrame,count:number):boolean {
-  return typeof frame.trailsRequested==='boolean'&&Array.isArray(frame.surfaceTrails)&&frame.surfaceTrails.length<=SURFACE_TRAIL_CANDIDATES&&(!frame.trailsRequested?frame.surfaceTrails.length===0:true)&&new Set(frame.surfaceTrails.map(x=>x.index)).size===frame.surfaceTrails.length&&frame.surfaceTrails.every(x=>Number.isInteger(x.index)&&x.index>=0&&x.index<count&&x.positions instanceof Float64Array&&x.positions.length===SURFACE_TRAIL_SAMPLES*3&&x.positions.every(Number.isFinite)&&x.valid instanceof Uint8Array&&x.valid.length===SURFACE_TRAIL_SAMPLES&&x.valid.every(v=>v===0||v===1))
+  return typeof frame.observerKey==='string'&&typeof frame.trailsRequested==='boolean'&&Array.isArray(frame.surfaceTrails)&&frame.surfaceTrails.length<=SURFACE_TRAIL_CANDIDATES&&(!frame.trailsRequested?frame.surfaceTrails.length===0:true)&&new Set(frame.surfaceTrails.map(x=>x.index)).size===frame.surfaceTrails.length&&frame.surfaceTrails.every(x=>Number.isInteger(x.index)&&x.index>=0&&x.index<count&&x.positions instanceof Float64Array&&x.positions.length===SURFACE_TRAIL_SAMPLES*3&&x.positions.every(Number.isFinite)&&x.valid instanceof Uint8Array&&x.valid.length===SURFACE_TRAIL_SAMPLES&&x.valid.every(v=>v===0||v===1))
 }
 /** A small camera-dependent subset; pan reprojects a packet without running orbital calculations. */
-export function surfaceTrailVertices(frame:PopulationFrame,cohorts:Cohorts,camera:PerspectiveCamera,groups:readonly GroupId[],selected:string|undefined,width:number,height:number,exclusions:ScreenBox[],sunAt=earthFixedSun) {
+export function surfaceTrailVertices(frame:PopulationFrame,cohorts:Cohorts,camera:PerspectiveCamera,groups:readonly GroupId[],selected:string|undefined,width:number,height:number,exclusions:ScreenBox[],sunAt=earthFixedSun,observer:ObserverLocation=DEFAULT_OBSERVER) {
   const positions:number[]=[],colours:number[]=[],alphas:number[]=[],visible:{id:string;head:number[];segments:number}[]=[]
+  if(frame.observerKey!==observerKey(observer))return {positions,colours,alphas,visible}
   const limit=Math.min(width,height)<=650?2:3
   const suns=frame.surfaceTrails.length?Array.from({length:SURFACE_TRAIL_SAMPLES},(_,i)=>sunAt(frame.time-(SURFACE_TRAIL_SAMPLES-1-i)*SURFACE_TRAIL_STEP*1000)):[]
   for(const path of frame.surfaceTrails){

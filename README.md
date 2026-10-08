@@ -12,7 +12,25 @@ Visible, non-reduced-motion sessions open into the automatic **one-minute journe
 
 **Watch Sydney pass** seeks to 90 study seconds before culmination, pauses the study during descent, then starts 10× playback on arrival. Reduced motion jumps directly and stays paused. Clicking the culmination reading seeks to the peak without starting playback. Manual camera and clock controls remain available in exploration; hidden tabs pause both journey and clock. Free clock playback loops at the dated window boundaries.
 
-The frozen twelve-hour window is **7 October 2026, 11:58:49–23:58:49 UTC**. The modelled pass rises at **17:53:22.867**, culminates at **17:58:49** at **44.9° elevation**, and sets at **18:04:12.677 UTC**. The Sun is about **17.9° below the horizon** at culmination. The retained elements give Zurich daytime passes; Sydney supplies the first night-side composition. This is a replay from dated elements, not a live position service or an optical visibility prediction.
+The frozen twelve-hour window is **7 October 2026, 11:58:49–23:58:49 UTC**. The modelled pass rises at **17:53:22.867**, culminates at **17:58:49** at **44.9° elevation**, and sets at **18:04:12.677 UTC**. The Sun is about **17.9° below the horizon** at culmination. The original ISS elements give Zurich daytime passes; the added morning window supplies a Tiangong night sequence there. This is a replay from dated elements, not a live position service or an optical visibility prediction.
+
+## Places and dated windows
+
+Open **Explore freely** or **Show panels** to find **The sky above a place**. Choose Sydney, Zurich, Toronto, Singapore or Cape Town. Changing place pauses at the displayed UTC and updates the WGS84 observer, local horizon, compass, stellar labels, solar fade and trails together; world positions remain fixed at that UTC.
+
+Each preset offers an actual complete station pass above 20°. **Play [place] journey** follows ISS (NORAD 25544) or Tiangong / Tianhe (48274), preserving the station identity through the opening, descent and sky hold. Daylight passes are labelled; where another window contains a night sequence, a single button selects it and plays that sequence. Zurich and Toronto use Tiangong in the 9 October morning window. The original Sydney ISS sequence remains the default.
+
+**Choose your own point** accepts latitude, longitude and a declared height above WGS84, or lets you turn the globe and tap its surface. Dragging turns Earth without selecting; Escape or Cancel ends picking. Custom passes are calculated in a separate bounded worker from the retained ISS/Tianhe elements. A location without a complete >=20° pass is reported plainly. Custom heights range from 1 m to 10 km; no terrain, weather, geolocation or device-orientation service is used.
+
+| Frozen window (UTC) | Retained independent movers | Eligible at its default Sydney opening | Attachments |
+| --- | ---: | ---: | ---: |
+| 7 October 11:58:49–23:58:49, original | 635 | 616 | 12 |
+| 8 October 12:00–9 October 00:00 | 621 | 588 | 11 |
+| 9 October 00:00–12:00 | 531 | 334 | 11 |
+
+All windows retain the same 5,070 HYG stars and per-object 24-hour element-offset limit. Date switches verify the indexed manifest and both payload hashes before replacing the pair; obsolete requests are aborted and an error retains the previous window. The [new release audit](docs/evidence/observer-window-releases-2026-10-09.json) records four bounded successful captures at 22:46 UTC on 8 October, source hashes, rules, exclusions and pass calculations. Raw captures remain private to the ignored work store. Reproduce with `node scripts/compile-observer-windows.mjs` after restoring those exact captures; CI and visitors never acquire sources.
+
+The additional numerical fixtures compare 75 observer/ISS/Tianhe cases with independent Python sgp4 and Astropy/PyERFA. PEF omits reference ITRS polar motion; the 50 m frame allowance is converted into an azimuth allowance near zenith. It does not measure orbital prediction accuracy. The original cohort details below describe the preserved 7 October release.
 
 ## Cohort evidence and eligibility
 
