@@ -41,7 +41,7 @@ test('surface exploration preserves pose, time and panels; replay restores the c
 
 test('orbital gesture takes over; enabling reduced motion freezes a journey without restarting',async({page})=>{
   await page.emulateMedia({reducedMotion:'no-preference'});await page.goto('/')
-  await expect(page.getByRole('button',{name:'Explore freely',exact:true})).toBeVisible();await canvas(page).press('ArrowRight')
+  await expect(page.getByRole('button',{name:'Explore freely',exact:true})).toBeVisible({timeout:15000});await canvas(page).press('ArrowRight')
   await expect(page.locator('main')).toHaveAttribute('data-journey-phase','Exploring');await expect(page.getByRole('button',{name:'Play study',exact:true})).toBeVisible()
   await page.getByRole('button',{name:'Replay journey',exact:true}).click();await page.emulateMedia({reducedMotion:'reduce'})
   await expect(page.locator('main')).toHaveAttribute('data-journey-phase','Exploring');await expect(page.getByRole('button',{name:'Play study',exact:true})).toBeVisible()

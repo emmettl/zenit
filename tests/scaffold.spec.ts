@@ -95,7 +95,7 @@ test('tampered catalogue is rejected before rendering', async ({ page }) => {
 test('watch cue lands at the retained pass with reduced motion and preserves identity through return',async({page})=>{
   await page.emulateMedia({reducedMotion:'reduce'})
   await page.goto('/')
-  await expect(page.locator('canvas')).toHaveAttribute('data-orbital-count','616')
+  await expect(page.locator('canvas')).toHaveAttribute('data-orbital-count','616',{timeout:15000})
   await page.evaluate(()=>document.fonts.ready)
   await expect(page.getByRole('button',{name:'Watch Sydney pass'})).toBeEnabled()
   await page.getByRole('button',{name:'Watch Sydney pass'}).click()

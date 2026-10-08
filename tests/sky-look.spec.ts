@@ -66,8 +66,11 @@ test('pointer cancellation avoids selection, surface recenter respects family fi
 test('a surface gesture pauses the journey in the same pose and dated sky without opening panels; replay clears custom aim',async({page})=>{
   await page.emulateMedia({reducedMotion:'no-preference'});await page.clock.install({time:new Date('2026-10-08T12:00:00Z')});await page.clock.pauseAt('2026-10-08T12:00:01Z');await page.goto('/')
   await expect(page.getByRole('button',{name:'Explore freely',exact:true})).toBeVisible();const elapsed=Number(await page.locator('main').getAttribute('data-journey-elapsed'));await page.clock.fastForward(37000-elapsed);await page.clock.runFor(100)
-  const canvas=page.locator('canvas'),requested=await page.locator('input[aria-label="Study time"]').getAttribute('value')
-  await expect(canvas).toHaveAttribute('data-study-time',requested!)
+  const canvas=page.locator('canvas'),requested=Date.parse('2026-10-07T17:57:19Z')+(Number(await page.locator('main').getAttribute('data-journey-elapsed'))-28000)*10
+  // A frozen fake clock may stop just before the 33 ms sampling timer.
+  // Handover preserves the accepted scene, which can be one sample behind the request.
+  await expect.poll(async()=>requested-Number(await canvas.getAttribute('data-study-time'))).toBeLessThanOrEqual(330)
+  expect(Number(await canvas.getAttribute('data-study-time'))).toBeLessThanOrEqual(requested)
   const time=await canvas.getAttribute('data-study-time'),site=await canvas.getAttribute('data-camera-position'),size=page.viewportSize()!
   await page.mouse.move(size.width*.6,size.height*.32);await page.mouse.down();await page.mouse.move(size.width*.5,size.height*.36,{steps:5});await page.mouse.up()
   await expect(page.locator('main')).toHaveAttribute('data-journey-phase','Exploring');await expect(page.getByRole('button',{name:'Play study',exact:true})).toBeVisible();await expect(page.getByRole('region',{name:'Object catalogue'})).toBeHidden();await expect(canvas).toHaveAttribute('data-study-time',time!);await expect(canvas).toHaveAttribute('data-camera-position',site!)
