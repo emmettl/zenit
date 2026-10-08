@@ -99,6 +99,14 @@ python3 scripts/compile-stellar.py --source work/sources/hyg-v44/hyg_v44.csv.gz 
 
 The compiler verifies source SHA-256 before parsing. The browser verifies the compiled SHA-256 before rendering and provides a retry state on failure. HYG data and this adapted subset are **CC BY-SA 4.0**, credited to David Nash / Astronomy Nexus. See [source notice](public/data/stellar/NOTICE.txt) and [licence](public/licences/HYG-CC-BY-SA-4.0.txt).
 
+## Sharing and page metadata
+
+The static HTML supplies the canonical subdomain identity, current description, complete Open Graph and Twitter large-image tags, image dimensions/type/alt text, CreativeWork JSON-LD, theme and matching SVG/PNG/touch icons. It remains readable to crawlers without JavaScript. The no-script copy describes the implemented dated scene.
+
+The 1200×630 share card is a content-addressed PNG captured from the production renderer at the retained Sydney ISS culmination, with authored framing and typography. Its adapted HYG field retains CC BY-SA 4.0; source credits and image licence appear in the card, JSON-LD and [public notice](public/share/NOTICE.txt). The [artwork record](docs/evidence/social-card-2026-10-08.json) retains its hash, viewport, camera pose, UTC and dataset identities.
+
+Regenerate manually after building and starting a local preview with `node scripts/social-card.mjs http://127.0.0.1:4200/`, review the image, then update the HTML URLs to its new content hash. This does not run during builds or fetch providers. Publication checks enforce the static tags, image bytes/hash/dimensions, schema identity and icon sizes.
+
 ## Development
 
 Use Node 24 (`nvm use`) and npm 11.21.0. Run `npm ci`, then `npm run dev`.

@@ -1,18 +1,73 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" prefix="og: https://ogp.me/ns#">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#05090e" />
-    <meta name="description" content="ZENIT, an Earth-orbit Motion Studies edition. An early camera scaffold for the orbital view and the sky above an observer." />
+    <meta name="color-scheme" content="dark" />
+    <meta name="application-name" content="ZENIT" />
+    <meta name="author" content="Motion Studies" />
+    <meta name="description" content="A cinematic journey through Earth’s orbital shells and the sky above Sydney, with dated satellite models and a naked-eye stellar catalogue." />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
     <link rel="canonical" href="https://zenit.motionstudies.app/" />
-    <meta property="og:title" content="ZENIT · Motion Studies" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Motion Studies" />
+    <meta property="og:locale" content="en_GB" />
+    <meta property="og:title" content="ZENIT — Earth orbit / the sky above us" />
+    <meta property="og:description" content="A cinematic journey through Earth’s orbital shells and the sky above Sydney, with dated satellite models and a naked-eye stellar catalogue." />
     <meta property="og:url" content="https://zenit.motionstudies.app/" />
+    <meta property="og:image" content="https://zenit.motionstudies.app/share/zenit-aa44f7a96603.png" />
+    <meta property="og:image:secure_url" content="https://zenit.motionstudies.app/share/zenit-aa44f7a96603.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="ZENIT title beside a modelled ISS pass, orbital lights and the HYG stellar field above an idealised Sydney horizon." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="ZENIT — Earth orbit / the sky above us" />
+    <meta name="twitter:description" content="A cinematic journey through Earth’s orbital shells and the sky above Sydney, with dated satellite models and a naked-eye stellar catalogue." />
+    <meta name="twitter:image" content="https://zenit.motionstudies.app/share/zenit-aa44f7a96603.png" />
+    <meta name="twitter:image:alt" content="ZENIT title beside a modelled ISS pass, orbital lights and the HYG stellar field above an idealised Sydney horizon." />
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="./favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png" sizes="180x180" />
     <title>ZENIT · Motion Studies</title>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CreativeWork",
+  "@id": "https://zenit.motionstudies.app/#work",
+  "name": "ZENIT",
+  "url": "https://zenit.motionstudies.app/",
+  "description": "A cinematic journey through Earth’s orbital shells and the sky above Sydney, with dated satellite models and a naked-eye stellar catalogue.",
+  "inLanguage": "en",
+  "isAccessibleForFree": true,
+  "image": {
+    "@type": "ImageObject",
+    "contentUrl": "https://zenit.motionstudies.app/share/zenit-aa44f7a96603.png",
+    "url": "https://zenit.motionstudies.app/share/zenit-aa44f7a96603.png",
+    "width": 1200,
+    "height": 630,
+    "caption": "ZENIT title beside a modelled ISS pass, orbital lights and the HYG stellar field above an idealised Sydney horizon.",
+    "creditText": "Stellar field © David Nash / Astronomy Nexus, HYG 4.4, CC BY-SA 4.0. Orbital data: CelesTrak / USSPACECOM. Dated model; authored typography and framing.",
+    "license": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "acquireLicensePage": "https://zenit.motionstudies.app/share/NOTICE.txt"
+  },
+  "author": {
+    "@type": "Organization",
+    "name": "Motion Studies",
+    "url": "https://motionstudies.app/"
+  },
+  "isPartOf": {
+    "@type": "CreativeWorkSeries",
+    "name": "Motion Studies",
+    "url": "https://motionstudies.app/"
+  }
+}
+    </script>
   </head>
   <body>
     <div id="root"></div>
-    <noscript>ZENIT needs JavaScript for its camera scene. This research scaffold contains no satellite or stellar dataset. Read the <a href="https://github.com/emmettl/motionstudies/blob/main/docs/ZENIT.md">study brief</a>.</noscript>
+    <noscript>ZENIT follows Earth’s orbital shells down to the sky above Sydney, using dated satellite models and the HYG stellar catalogue. JavaScript is needed for the interactive camera and playback. Read the <a href="https://github.com/emmettl/motionstudies/blob/main/docs/ZENIT.md">study brief</a>.</noscript>
     <script type="module" src="./src/main.tsx"></script>
     <script>
       if (window.location.hostname === 'emmettl.github.io') {

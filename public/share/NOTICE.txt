@@ -1,0 +1,9 @@
+ZENIT social artwork
+
+share/zenit-aa44f7a96603.png
+Captured from ZENIT's production renderer at 2026-10-07T17:58:49.000Z, Sydney's modelled ISS culmination. Typography, framing, glyph sizes, palette and idealised horizon are authored. This is a dated model, not an optical observation.
+
+Stellar field: HYG 4.4, © David Nash / Astronomy Nexus, CC BY-SA 4.0. This adapted social artwork is distributed under CC BY-SA 4.0: https://creativecommons.org/licenses/by-sa/4.0/ . Attribution and reproduction record: https://github.com/emmettl/zenit .
+Orbital data: CelesTrak; USSPACECOM / 18th Space Defense Squadron via Space-Track.org. See ../data/orbital/NOTICE.txt for the retained basic-SSA terms.
+Fonts: pinned @motionstudies/web Inter and DM Mono public assets, SIL Open Font License; see ../licences/.
+The separately authored favicon is MIT licensed with the code.
