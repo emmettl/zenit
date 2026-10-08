@@ -1,9 +1,9 @@
 import {test,expect,type Page} from '@playwright/test'
 const canvas=(page:Page)=>page.locator('canvas')
-async function advanceTo(page:Page,target:number){const elapsed=Number(await page.locator('main').getAttribute('data-journey-elapsed'));await page.clock.fastForward(Math.max(1,target-elapsed));await expect.poll(async()=>Number(await page.locator('main').getAttribute('data-journey-elapsed'))).toBeGreaterThanOrEqual(target-100)}
+async function advanceTo(page:Page,target:number){const elapsed=Number(await page.locator('main').getAttribute('data-journey-elapsed'));await page.clock.fastForward(Math.max(1,target-elapsed));await page.clock.runFor(100);await expect.poll(async()=>Number(await page.locator('main').getAttribute('data-journey-elapsed'))).toBeGreaterThanOrEqual(target-100)}
 
 test('automatic full journey holds, reveals, ascends and repeats; pause holds both camera and clock',async({page})=>{
-  await page.emulateMedia({reducedMotion:'no-preference'});await page.clock.install();await page.goto('/')
+  await page.emulateMedia({reducedMotion:'no-preference'});await page.clock.install({time:new Date('2026-10-08T12:00:00Z')});await page.clock.pauseAt('2026-10-08T12:00:01Z');await page.goto('/')
   await expect(page.getByRole('button',{name:'Explore freely',exact:true})).toBeVisible()
   await expect(page.locator('main')).toHaveAttribute('data-journey-phase','Orbital shells')
   await expect(page.getByRole('region',{name:'Object catalogue'})).toBeHidden()
@@ -20,7 +20,7 @@ test('automatic full journey holds, reveals, ascends and repeats; pause holds bo
   await expect.poll(async()=>Number(await canvas(page).getAttribute('data-study-time'))).toBeGreaterThanOrEqual(Date.parse('2026-10-07T17:58:48Z'))
   await advanceTo(page,54000);await expect(page.locator('main')).toHaveAttribute('data-journey-phase','Returning to orbit')
   await expect(page.getByTestId('study-time')).toHaveText('2026-10-07 18:01:59 UTC')
-  await page.clock.fastForward(7000)
+  await page.clock.fastForward(7000);await page.clock.runFor(100)
   await expect(page.locator('main')).toHaveAttribute('data-journey-phase','Orbital shells');await expect(canvas(page)).toHaveAttribute('data-camera-phase','Orbit')
   await expect.poll(async()=>Number(await page.locator('main').getAttribute('data-journey-elapsed'))).toBeLessThan(3000)
   await expect(page.getByRole('button',{name:'Pause study',exact:true})).toBeVisible()
@@ -28,7 +28,7 @@ test('automatic full journey holds, reveals, ascends and repeats; pause holds bo
 })
 
 test('surface exploration preserves pose, time and panels; replay restores the composed sequence',async({page})=>{
-  await page.emulateMedia({reducedMotion:'no-preference'});await page.clock.install();await page.goto('/')
+  await page.emulateMedia({reducedMotion:'no-preference'});await page.clock.install({time:new Date('2026-10-08T12:00:00Z')});await page.clock.pauseAt('2026-10-08T12:00:01Z');await page.goto('/')
   await expect(page.getByRole('button',{name:'Explore freely',exact:true})).toBeVisible();await advanceTo(page,30000)
   await page.getByRole('button',{name:'Pause study',exact:true}).click()
   const pose=await canvas(page).getAttribute('data-camera-position'),rotation=await canvas(page).getAttribute('data-camera-rotation'),time=await canvas(page).getAttribute('data-study-time')

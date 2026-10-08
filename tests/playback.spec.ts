@@ -9,6 +9,7 @@ test('automatic journey can hand over to free clock loops while preserving camer
   await page.getByRole('button',{name:'Explore freely',exact:true}).click()
   const camera=await canvas.getAttribute('data-camera-position')
   await page.getByLabel('Satellite or attachment',{exact:true}).selectOption('36086')
+  await page.getByLabel('Study speed',{exact:true}).selectOption('10')
   await clock.press('End');await expect(clock).toHaveValue(String(end))
   await page.getByRole('button',{name:'Play study',exact:true}).click()
   await expect.poll(async()=>Number(await clock.inputValue())).toBeLessThan(start+120000)
