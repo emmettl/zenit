@@ -5,6 +5,7 @@ import {cameraPose,earthSurface,horizonDirection,OBSERVER,observerNormal,POLAR_R
 import {blockedByEarth,type Catalogue,catalogueDirection,stellarRotation,starColour,twilightOpacity} from './stellar'
 import {type Orbit,type Propagator,orbitalPosition,orbitalTrail} from './orbital'
 import {earthTexture,earthGeometry,land} from './geography'
+import {openingCamera} from './opening-camera'
 import {type Reveal,moverEmphasis} from './introduction'
 import {skyView,turnSky,skyPose,type SkyView} from './sky-camera'
 import {brightAnchors,compassBearing,COMPASS_POINTS,orientationOpacity,surfaceLabels,type ScreenBox} from './orientation'
@@ -13,7 +14,7 @@ import {type Cohorts,type PopulationFrame,type GroupId,enabledMover,groupColour}
 interface Props {quiet:boolean;skyCentre:number;onSkyInteraction:()=>void;onCentreSky:()=>void;panelsOpen:boolean;reveal:Reveal|null;onInteraction:()=>void;opacity:number;cameraZoom:number;following:boolean;cameraReset:number;onReset:()=>void;progress:number; time:number; catalogue:Catalogue|null; orbit:Orbit|null; showStars:boolean; showTrail:boolean; cohorts:Cohorts|null; frame:PopulationFrame|null; groups:GroupId[]; scale:'whole'|'near'; traced:Propagator|null; selectedId:string|null; onSelect:(id:string)=>void; onFailure:()=>void}
 export function SceneView({quiet,skyCentre,onSkyInteraction,onCentreSky,panelsOpen,reveal,onInteraction,opacity,progress,time,catalogue,orbit,showStars,showTrail,cohorts,frame,groups,scale,traced,selectedId,onSelect,onFailure,following,cameraReset,cameraZoom,onReset}:Props) {
   const host=useRef<HTMLDivElement>(null),values=useRef({quiet,skyCentre,panelsOpen,reveal,progress,time,showStars,showTrail,selectedId,frame,groups,scale,traced,following,cameraReset,cameraZoom}),redraw=useRef<(()=>void)|null>(null)
-  const navigation=useRef<{surface:SkyView|null;centre:number;orbit:OrbitalView|null;follow:OrbitalView|null;followId:string|null;start:CameraPose|null;last:CameraPose|null;reset:number;scale:string;zoom:number}>({surface:null,centre:skyCentre,orbit:null,follow:null,followId:null,start:null,last:null,reset:cameraReset,scale,zoom:cameraZoom})
+  const navigation=useRef<{interrupted:boolean;authored:boolean;surface:SkyView|null;centre:number;orbit:OrbitalView|null;follow:OrbitalView|null;followId:string|null;start:CameraPose|null;last:CameraPose|null;reset:number;scale:string;zoom:number}>({interrupted:false,authored:false,surface:null,centre:skyCentre,orbit:null,follow:null,followId:null,start:null,last:null,reset:cameraReset,scale,zoom:cameraZoom})
   const resetHandler=useRef(onReset);resetHandler.current=onReset
   const skyHandler=useRef(onSkyInteraction);skyHandler.current=onSkyInteraction
   const centreHandler=useRef(onCentreSky);centreHandler.current=onCentreSky
@@ -90,13 +91,14 @@ export function SceneView({quiet,skyCentre,onSkyInteraction,onCentreSky,panelsOp
       const packetTarget=selectedIndex>=0&&value.frame?.availability[selectedIndex]===1&&enabledMover(cohorts!.movers[selectedIndex],value.groups)?new Vector3().fromArray(value.frame.positions,selectedIndex*3):null
       const followed=selectedBodyId==='25544'&&issEnabled&&position?position.world:packetTarget
       const nav=navigation.current,baseRadius=value.scale==='whole'&&cohorts?24*Math.max(1,1/camera.aspect):4.2
-      if(nav.reset!==value.cameraReset){nav.surface=null;nav.orbit=null;nav.follow=null;nav.followId=null;nav.reset=value.cameraReset;if(value.progress===0)nav.start=null}
+      if(nav.reset!==value.cameraReset){nav.interrupted=false;nav.authored=false;nav.surface=null;nav.orbit=null;nav.follow=null;nav.followId=null;nav.reset=value.cameraReset;if(value.progress===0)nav.start=null}
+      if(!value.reveal&&nav.authored&&value.progress===0&&nav.last){nav.orbit=orbitView(nav.last.position);nav.authored=false}
       if(nav.scale!==value.scale){nav.orbit=null;nav.scale=value.scale}
       const zoomDelta=value.cameraZoom-nav.zoom;nav.zoom=value.cameraZoom
       let pose:CameraPose
       if(value.progress===0){
         nav.start=null;nav.surface=null
-        if(value.following&&followed){
+        if(value.reveal&&!nav.interrupted){nav.authored=true;pose=openingCamera(value.reveal.elapsed,camera.aspect,position?.world??null)}else if(value.following&&followed){
           if(nav.followId!==selectedBodyId||!nav.follow){nav.follow={yaw:0,pitch:0,distance:2.5};nav.followId=selectedBodyId??null}
           if(zoomDelta)nav.follow.distance=Math.max(.15,Math.min(60,nav.follow.distance*Math.exp(-zoomDelta*.2)))
           pose=orbitalCamera(nav.follow,followed,true)
@@ -108,7 +110,7 @@ export function SceneView({quiet,skyCentre,onSkyInteraction,onCentreSky,panelsOp
       const navigable=value.progress===0||value.progress>=ARRIVAL
       renderer.domElement.style.touchAction=navigable?'none':'pan-y';renderer.domElement.style.cursor=navigable?'grab':'default'
       renderer.domElement.setAttribute('aria-label',value.progress>=ARRIVAL?'Sydney sky: drag or swipe to look around; arrow keys pan; Home re-centres on ISS':'Orbital camera: arrow keys to orbit, plus and minus to zoom, Home to reset')
-      renderer.domElement.dataset.skyView=nav.surface?'free':'composed'
+      renderer.domElement.dataset.skyView=nav.surface?'free':'composed';renderer.domElement.dataset.openingCamera=!nav.interrupted?value.reveal?.focus??'none':'none';renderer.domElement.dataset.cameraRadius=pose.position.length().toFixed(9)
       renderer.domElement.dataset.cameraPosition=pose.position.toArray().map(x=>x.toFixed(9)).join(',');renderer.domElement.dataset.cameraRotation=pose.rotation.toArray().map(x=>x.toFixed(9)).join(',');renderer.domElement.dataset.cameraTarget=value.progress===0&&value.following&&followed?followed.toArray().map(x=>x.toFixed(9)).join(','):'0,0,0';renderer.domElement.dataset.following=value.progress===0&&value.following&&followed?selectedBodyId??'':'none'
       camera.position.copy(pose.position);camera.quaternion.copy(pose.rotation);camera.fov=skyCamera.fov=pose.fieldOfView;camera.near=Math.min(.05,Math.max(.0000001,(new Vector3(pose.position.x,pose.position.y/POLAR_RATIO,pose.position.z).length()-1)*.15));camera.updateProjectionMatrix();camera.updateMatrixWorld()
       const groundAmount=smoothBetween(.60,ARRIVAL,value.progress);earth.visible=groundAmount<1;material.opacity=1-groundAmount;gridMaterial.opacity=.42*(1-groundAmount);groundMaterial.uniforms.amount.value=groundAmount;groundMaterial.uniforms.origin.value.copy(pose.position);groundMaterial.uniforms.cameraWorld.value.copy(camera.matrixWorld);groundMaterial.uniforms.inverseProjection.value.copy(camera.projectionMatrixInverse);renderer.domElement.dataset.cameraPhase=cameraPhase(value.progress);renderer.domElement.dataset.groundOpacity=groundAmount.toFixed(3)
@@ -173,7 +175,7 @@ export function SceneView({quiet,skyCentre,onSkyInteraction,onCentreSky,panelsOp
     }
     const canvas=renderer.domElement
     let gesture:{id:number;x:number;y:number;travel:number;surface:boolean;explored:boolean}|null=null
-    const activeView=()=>{const nav=navigation.current;if(values.current.following&&nav.follow)return nav.follow;return nav.orbit??=orbitView(camera.position)}
+    const activeView=()=>{const nav=navigation.current;if(nav.authored){nav.orbit=orbitView(camera.position);nav.authored=false;nav.interrupted=true}if(values.current.following&&nav.follow)return nav.follow;return nav.orbit??=orbitView(camera.position)}
     const turn=(dx:number,dy:number)=>{const view=activeView();view.yaw-=dx;view.pitch=Math.max(-Math.PI/2+.02,Math.min(Math.PI/2-.02,view.pitch+dy));draw()}
     const zoom=(delta:number)=>{const view=activeView();view.distance=Math.max(values.current.following ? .15 : 1.08,Math.min(60,view.distance*Math.exp(delta)));draw()}
     const turnSurface=(horizontal:number,vertical:number)=>{const nav=navigation.current;nav.surface??=skyView(camera.quaternion);nav.surface=turnSky(nav.surface,horizontal,vertical);draw()}

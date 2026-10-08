@@ -1,0 +1,21 @@
+import {test,expect} from '@playwright/test'
+test.describe.configure({timeout:60000})
+test('Space toggles the journey from body, canvas and quiet sky; held and modified keys do not toggle repeatedly or scroll',async({page})=>{
+  await page.emulateMedia({reducedMotion:'no-preference'});await page.clock.install({time:new Date('2026-10-08T12:00:00Z')});await page.clock.pauseAt('2026-10-08T12:00:01Z');await page.goto('/');await expect(page.getByRole('button',{name:'Explore freely',exact:true})).toBeVisible({timeout:15000})
+  await page.clock.fastForward(6000);await page.clock.runFor(100);const main=page.locator('main'),canvas=page.locator('canvas');await page.keyboard.press('Space');await expect(page.getByRole('button',{name:'Play study',exact:true})).toBeVisible()
+  const elapsed=await main.getAttribute('data-journey-elapsed'),pose=await canvas.getAttribute('data-camera-position');await page.clock.fastForward(1000);await expect(main).toHaveAttribute('data-journey-elapsed',elapsed!);await expect(canvas).toHaveAttribute('data-camera-position',pose!);expect(await page.evaluate(()=>scrollY)).toBe(0)
+  await canvas.focus();await page.keyboard.down('Space');await expect(page.getByRole('button',{name:'Pause study',exact:true})).toBeVisible();await page.keyboard.down('Space');await expect(page.getByRole('button',{name:'Pause study',exact:true})).toBeVisible();await page.keyboard.up('Space')
+  await page.keyboard.press('Shift+Space');await expect(page.getByRole('button',{name:'Pause study',exact:true})).toBeVisible();await page.keyboard.press('Space');await expect(page.getByRole('button',{name:'Play study',exact:true})).toBeVisible()
+  await page.keyboard.press('Space');const current=Number(await main.getAttribute('data-journey-elapsed'));await page.clock.fastForward(37000-current);await page.clock.runFor(100);await expect(main).toHaveAttribute('data-interface','quiet')
+  await page.keyboard.press('Space');await expect(main).toHaveAttribute('data-interface','visible');await expect(page.getByRole('button',{name:'Play study',exact:true})).toBeFocused();await expect(main).toHaveAttribute('data-journey-phase','The sky above Sydney')
+  await page.keyboard.press('Space');await expect(page.getByRole('button',{name:'Pause study',exact:true})).toBeVisible();await expect(main).toHaveAttribute('data-journey-phase','The sky above Sydney')
+})
+test('Space preserves native controls and text entry, and focused Play activates once',async({page})=>{
+  await page.emulateMedia({reducedMotion:'reduce'});await page.goto('/');await expect(page.locator('canvas')).toHaveAttribute('data-orbital-count','616',{timeout:15000});const play=page.getByRole('button',{name:'Play study',exact:true})
+  await page.getByRole('slider',{name:'Study time',exact:true}).focus();await page.keyboard.press('Space');await expect(play).toBeVisible()
+  await page.getByLabel('Study speed',{exact:true}).focus();await page.keyboard.press('Space');await page.keyboard.press('Escape');await expect(play).toBeVisible()
+  await page.evaluate(()=>{const editor=document.createElement('textarea');editor.id='shortcut-editor';document.body.append(editor);const editable=document.createElement('div');editable.id='shortcut-editable';editable.contentEditable='true';editable.textContent='Edit';document.body.append(editable)})
+  await page.locator('#shortcut-editor').focus();await page.keyboard.press('Space');await expect(page.locator('#shortcut-editor')).toHaveValue(' ');await expect(play).toBeVisible()
+  await page.locator('#shortcut-editable').focus();await page.keyboard.press('Space');await expect(play).toBeVisible();await page.evaluate(()=>{document.querySelector('#shortcut-editor')!.remove();document.querySelector('#shortcut-editable')!.remove()})
+  await expect(play).toHaveAttribute('aria-keyshortcuts','Space');await play.focus();await page.keyboard.press('Space');await expect(page.getByRole('button',{name:'Pause study',exact:true})).toBeVisible()
+})

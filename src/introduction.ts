@@ -8,12 +8,12 @@ export const REVEAL_BEATS=[
   {focus:'geo',label:'Geosynchronous',title:'Close to Earth’s turning rhythm.'},
   {focus:'iss',label:'ISS / ZARYA',title:'The same light above Sydney.'},
 ] as const
-export interface Reveal {focus:RevealFocus;index:number;weights:Record<RevealFocus,number>}
+export interface Reveal {elapsed:number;focus:RevealFocus;index:number;weights:Record<RevealFocus,number>}
 export function openingReveal(elapsed:number):Reveal|null {
   if(elapsed<0||elapsed>=16000)return null
   const index=Math.min(3,Math.floor(elapsed/4000)),weights={stations:1,gnss:0,geo:0,iss:0}
   for(let i=1;i<4;i++){const blend=smoothBetween(i*4000-300,i*4000+300,elapsed);weights[REVEAL_BEATS[i-1].focus]*=1-blend;weights[REVEAL_BEATS[i].focus]=blend}
-  return {focus:REVEAL_BEATS[index].focus,index,weights}
+  return {elapsed,focus:REVEAL_BEATS[index].focus,index,weights}
 }
 export function moverEmphasis(groups:readonly GroupId[],id:string,reveal:Reveal|null):number {
   if(!reveal)return 1
