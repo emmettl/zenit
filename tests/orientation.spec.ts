@@ -2,6 +2,8 @@ import {test,expect,type Page} from '@playwright/test'
 import {readFileSync} from 'node:fs'
 import {PerspectiveCamera,Quaternion,Vector3} from 'three'
 import {readCatalogue,skyDirections,horizonReading} from '../src/stellar'
+import {journeySample} from '../src/journey'
+const study=JSON.parse(readFileSync(new URL('../public/data/zenit-manifest.json',import.meta.url),'utf8')).study
 const catalogue=readCatalogue(JSON.parse(readFileSync(new URL('../public/data/stellar/hyg-v44-bright-d874dfa7da5f.json',import.meta.url),'utf8')))
 async function checkLabels(page:Page){
   const canvas=page.locator('canvas'),time=Number(await canvas.getAttribute('data-study-time')),viewport=page.viewportSize()!,labels=page.locator('.sky-star-label:visible')
@@ -54,6 +56,9 @@ test('the journey fades orientation at landing and ascent, preserving names and 
   await advance(24500);await expect(guides).toBeVisible();const opacity=Number(await guides.evaluate(x=>(x as HTMLElement).style.opacity));expect(opacity).toBeGreaterThan(0);expect(opacity).toBeLessThan(1)
   await advance(37000);await page.getByRole('button',{name:'Show controls',exact:true}).click();await expect(guides).toHaveCSS('opacity','1');await checkLabels(page)
   await page.getByRole('button',{name:'Pause study',exact:true}).click()
+  const pausedElapsed=Number(await page.locator('main').getAttribute('data-journey-elapsed'))
+  const pausedTime=journeySample(pausedElapsed,Date.parse(study.initialUtc),Date.parse(study.startUtc),Date.parse(study.endUtc)).time
+  await expect(guides).toHaveAttribute('data-study-time',String(pausedTime))
   const time=await guides.getAttribute('data-study-time'),names=await page.locator('.sky-star-label:visible').allTextContents()
   await page.clock.runFor(1000);await expect(guides).toHaveAttribute('data-study-time',time!);expect(await page.locator('.sky-star-label:visible').allTextContents()).toEqual(names)
   await page.getByRole('button',{name:'Play study',exact:true}).click();await advance(51700)

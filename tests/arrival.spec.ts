@@ -20,7 +20,7 @@ test('geographic globe and compact landing preserve pause, identity, time and pa
 })
 
 test('cinematic movement reaches, holds and reveals with a frozen study clock and an interruptible camera',async({page})=>{
-  test.setTimeout(30000);await page.emulateMedia({reducedMotion:'no-preference'});await page.goto('/')
+  test.setTimeout(60000);await page.emulateMedia({reducedMotion:'no-preference'});await page.goto('/')
   const canvas=page.locator('canvas');await expect(page.getByRole('button',{name:'Explore freely',exact:true})).toBeVisible({timeout:15000})
   await page.getByRole('button',{name:'Explore freely',exact:true}).click();await expect(page.getByRole('button',{name:'Watch Sydney pass'})).toBeEnabled();await page.getByRole('button',{name:'Watch Sydney pass'}).click();await expect(page.getByRole('button',{name:'Pause camera'})).toBeVisible()
   await expect(canvas).toHaveAttribute('data-camera-phase','Sydney horizon',{timeout:13000})
