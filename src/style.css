@@ -128,3 +128,15 @@ h1 { font-size: clamp(44px,5vw,64px); margin-top: 18px; }
 .cinematic .camera-state { clear:both; padding-top:8px; }
 .cinematic .controls button { min-height:36px; }
 @media (max-width:650px) { .cinematic header { padding:20px; } .cinematic .composition { left:20px; } .cinematic .cinematic-object { flex-direction:column; gap:2px; } .cinematic .cinematic-object span { text-align:left; } .cinematic .controls { bottom:12px; padding:10px 12px; } }
+
+.introduction{position:fixed;z-index:1;top:172px;left:26px;width:min(345px,calc(100% - 52px));padding:0;color:#a5d2e6;pointer-events:none}
+.introduction-gnss{color:#b8b5ff}.introduction-geo{color:#ed9c63}.introduction-iss{color:#debd8a}
+.introduction-step{display:flex;align-items:center;gap:8px;font:10px 'DM Mono',monospace;letter-spacing:.08em;margin:0 0 12px}
+.introduction-light{width:5px;height:5px;transform:rotate(45deg);background:currentColor}
+.introduction-reading{display:flex;flex-direction:column;gap:5px;font:12px/1.6 'DM Mono',monospace;color:#9bb0bd;margin:0}
+.introduction-reading strong{font-weight:400;color:#e4edf3}
+.introduction-note{font:10px/1.7 'DM Mono',monospace;color:#8b9daa;margin:12px 0 0;max-width:285px}
+.iss-marker[data-introduction=iss]{color:#debd8a;border-color:#debd8a99}
+@media(max-width:650px){.introduction{left:20px;top:166px;width:calc(100% - 40px);max-width:290px}.introduction-reading{font-size:12px}.introduction-note{max-width:250px}}
+
+.introduction::before{content:"";position:absolute;inset:-8px -14px;background:linear-gradient(90deg,#05090ef5 0%,#05090ee8 78%,#05090e00 100%);z-index:-1}

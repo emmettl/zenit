@@ -96,16 +96,28 @@
     "reducedMotion": "Paused; user can start playback explicitly.",
     "journey": {
       "durationSeconds": 60,
-      "overviewSeconds": 8,
+      "overviewSeconds": 16,
       "descentSeconds": 12,
-      "skySeconds": 28,
+      "skySeconds": 20,
       "ascentSeconds": 12,
       "seamFadeSeconds": 1,
       "overviewRate": 600,
       "skyRate": 10,
-      "clockHeld": "Descent and ascent",
+      "clockHeld": "ISS introduction, descent and ascent",
       "repeat": "Scene fades to black at the orbital seam while the dated pass resets.",
-      "interaction": "Pause holds camera and clock; Explore freely or manual input leaves the journey at the displayed pose and time. Replay journey restores the retained composition."
+      "interaction": "Pause holds camera and clock; Explore freely or manual input leaves the journey at the displayed pose and time. Replay journey restores the retained composition.",
+      "introduction": {
+        "order": [
+          "stations",
+          "gnss",
+          "geo",
+          "iss:25544"
+        ],
+        "beatSeconds": 4,
+        "presentation": "Smooth visual emphasis; all eligible families remain present, shared memberships draw one light.",
+        "captions": "Median WGS84 model height from the displayed worker packet; median mean period from retained mean motion. Attachments excluded.",
+        "issHandoff": "Hold the retained initial UTC for four seconds, label ISS before descent, keep identity into the sky."
+      }
     }
   }
 }

@@ -42,10 +42,13 @@ The automatic **60-second journey** begins after the source loaders settle and t
 
 | Real time | Composition | Shared dated clock |
 | --- | --- | --- |
-| 0–8 s | Whole-orbit shells | 600×, from 16:37:19 to 17:57:19 UTC |
-| 8–20 s | Twelve-second descent, horizon hold and upward reveal | Held at 17:57:19 UTC |
-| 20–48 s | Sky above Sydney, selected ISS and its model trail | 10×; culmination nine seconds into the sky hold |
-| 48–60 s | Reverse the camera path back to orbit | Held at 18:01:59 UTC |
+| 0–12 s | Stations, navigation, geosynchronous families; four seconds each | 600×, from 15:57:19 to 17:57:19 UTC |
+| 12–16 s | Pick out ISS / ZARYA before descent | Held at 17:57:19 UTC |
+| 16–28 s | Twelve-second descent, horizon hold and upward reveal | Held at 17:57:19 UTC |
+| 28–48 s | Sky above Sydney, selected ISS and its model trail | 10×; culmination nine seconds into the sky hold |
+| 48–60 s | Reverse the camera path back to orbit | Held at 18:00:39 UTC |
+
+The opening gently emphasises stations, navigation and geosynchronous members in turn, then labels the ISS as the station followed into Sydney. Unemphasised objects remain present and shared memberships keep one glyph. This is an authored opacity/size treatment, not filtering or a satellite brightness prediction. Captions give median WGS84 model height from eligible independent movers in the displayed worker packet, and median mean orbital period from the retained mean-motion values. Heights are rounded to 10 km and periods to 0.1 h. Counts and medians may change with source age eligibility; docked attachments are excluded. The ISS beat holds the initial pass UTC for four seconds before the twelve-second descent, preserving its identity and model position into the landing. Opening captions are shown in the compact journey view; Show panels restores source inspection.
 
 A one-second fade out and one-second fade in around the orbital seam conceal the dated pass reset. Each repeat preserves elapsed-time overshoot. This is an authored camera composition around the retained modelled pass; orbital and stellar positions continue to use one coherent worker-packet UTC timestamp. The clock heading identifies **Journey** and **Clock held** explicitly.
 

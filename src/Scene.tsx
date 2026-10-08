@@ -5,14 +5,15 @@ import {cameraPose,earthSurface,horizonDirection,OBSERVER,observerNormal,POLAR_R
 import {blockedByEarth,type Catalogue,catalogueDirection,stellarRotation,starColour,twilightOpacity} from './stellar'
 import {type Orbit,type Propagator,orbitalPosition,orbitalTrail} from './orbital'
 import {earthTexture,earthGeometry,land} from './geography'
+import {type Reveal,moverEmphasis} from './introduction'
 import {type Cohorts,type PopulationFrame,type GroupId,enabledMover,groupColour} from './cohorts'
-interface Props {onInteraction:()=>void;opacity:number;cameraZoom:number;following:boolean;cameraReset:number;onReset:()=>void;progress:number; time:number; catalogue:Catalogue|null; orbit:Orbit|null; showStars:boolean; showTrail:boolean; cohorts:Cohorts|null; frame:PopulationFrame|null; groups:GroupId[]; scale:'whole'|'near'; traced:Propagator|null; selectedId:string|null; onSelect:(id:string)=>void; onFailure:()=>void}
-export function SceneView({onInteraction,opacity,progress,time,catalogue,orbit,showStars,showTrail,cohorts,frame,groups,scale,traced,selectedId,onSelect,onFailure,following,cameraReset,cameraZoom,onReset}:Props) {
-  const host=useRef<HTMLDivElement>(null),values=useRef({progress,time,showStars,showTrail,selectedId,frame,groups,scale,traced,following,cameraReset,cameraZoom}),redraw=useRef<(()=>void)|null>(null)
+interface Props {reveal:Reveal|null;onInteraction:()=>void;opacity:number;cameraZoom:number;following:boolean;cameraReset:number;onReset:()=>void;progress:number; time:number; catalogue:Catalogue|null; orbit:Orbit|null; showStars:boolean; showTrail:boolean; cohorts:Cohorts|null; frame:PopulationFrame|null; groups:GroupId[]; scale:'whole'|'near'; traced:Propagator|null; selectedId:string|null; onSelect:(id:string)=>void; onFailure:()=>void}
+export function SceneView({reveal,onInteraction,opacity,progress,time,catalogue,orbit,showStars,showTrail,cohorts,frame,groups,scale,traced,selectedId,onSelect,onFailure,following,cameraReset,cameraZoom,onReset}:Props) {
+  const host=useRef<HTMLDivElement>(null),values=useRef({reveal,progress,time,showStars,showTrail,selectedId,frame,groups,scale,traced,following,cameraReset,cameraZoom}),redraw=useRef<(()=>void)|null>(null)
   const navigation=useRef<{orbit:OrbitalView|null;follow:OrbitalView|null;followId:string|null;start:CameraPose|null;last:CameraPose|null;reset:number;scale:string;zoom:number}>({orbit:null,follow:null,followId:null,start:null,last:null,reset:cameraReset,scale,zoom:cameraZoom})
   const resetHandler=useRef(onReset);resetHandler.current=onReset
   const interactionHandler=useRef(onInteraction);interactionHandler.current=onInteraction
-  useEffect(()=>{values.current={progress,time,showStars,showTrail,selectedId,frame,groups,scale,traced,following,cameraReset,cameraZoom};redraw.current?.()},[progress,time,showStars,showTrail,selectedId,frame,groups,scale,traced,following,cameraReset,cameraZoom])
+  useEffect(()=>{values.current={reveal,progress,time,showStars,showTrail,selectedId,frame,groups,scale,traced,following,cameraReset,cameraZoom};redraw.current?.()},[reveal,progress,time,showStars,showTrail,selectedId,frame,groups,scale,traced,following,cameraReset,cameraZoom])
   useEffect(()=>{
     const element=host.current;if(!element)return
     let renderer:WebGLRenderer
@@ -47,14 +48,15 @@ export function SceneView({onInteraction,opacity,progress,time,catalogue,orbit,s
       fragmentShader:`varying vec3 colour; varying float opacity;void main(){vec2 p=gl_PointCoord-0.5;float r=length(p);if(r>0.5)discard;float light=exp(-10.0*dot(p,p))*(1.0-smoothstep(0.3,0.5,r));gl_FragColor=vec4(colour,opacity*light);}`})
     const stars=new Points(starGeometry,starMaterial);stars.frustumCulled=false;stars.matrixAutoUpdate=false;sky.add(stars)
     const issGeometry=new BufferGeometry();issGeometry.setAttribute('position',new Float32BufferAttribute([0,0,0],3))
-    const issMaterial=new ShaderMaterial({transparent:true,depthTest:true,depthWrite:false,uniforms:{size:{value:10*renderer.getPixelRatio()},selected:{value:0}},vertexShader:`uniform float size;void main(){gl_PointSize=size;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,fragmentShader:`uniform float selected;void main(){vec2 p=abs(gl_PointCoord-0.5);if(p.x+p.y>0.48)discard;gl_FragColor=vec4(mix(vec3(0.35,0.88,1.0),vec3(1.0,0.77,0.42),selected),1.0);}`})
+    const issMaterial=new ShaderMaterial({transparent:true,depthTest:true,depthWrite:false,uniforms:{size:{value:10*renderer.getPixelRatio()},selected:{value:0},attention:{value:1}},vertexShader:`uniform float size;void main(){gl_PointSize=size;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,fragmentShader:`uniform float selected;uniform float attention;void main(){vec2 p=abs(gl_PointCoord-0.5);if(p.x+p.y>0.48)discard;gl_FragColor=vec4(mix(vec3(0.35,0.88,1.0),vec3(1.0,0.77,0.42),selected),attention);}`})
     const iss=new Points(issGeometry,issMaterial);iss.frustumCulled=false;scene.add(iss)
     const populationGeometry=new BufferGeometry(),count=cohorts?.movers.length??0
     populationGeometry.setAttribute('position',new Float32BufferAttribute(new Float32Array(count*3),3))
     populationGeometry.setAttribute('tint',new Float32BufferAttribute((cohorts?.movers??[]).flatMap(groupColour),3))
     populationGeometry.setAttribute('bodyVisible',new Float32BufferAttribute(new Float32Array(count),1))
+    populationGeometry.setAttribute('bodyEmphasis',new Float32BufferAttribute(new Float32Array(count).fill(1),1))
     populationGeometry.setAttribute('bodyIndex',new Float32BufferAttribute(Array.from({length:count},(_,i)=>i),1))
-    const populationMaterial=new ShaderMaterial({transparent:true,depthTest:true,depthWrite:false,uniforms:{pixelRatio:{value:renderer.getPixelRatio()},selected:{value:-1}},vertexShader:`attribute vec3 tint;attribute float bodyVisible;attribute float bodyIndex;uniform float pixelRatio;uniform float selected;varying vec3 colour;void main(){float chosen=1.0-step(0.1,abs(bodyIndex-selected));colour=mix(tint,vec3(1.0,0.94,0.72),chosen);gl_PointSize=(4.0+chosen*5.0)*pixelRatio;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);if(bodyVisible<0.5)gl_Position=vec4(2.0,2.0,2.0,1.0);}`,fragmentShader:`varying vec3 colour;void main(){vec2 p=abs(gl_PointCoord-0.5);if(p.x+p.y>0.48)discard;gl_FragColor=vec4(colour,0.95);}`})
+    const populationMaterial=new ShaderMaterial({transparent:true,depthTest:true,depthWrite:false,uniforms:{pixelRatio:{value:renderer.getPixelRatio()},selected:{value:-1},revealActive:{value:0}},vertexShader:`attribute vec3 tint;attribute float bodyVisible;attribute float bodyEmphasis;attribute float bodyIndex;uniform float pixelRatio;uniform float selected;uniform float revealActive;varying vec3 colour;varying float alpha;void main(){alpha=0.18+0.77*bodyEmphasis;float chosen=1.0-step(0.1,abs(bodyIndex-selected));colour=mix(tint,vec3(1.0,0.94,0.72),chosen);gl_PointSize=(4.0+chosen*5.0+2.0*bodyEmphasis*revealActive)*pixelRatio;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);if(bodyVisible<0.5)gl_Position=vec4(2.0,2.0,2.0,1.0);}`,fragmentShader:`varying vec3 colour;varying float alpha;void main(){vec2 p=abs(gl_PointCoord-0.5);if(p.x+p.y>0.48)discard;gl_FragColor=vec4(colour,alpha);}`})
     const populationPoints=new Points(populationGeometry,populationMaterial);populationPoints.frustumCulled=false;scene.add(populationPoints)
     const trailGeometry=new BufferGeometry();trailGeometry.setAttribute('position',new Float32BufferAttribute(new Float32Array(31*3),3));trailGeometry.setAttribute('color',new Float32BufferAttribute(Array.from({length:31},(_,i)=>[.2+.15*i/30,.35+.53*i/30,.4+.6*i/30]).flat(),3))
     const trailMaterial=new LineBasicMaterial({vertexColors:true,transparent:true,opacity:.8});const trail=new Line(trailGeometry,trailMaterial);trail.frustumCulled=false;scene.add(trail)
@@ -90,15 +92,15 @@ export function SceneView({onInteraction,opacity,progress,time,catalogue,orbit,s
       stars.visible=value.showStars;starMaterial.uniforms.ground.value=value.progress>=ARRIVAL?1:0;starMaterial.uniforms.selected.value=catalogue?.stars.findIndex(x=>x.id===value.selectedId)??-1
       const sun=GeoVector(Body.Sun,date,false),sunDirection=new Vector3(sun.x,sun.y,sun.z).applyMatrix4(rotation).normalize();light.position.copy(sunDirection.clone().multiplyScalar(5));const opacity=value.progress>=ARRIVAL?twilightOpacity(Math.asin(sunDirection.dot(up))*180/Math.PI):1;starMaterial.uniforms.solarOpacity.value=opacity;renderer.domElement.dataset.surfaceStarOpacity=opacity.toFixed(3)
       satelliteWorld=null
-      iss.visible=Boolean(position)&&issEnabled&&(value.progress<ARRIVAL||position!.altitude>0);issMaterial.uniforms.selected.value=selectedBodyId==='25544'?1:0
+      iss.visible=Boolean(position)&&issEnabled&&(value.progress<ARRIVAL||position!.altitude>0);issMaterial.uniforms.selected.value=selectedBodyId==='25544'?(value.reveal?.weights.iss??1):0;const issEmphasis=moverEmphasis(['stations'],'25544',value.reveal);issMaterial.uniforms.attention.value=.18+.82*issEmphasis;issMaterial.uniforms.size.value=(10+4*(value.reveal?.weights.iss??0))*renderer.getPixelRatio();trailMaterial.opacity=.8*(.18+.82*issEmphasis)
       if(position){const attribute=issGeometry.getAttribute('position');attribute.setXYZ(0,...position.world.toArray());attribute.needsUpdate=true}
       const traceEnabled=selectedBodyId==='25544'?issEnabled:selectedIndex>=0&&cohorts?enabledMover(cohorts.movers[selectedIndex],value.groups):false;const allPath=value.traced&&value.showTrail&&traceEnabled?orbitalTrail(value.traced,value.time):[];const site=earthSurface(OBSERVER.latitude,OBSERVER.longitude).addScaledVector(up,OBSERVER.heightKm/6378.137);const path=value.progress>=ARRIVAL?allPath.filter(x=>x.clone().sub(site).dot(up)>0):allPath;trail.visible=path.length>1
       const trailAttribute=trailGeometry.getAttribute('position');path.forEach((x,i)=>trailAttribute.setXYZ(i,...x.toArray()));trailAttribute.needsUpdate=true;trailGeometry.setDrawRange(0,path.length)
       let eligible=0,shown=0,failedCount=0,markerWorld:Vector3|null=null
-      const bodyPositions=populationGeometry.getAttribute('position'),active=populationGeometry.getAttribute('bodyVisible')
+      const bodyPositions=populationGeometry.getAttribute('position'),active=populationGeometry.getAttribute('bodyVisible'),emphasis=populationGeometry.getAttribute('bodyEmphasis')
       const packet=value.frame
       for(let i=0;i<count;i++){
-        const mover=cohorts!.movers[i],status=packet?.availability[i]??0
+        const mover=cohorts!.movers[i],status=packet?.availability[i]??0;emphasis.setX(i,moverEmphasis(mover.groups,mover.id,value.reveal))
         if(status===2)failedCount++
         if(status===1)eligible++
         const world=packet?new Vector3(packet.positions[i*3],packet.positions[i*3+1],packet.positions[i*3+2]):new Vector3()
@@ -108,13 +110,13 @@ export function SceneView({onInteraction,opacity,progress,time,catalogue,orbit,s
         active.setX(i,enabled&&(mover.id!=='25544'||!orbit)&&(value.progress<ARRIVAL||above)?1:0);bodyPositions.setXYZ(i,...world.toArray())
         if(i===selectedIndex&&enabled&&(value.progress<ARRIVAL||above))markerWorld=world
       }
-      bodyPositions.needsUpdate=true;active.needsUpdate=true;populationMaterial.uniforms.selected.value=selectedIndex
+      bodyPositions.needsUpdate=true;active.needsUpdate=true;emphasis.needsUpdate=true;populationMaterial.uniforms.revealActive.value=value.reveal?1:0;populationMaterial.uniforms.selected.value=selectedIndex
       if(selectedBodyId==='25544'&&iss.visible&&position)markerWorld=position.world
       if(!cohorts){eligible=position?1:0;shown=iss.visible?1:0;if(position&&iss.visible)markerWorld=position.world}
       let visible=false
       if(markerWorld){const direction=markerWorld.clone().sub(camera.position).normalize(),ndc=markerWorld.clone().project(camera);visible=!blockedByEarth(camera.position,direction,markerWorld.distanceTo(camera.position))&&ndc.z>-1&&ndc.z<1&&Math.abs(ndc.x)<.94&&Math.abs(ndc.y)<.94;marker.style.left=`${(ndc.x+1)*50}%`;marker.style.top=`${(1-ndc.y)*50}%`;satelliteWorld=markerWorld}
-      markerId=value.selectedId??'iss:25544';marker.textContent=attachment?attachment.name:selectedBodyId==='25544'?'ISS':cohorts?.movers[selectedIndex]?.name??'ISS';marker.setAttribute('aria-label',selectedBodyId==='25544'?'Inspect ISS':'Inspect selected satellite');marker.onclick=()=>onSelect(markerId);marker.hidden=!visible
-      renderer.domElement.dataset.orbitalCount=String(eligible);renderer.domElement.dataset.filteredCount=String(shown);renderer.domElement.dataset.propagationFailures=String(failedCount);renderer.domElement.dataset.studyTime=String(value.time);renderer.domElement.dataset.issPosition=position?position.world.toArray().map(x=>x.toFixed(9)).join(','):''
+      markerId=value.selectedId??'iss:25544';marker.dataset.introduction=value.reveal?.focus??'none';marker.textContent=value.reveal?.focus==='iss'?'ISS · next: Sydney':attachment?attachment.name:selectedBodyId==='25544'?'ISS':cohorts?.movers[selectedIndex]?.name??'ISS';marker.setAttribute('aria-label',selectedBodyId==='25544'?'Inspect ISS':'Inspect selected satellite');marker.onclick=()=>onSelect(markerId);marker.hidden=!visible||Boolean(value.reveal&&value.reveal.focus!=='iss')
+      renderer.domElement.dataset.introduction=value.reveal?.focus??'none';renderer.domElement.dataset.issEmphasis=issEmphasis.toFixed(3);renderer.domElement.dataset.familyEmphasis=value.reveal?JSON.stringify(value.reveal.weights):'none';renderer.domElement.dataset.orbitalCount=String(eligible);renderer.domElement.dataset.filteredCount=String(shown);renderer.domElement.dataset.propagationFailures=String(failedCount);renderer.domElement.dataset.studyTime=String(value.time);renderer.domElement.dataset.issPosition=position?position.world.toArray().map(x=>x.toFixed(9)).join(','):''
       renderer.clear();renderer.render(sky,skyCamera);renderer.render(groundScene,skyCamera);renderer.clearDepth();renderer.render(scene,camera)
     }
     const resize=()=>{const {width,height}=element.getBoundingClientRect();renderer.setSize(width,height,false);camera.aspect=skyCamera.aspect=width/Math.max(1,height);draw()}

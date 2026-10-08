@@ -5,7 +5,7 @@ test('automatic journey can hand over to free clock loops while preserving camer
   await page.emulateMedia({reducedMotion:'no-preference'});await page.goto('/')
   const clock=page.getByRole('slider',{name:'Study time',exact:true}),canvas=page.locator('canvas')
   await expect(page.getByRole('button',{name:'Pause study',exact:true})).toBeVisible()
-  await expect.poll(async()=>Number(await canvas.getAttribute('data-study-time'))).toBeGreaterThan(Date.parse('2026-10-07T16:37:19Z'))
+  await expect.poll(async()=>Number(await canvas.getAttribute('data-study-time'))).toBeGreaterThan(Date.parse('2026-10-07T15:57:19Z'))
   await page.getByRole('button',{name:'Explore freely',exact:true}).click()
   const camera=await canvas.getAttribute('data-camera-position')
   await page.getByLabel('Satellite or attachment',{exact:true}).selectOption('36086')

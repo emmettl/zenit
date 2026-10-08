@@ -4,6 +4,7 @@ import '@motionstudies/web/study-timeline.css'
 import {SceneView} from './Scene'
 import {OBSERVER,cameraPhase,ARRIVAL} from './camera'
 import {journeySample,JOURNEY_DURATION} from './journey'
+import {openingReveal,REVEAL_BEATS,familyReading} from './introduction'
 import {type Catalogue,horizonReading,loadCatalogue,skyDirections,SKY_TIME,solarAltitude} from './stellar'
 import {type Orbit,type Propagator,advanceStudy,loadOrbit,orbitalPosition,utcLabel} from './orbital'
 import {json2satrec} from 'satellite.js'
@@ -52,6 +53,9 @@ export function App() {
   },[target,reduced,cue])
   const population=usePopulation(cohorts,time,revision,workerAttempt)
   const displayTime=population.frame?.time??time
+  const reveal=journeyFrame?openingReveal(journeyFrame.elapsed):null
+  const reading=useMemo(()=>reveal?familyReading(cohorts,population.frame,reveal.focus):null,[cohorts,population.frame,reveal?.focus])
+  const beat=reveal?REVEAL_BEATS[reveal.index]:null
   useEffect(()=>{
     if(!autoplayPending.current||!orbit||starState==='loading'||cohortState==='loading'||(cohorts&&!population.frame&&!population.failed)||!visible)return
     autoplayPending.current=false;if(!reduced)startJourney()
@@ -81,11 +85,16 @@ export function App() {
   const selectedChildren=cohorts?.attachments.filter(x=>x.parentId===mover?.id)??[]
   const satelliteChoices=useMemo(()=>[...(cohorts?.movers??[]).map(x=>({id:x.id,name:x.name,attached:false})),...(cohorts?.attachments??[]).map(x=>({id:x.id,name:x.name,attached:true}))].sort((a,b)=>a.name.localeCompare(b.name)||Number(a.id)-Number(b.id)),[cohorts])
   const fmtTime=(value:number)=>new Date(value).toISOString().slice(11,19)+' UTC'
-  return <main className={`${immersive?'cinematic':''}${journey!==null?' journey':''}`.trim()} data-journey-phase={journeyFrame?.stage??'Exploring'} data-journey-elapsed={journey??''}>
-    <SceneView onInteraction={explore} opacity={journeyFrame?.opacity??1} progress={cameraProgress} time={displayTime} catalogue={catalogue} orbit={orbit} showStars={showStars} showTrail={showTrail} cohorts={cohorts} frame={population.frame} groups={groups} scale={scale} traced={traced} selectedId={selectedId} onSelect={select} onFailure={fail} following={following} cameraZoom={cameraZoom} cameraReset={cameraReset} onReset={resetCamera}/>
+  return <main className={`${immersive?'cinematic':''}${journey!==null?' journey':''}`.trim()} data-journey-phase={journeyFrame?.stage??'Exploring'} data-journey-elapsed={journey??''} data-introduction={reveal?.focus??'none'}>
+    <SceneView reveal={reveal} onInteraction={explore} opacity={journeyFrame?.opacity??1} progress={cameraProgress} time={displayTime} catalogue={catalogue} orbit={orbit} showStars={showStars} showTrail={showTrail} cohorts={cohorts} frame={population.frame} groups={groups} scale={scale} traced={traced} selectedId={selectedId} onSelect={select} onFailure={fail} following={following} cameraZoom={cameraZoom} cameraReset={cameraReset} onReset={resetCamera}/>
     <header><a className="series" href="https://motionstudies.app/">MOTION STUDIES</a><h1>ZENIT</h1><p className="subtitle">Earth orbit / the sky above us</p></header>
     <aside className="edition-state"><span className="status-light"/> ORBITAL FAMILIES</aside>
-    <section className="composition" aria-labelledby="composition-title"><p className="eyebrow" id="composition-title">{view}</p><h2>{cameraProgress===1?'The sky above a place.':cameraProgress>=ARRIVAL?'At the edge of the sky.':'A world surrounded by motion.'}</h2><p>{cameraProgress>=ARRIVAL?`${OBSERVER.name} · a moving light above a turning sky.`:'Three families. One clock. Shells and planes around the world.'}</p></section>
+    <section className="composition" aria-labelledby="composition-title"><p className="eyebrow" id="composition-title">{view}</p><h2>{beat?beat.title:cameraProgress===1?'The sky above a place.':cameraProgress>=ARRIVAL?'At the edge of the sky.':'A world surrounded by motion.'}</h2><p>{cameraProgress>=ARRIVAL?`${OBSERVER.name} · a moving light above a turning sky.`:'Three families. One clock. Shells and planes around the world.'}</p></section>
+    {reveal&&beat&&immersive&&<section className={`introduction introduction-${reveal.focus}`} aria-label="Orbital introduction" data-caption-time={reading?.time??''}>
+      <p className="introduction-step"><span className="introduction-light"/>{String(reveal.index+1).padStart(2,'0')} / 04 · {beat.label}</p>
+      <p className="introduction-reading">{reading?<><span><strong>{Math.round(reading.heightKm/10)*10===0?'< 10':(Math.round(reading.heightKm/10)*10).toLocaleString('en')} km</strong> median model height</span><span><strong>{(reading.meanPeriodMinutes/60).toFixed(1)} h</strong> mean period{reveal.focus==='iss'?'':' · median'}</span></>:<span>Dated model · {reveal.focus==='iss'?'Sydney is next':'group reading unavailable'}</span>}</p>
+      <p className="introduction-note">{reveal.focus==='iss'?'NORAD 25544 · following this station down to Sydney.':`${reading?.count??'…'} eligible independent objects · memberships can overlap.`}</p>
+    </section>}
     <section className="stellar-panel" aria-label="Object catalogue" hidden={immersive}>
       <div className="iss-heading"><h2>Earth's orbital families</h2><button onClick={()=>{explore();setSelectedId('iss:25544');setGroups(x=>x.includes('stations')?x:[...x,'stations'])}}>Select ISS</button></div>
       <p className="catalogue-state" aria-live="polite">{cohortState==='ready'?`${eligible??'…'} eligible movers · ${cohorts!.movers.length} retained · ${cohorts!.attachments.length} attached`:cohortState==='error'?'Orbital families unavailable':'Loading orbital families…'}</p>
@@ -115,7 +124,7 @@ export function App() {
       <p className="sky-note">Sky turns with the study clock.<br/>Sun {sunAltitude.toFixed(1)}°{sunAltitude>=-6?' · daylight/twilight, stars faded':''}.<br/>Catalogue positions: J2000. Idealised dark sky; observing conditions omitted.</p><a className="credit" href="./data/stellar/NOTICE.txt">HYG 4.4 · David Nash / Astronomy Nexus · CC BY-SA 4.0 ↗</a><p className="sky-note">Global geography: Natural Earth 1:110m. The landing uses an idealised WGS84 horizon at 58 m; no local terrain or weather.</p><a className="credit" href="./licences/natural-earth.txt">Made with Natural Earth · public-domain geography ↗</a>
     </section>
     <section className="controls" aria-label="Study and camera controls">
-      <p className="cinematic-object">{satelliteId?`${attached?.name??(satelliteId==='25544'?'ISS / ZARYA':mover?.name??'Satellite')} · NORAD ${satelliteId}`:selected?.name??'Stellar sky'}<span>{journeyFrame?.stage??cameraPhase(cameraProgress)} · {Math.round(cameraProgress*100)}%</span></p>
+      <p className="cinematic-object">{reveal&&reveal.focus!=='iss'?'Earth’s orbital families':satelliteId?`${attached?.name??(satelliteId==='25544'?'ISS / ZARYA':mover?.name??'Satellite')} · NORAD ${satelliteId}`:selected?.name??'Stellar sky'}<span>{journeyFrame?.stage??cameraPhase(cameraProgress)} · {Math.round(cameraProgress*100)}%</span></p>
       <div className="control-heading"><span>{journeyFrame?'JOURNEY':'STUDY CLOCK'}</span><span>{playing?'Playing':'Paused'} · {journeyFrame?(journeyFrame.rate===0?'Clock held':`+${journeyFrame.rate}×`):`${rate>0?'+':''}${rate}×`} · Loop</span></div><p className="study-time" data-testid="study-time">{orbit||cohorts?utcLabel(displayTime):'Loading dated study…'}</p>
       <TimelineScrubber windowStart={orbit?.start??time} windowEnd={orbit?.end??time+1} time={displayTime} onSeek={seek} ariaLabel="Study time" ariaValueText={utcLabel(displayTime)} disabled={!orbit} step={1000}/>
       {cohorts&&!population.frame&&!population.failed&&<p className="position-state" aria-live="polite">Updating orbital positions…</p>}
