@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { Vector3 } from 'three'
-import { cameraPose, orbitalCamera, orbitView, LANDING_HEIGHT, OBSERVER, observerNormal, POLAR_RATIO, earthSurface } from './camera'
+import { cameraPose, horizonDirection, ARRIVAL, LOOK_UP, orbitalCamera, orbitView, LANDING_HEIGHT, OBSERVER, observerNormal, POLAR_RATIO, earthSurface } from './camera'
 
 describe('surface camera composition', () => {
   it('never crosses the ellipsoidal ground during the complete descent', () => {
@@ -65,5 +65,25 @@ describe('interactive orbital camera',()=>{
       expect(cameraPose(1,undefined,4.2,from).position.distanceTo(landing.position)).toBeLessThan(1e-12)
       expect(cameraPose(1,undefined,4.2,from).rotation.angleTo(landing.rotation)).toBeLessThan(1e-7)
     }
+  })
+})
+
+
+describe('Sydney arrival and upward reveal',()=>{
+  it('holds the declared observer and a two-degree horizon gaze before looking up',()=>{
+    const up=observerNormal(OBSERVER.latitude,OBSERVER.longitude),aim=horizonDirection(44.881783,312.19565),surface=cameraPose(1,aim)
+    for(const progress of [ARRIVAL,.7,LOOK_UP]){
+      const pose=cameraPose(progress,aim)
+      expect(pose.position.distanceTo(surface.position)).toBeLessThan(1e-12)
+      expect(new Vector3(0,0,-1).applyQuaternion(pose.rotation).dot(up)).toBeCloseTo(Math.sin(2*Math.PI/180),12)
+      expect(pose.fieldOfView).toBe(82)
+    }
+    let previous=2
+    for(let i=0;i<=100;i++){
+      const pose=cameraPose(LOOK_UP+(1-LOOK_UP)*i/100,aim),altitude=Math.asin(new Vector3(0,0,-1).applyQuaternion(pose.rotation).dot(up))*180/Math.PI
+      expect(altitude).toBeGreaterThanOrEqual(previous-1e-8);previous=altitude
+      expect(pose.position.distanceTo(surface.position)).toBeLessThan(1e-12)
+    }
+    expect(previous).toBeCloseTo(44.881783,8)
   })
 })

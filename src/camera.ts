@@ -33,18 +33,24 @@ export function orbitalCamera(view:OrbitalView,target=new Vector3(),localFrame=f
   else if(ellipsoid<1.03)position.multiplyScalar(1.03/ellipsoid)
   return {position,rotation:new Quaternion().setFromRotationMatrix(new Matrix4().lookAt(position,target,new Vector3(0,1,0))),fieldOfView:43}
 }
+export const ARRIVAL=0.64,LOOK_UP=0.78
+export function smoothBetween(start:number,end:number,value:number):number {const t=Math.max(0,Math.min(1,(value-start)/(end-start)));return t*t*(3-2*t)}
+export function cameraPhase(progress:number):string {return progress<=0?'Orbit':progress<ARRIVAL?'Approaching Sydney':progress<LOOK_UP?'Sydney horizon':progress<1?'Lifting toward the sky':'Looking up'}
 export function cameraPose(progress: number,aim=horizonDirection(30,0),startRadius=4.2,from?:CameraPose):CameraPose {
-  const p=Math.max(0,Math.min(1,progress)),t=p*p*(3-2*p),normal=observerNormal(OBSERVER.latitude,OBSERVER.longitude)
+  const p=Math.max(0,Math.min(1,progress)),travel=smoothBetween(0,ARRIVAL,p),normal=observerNormal(OBSERVER.latitude,OBSERVER.longitude)
   const start=from?.position.clone()??new Vector3(-0.7,-0.35,-1).normalize().multiplyScalar(startRadius)
   const landing=earthSurface(OBSERVER.latitude,OBSERVER.longitude).addScaledVector(normal,LANDING_HEIGHT)
   const startDirection=start.clone().normalize(),arc=new Quaternion().setFromUnitVectors(startDirection,landing.clone().normalize())
-  const radial=startDirection.applyQuaternion(new Quaternion().slerp(arc,t))
-  const position=radial.multiplyScalar(Math.exp(Math.log(start.length())*(1-t)+Math.log(landing.length())*t))
+  const radial=startDirection.applyQuaternion(new Quaternion().slerp(arc,travel))
+  const position=radial.multiplyScalar(Math.exp(Math.log(start.length())*(1-travel)+Math.log(landing.length())*travel))
   const ellipsoid=new Vector3(position.x,position.y/POLAR_RATIO,position.z).length()
   if(ellipsoid<1+LANDING_HEIGHT/2)position.multiplyScalar((1+LANDING_HEIGHT/2)/ellipsoid)
   const orbital=new Quaternion().setFromRotationMatrix(new Matrix4().lookAt(position,new Vector3(),new Vector3(0,1,0)))
-  if(from)orbital.copy(from.rotation).slerp(new Quaternion().setFromRotationMatrix(new Matrix4().lookAt(position,new Vector3(),new Vector3(0,1,0))),t)
+  if(from)orbital.copy(from.rotation).slerp(new Quaternion().setFromRotationMatrix(new Matrix4().lookAt(position,new Vector3(),new Vector3(0,1,0))),travel)
+  const horizontal=aim.clone().addScaledVector(normal,-aim.dot(normal)).normalize()
+  const horizonAim=horizontal.multiplyScalar(Math.cos(2*Math.PI/180)).addScaledVector(normal,Math.sin(2*Math.PI/180))
+  const horizon=new Quaternion().setFromRotationMatrix(new Matrix4().lookAt(position,position.clone().add(horizonAim),normal))
   const surface=new Quaternion().setFromRotationMatrix(new Matrix4().lookAt(position,position.clone().add(aim),normal))
-  const tilt=Math.max(0,(t-.55)/.45)
-  return {position,rotation:orbital.slerp(surface,tilt*tilt*(3-2*tilt)),fieldOfView:(from?.fieldOfView??43)*(1-t)+100*t}
+  const reveal=smoothBetween(LOOK_UP,1,p),rotation=orbital.slerp(horizon,smoothBetween(.28,ARRIVAL,p)).slerp(surface,reveal)
+  return {position,rotation,fieldOfView:(from?.fieldOfView??43)*(1-travel)+82*travel+18*reveal}
 }

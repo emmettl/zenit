@@ -42,7 +42,17 @@ Drag the sky to orbit Earth and scroll to zoom. Clicking a visible satellite sel
 
 Camera gestures leave study time and physical positions unchanged. Follow uses the displayed packet timestamp, including direct seeks and reversal. A hidden, unavailable or expired selection ends follow. Camera distance stays within 1.08–60 Earth radii around Earth or 0.15–60 around a followed body; an ellipsoid clearance clamp prevents passing through Earth. Follow initially looks from 2.5 Earth radii outward from the body and carries its orientation in the body’s radial frame, with authored screen-size glyphs unchanged.
 
-Descent captures the current orbital pose and travels to the same Sydney observer on a reversible great-circle radial path. Rotation joins the starting view to the surface aim; clearance also covers antipodal starts. Orbit gestures are suspended during descent and at the surface. The **Watch Sydney pass** cue resets manual orbit/follow before descending to its retained composition. Reduced motion still lands directly and leaves study playback paused.
+Descent captures the current orbital pose and travels to the same Sydney observer on a reversible great-circle radial path. In the 12-second cue, travel ends at 7.68 seconds; a two-degree horizon gaze holds until 9.36 seconds, then lifts to the pass aim by 12 seconds. Clearance also covers antipodal starts. The study clock begins only after the upward reveal. The same phases reverse on ascent. Orbit gestures are suspended during descent and at the surface. The **Watch Sydney pass** cue resets manual orbit/follow before descending to its retained composition. Reduced motion still lands directly and leaves study playback paused.
+
+## Earth geography and the landing
+
+The globe uses pinned **Natural Earth 1:110m land**, a public-domain global reference ([terms](https://www.naturalearthdata.com/about/terms-of-use/)). All 127 polygons, 128 rings and 5,143 vertices are retained, with properties removed and coordinates rounded to four decimals. Source revision `ca96624a56bd078437bca8184e78163e5039ad19` and raw SHA-256 `9e0729ee253ca7d7a5c4ae9395fb1902264c5377c52e224d13dd85010e2835d9` are recorded in the [geography audit](docs/evidence/geography-release-2026-10-08.json). The 97,280-byte compiled geometry is bundled into the hashed application; a 2048×1024 canvas supplies the authored land/ocean palette and coastline strokes. Geodetic texture coordinates map onto WGS84 surface vertices with Greenwich on +X and east longitudes toward −Z. Source antimeridian cuts and the Antarctic closing edge are retained.
+
+Near arrival, global geography fades into an analytic WGS84 ray/ellipsoid horizon at the declared 58 m observer height. This avoids making the coarse globe mesh or global coastlines stand in for local terrain. The narrow blue horizon tint is authored; no skyline, terrain, atmosphere, weather or optical brightness is reconstructed. Surface clipping and twilight fading apply from geographic arrival at 64% of the sequence, while the camera holds and looks up.
+
+The full panels recede during the cue. A compact view retains selected identity, UTC, speed, clock play/pause, camera pause/resume and return to orbit. **Show panels** restores the records, filters, credits and scrubbers at the same time and camera position. Manual descent scrubbing keeps the full controls open; returning to orbit restores the normal layout. Reduced motion still jumps directly to the final viewpoint.
+
+Reproduce geography offline with `node scripts/compile-geography.mjs`; raw input and capture metadata live in ignored `work/sources/geography-2026-10-08/`. The compiler verifies the source hash and CRS84 coordinate order. CI verifies the compiled hash and includes the Natural Earth notice. Neither build nor visitor contacts a map provider.
 
 ## Orbital evidence and frame
 
@@ -85,6 +95,6 @@ Cloudflare uses a main-only `cloudflare` environment with `CLOUDFLARE_API_TOKEN`
 
 ## Next composition
 
-Refine Earth geography, the horizon and the visual space around the interactive camera, while retaining explicit source groups and attachment handling. Measure the complete playback on a named physical phone before claiming the 30 fps target. Gaia stellar depth and much longer clocks remain distant optional research.
+Refine the visual rhythm of the bounded orbital families, while retaining explicit source groups and attachment handling. Measure the complete playback on a named physical phone before claiming the 30 fps target. Gaia stellar depth and much longer clocks remain distant optional research.
 
 The build includes dependency and font licence notices under `licences/`. Code is MIT licensed. The stellar dataset retains its separate CC BY-SA 4.0 licence and attribution; the code licence does not grant data rights.

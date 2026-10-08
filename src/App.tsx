@@ -2,7 +2,7 @@ import {useCallback,useEffect,useMemo,useRef,useState} from 'react'
 import {TimelineScrubber} from '@motionstudies/web/components/TimelineScrubber'
 import '@motionstudies/web/study-timeline.css'
 import {SceneView} from './Scene'
-import {OBSERVER} from './camera'
+import {OBSERVER,cameraPhase,ARRIVAL} from './camera'
 import {type Catalogue,horizonReading,loadCatalogue,skyDirections,SKY_TIME,solarAltitude} from './stellar'
 import {type Orbit,type Propagator,advanceStudy,loadOrbit,orbitalPosition,utcLabel} from './orbital'
 import {json2satrec} from 'satellite.js'
@@ -10,6 +10,7 @@ import {type Cohorts,type GroupId,GROUP_IDS,loadCohorts,enabledMover} from './co
 import {usePopulation} from './use-population'
 const brief='https://github.com/emmettl/motionstudies/blob/main/docs/ZENIT.md'
 export function App() {
+  const [panelsOpen,setPanelsOpen]=useState(false)
   const [following,setFollowing]=useState(false),[cameraReset,setCameraReset]=useState(0),[cameraZoom,setCameraZoom]=useState(0)
   const [progress,setProgress]=useState(0),[target,setTarget]=useState<number|null>(null),[failed,setFailed]=useState(false)
   const [catalogue,setCatalogue]=useState<Catalogue|null>(null),[orbit,setOrbit]=useState<Orbit|null>(null)
@@ -49,9 +50,10 @@ export function App() {
   const horizon=selected?horizonReading(skyDirections([selected],new Date(displayTime).toISOString())[0]):null
   const position=orbit?orbitalPosition(orbit,displayTime):null
   const sunAltitude=solarAltitude(displayTime)
-  const view=progress===0?'Earth-fixed orbital view':progress===1?'Looking up':'Descending / ascending'
+  const immersive=(progress>0||target!==null)&&!panelsOpen
+  const view=target===0?'Returning to orbit':progress===0?'Earth-fixed orbital view':cameraPhase(progress)
   const seek=(value:number)=>{setPlaying(false);setCue(false);setRevision(x=>x+1);setTime(value)}
-  const watchPass=()=>{if(!orbit)return;setFollowing(false);setCameraReset(x=>x+1);window.scrollTo({top:0,behavior:'instant'});setPlaying(false);setRevision(x=>x+1);setGroups(x=>x.includes('stations')?x:[...x,'stations']);setTime(Date.parse(orbit.release.study.initialUtc));setRate(10);setSelectedId('iss:25544');if(progress===1){if(!reduced)setPlaying(true)}else{setCue(true);setTarget(1)}}
+  const watchPass=()=>{if(!orbit)return;setPanelsOpen(false);setFollowing(false);setCameraReset(x=>x+1);window.scrollTo({top:0,behavior:'instant'});setPlaying(false);setRevision(x=>x+1);setGroups(x=>x.includes('stations')?x:[...x,'stations']);setTime(Date.parse(orbit.release.study.initialUtc));setRate(10);setSelectedId('iss:25544');if(progress===1){if(!reduced)setPlaying(true)}else{setCue(true);setTarget(1)}}
   const satelliteId=selectedId?.startsWith('sat:')||selectedId==='iss:25544'?selectedId.split(':')[1]:null
   const attached=cohorts?.attachments.find(x=>x.id===satelliteId)??null
   const mover=cohorts?.movers.find(x=>x.id===(attached?.parentId??satelliteId))??null
@@ -65,12 +67,12 @@ export function App() {
   const selectedChildren=cohorts?.attachments.filter(x=>x.parentId===mover?.id)??[]
   const satelliteChoices=useMemo(()=>[...(cohorts?.movers??[]).map(x=>({id:x.id,name:x.name,attached:false})),...(cohorts?.attachments??[]).map(x=>({id:x.id,name:x.name,attached:true}))].sort((a,b)=>a.name.localeCompare(b.name)||Number(a.id)-Number(b.id)),[cohorts])
   const fmtTime=(value:number)=>new Date(value).toISOString().slice(11,19)+' UTC'
-  return <main>
+  return <main className={immersive?'cinematic':''}>
     <SceneView progress={progress} time={displayTime} catalogue={catalogue} orbit={orbit} showStars={showStars} showTrail={showTrail} cohorts={cohorts} frame={population.frame} groups={groups} scale={scale} traced={traced} selectedId={selectedId} onSelect={select} onFailure={fail} following={following} cameraZoom={cameraZoom} cameraReset={cameraReset} onReset={resetCamera}/>
     <header><a className="series" href="https://motionstudies.app/">MOTION STUDIES</a><h1>ZENIT</h1><p className="subtitle">Earth orbit / the sky above us</p></header>
     <aside className="edition-state"><span className="status-light"/> ORBITAL FAMILIES</aside>
-    <section className="composition" aria-labelledby="composition-title"><p className="eyebrow" id="composition-title">{view}</p><h2>{progress===1?'The sky above a place.':'A world surrounded by motion.'}</h2><p>{progress===1?`${OBSERVER.name} · a moving light above a turning sky.`:'Three families. One clock. Shells and planes around the world.'}</p></section>
-    <section className="stellar-panel" aria-label="Object catalogue">
+    <section className="composition" aria-labelledby="composition-title"><p className="eyebrow" id="composition-title">{view}</p><h2>{progress===1?'The sky above a place.':progress>=ARRIVAL?'At the edge of the sky.':'A world surrounded by motion.'}</h2><p>{progress>=ARRIVAL?`${OBSERVER.name} · a moving light above a turning sky.`:'Three families. One clock. Shells and planes around the world.'}</p></section>
+    <section className="stellar-panel" aria-label="Object catalogue" hidden={immersive}>
       <div className="iss-heading"><h2>Earth's orbital families</h2><button onClick={()=>{setSelectedId('iss:25544');setGroups(x=>x.includes('stations')?x:[...x,'stations'])}}>Select ISS</button></div>
       <p className="catalogue-state" aria-live="polite">{cohortState==='ready'?`${eligible??'…'} eligible movers · ${cohorts!.movers.length} retained · ${cohorts!.attachments.length} attached`:cohortState==='error'?'Orbital families unavailable':'Loading orbital families…'}</p>
       {cohortState==='error'&&<button onClick={()=>setCohortAttempt(x=>x+1)}>Retry orbital families</button>}
@@ -96,9 +98,10 @@ export function App() {
         <p className="sky-note">SGP4 from dated orbital elements. Geometric positions; light and trail sizes express motion.</p><a className="credit" href="./data/orbital/NOTICE.txt">CelesTrak / USSPACECOM · source and terms ↗</a></article>}
 
       {selected&&<article className="star-card" aria-label="Selected star"><h3>{selected.name??selected.designation??`HYG ${selected.hyg}`}</h3><p className="star-id">HYG {selected.hyg}{selected.hip?` · HIP ${selected.hip}`:''}</p><dl><dt>Visual magnitude</dt><dd>{selected.mag.toFixed(2)}</dd><dt>B−V colour index</dt><dd>{selected.bv===null?'Unavailable':selected.bv.toFixed(3)}</dd><dt>Distance</dt><dd>{selected.distance===null?'Unavailable':`${selected.distance.toFixed(2)} pc`}</dd><dt>Catalogue RA</dt><dd>{(selected.ra*12/Math.PI).toFixed(5)} h</dd><dt>Catalogue declination</dt><dd>{(selected.dec*180/Math.PI).toFixed(5)}°</dd><dt>{OBSERVER.name} altitude</dt><dd>{horizon!.altitude.toFixed(1)}° · {horizon!.altitude>0?'Above':'Below'} horizon</dd><dt>Variability</dt><dd>{selected.variable??'No designation supplied'}</dd></dl><button onClick={()=>setSelectedId(null)}>Clear selection</button></article>}
-      <p className="sky-note">Sky turns with the study clock.<br/>Sun {sunAltitude.toFixed(1)}°{sunAltitude>=-6?' · daylight/twilight, stars faded':''}.<br/>Catalogue positions: J2000. Idealised dark sky; observing conditions omitted.</p><a className="credit" href="./data/stellar/NOTICE.txt">HYG 4.4 · David Nash / Astronomy Nexus · CC BY-SA 4.0 ↗</a>
+      <p className="sky-note">Sky turns with the study clock.<br/>Sun {sunAltitude.toFixed(1)}°{sunAltitude>=-6?' · daylight/twilight, stars faded':''}.<br/>Catalogue positions: J2000. Idealised dark sky; observing conditions omitted.</p><a className="credit" href="./data/stellar/NOTICE.txt">HYG 4.4 · David Nash / Astronomy Nexus · CC BY-SA 4.0 ↗</a><p className="sky-note">Global geography: Natural Earth 1:110m. The landing uses an idealised WGS84 horizon at 58 m; no local terrain or weather.</p><a className="credit" href="./licences/natural-earth.txt">Made with Natural Earth · public-domain geography ↗</a>
     </section>
     <section className="controls" aria-label="Study and camera controls">
+      <p className="cinematic-object">{satelliteId?`${attached?.name??(satelliteId==='25544'?'ISS / ZARYA':mover?.name??'Satellite')} · NORAD ${satelliteId}`:selected?.name??'Stellar sky'}<span>{cameraPhase(progress)} · {Math.round(progress*100)}%</span></p>
       <div className="control-heading"><span>STUDY CLOCK</span><span>{playing?'Playing':'Paused'} · {rate>0?'+':''}{rate}×</span></div><p className="study-time" data-testid="study-time">{orbit||cohorts?utcLabel(displayTime):'Loading dated study…'}</p>
       <TimelineScrubber windowStart={orbit?.start??time} windowEnd={orbit?.end??time+1} time={displayTime} onSeek={seek} ariaLabel="Study time" ariaValueText={utcLabel(displayTime)} disabled={!orbit} step={1000}/>
       {cohorts&&!population.frame&&!population.failed&&<p className="position-state" aria-live="polite">Updating orbital positions…</p>}
@@ -106,8 +109,8 @@ export function App() {
       <div className="buttons clock-buttons"><button disabled={!orbit} onClick={()=>{setCue(false);setPlaying(x=>!x)}}>{playing?'Pause study':'Play study'}</button><button disabled={!orbit} onClick={()=>{setCue(false);setTime(displayTime);setRevision(x=>x+1);setRate(x=>-x)}}>Reverse time</button><label className="speed-label">Speed<select aria-label="Study speed" value={Math.abs(rate)} onChange={e=>setRate(x=>Math.sign(x)*Number(e.target.value))}><option value="1">1×</option><option value="10">10×</option><option value="60">60×</option><option value="600">600×</option></select></label><button disabled={!orbit} onClick={watchPass}>Watch Sydney pass</button></div>
       {orbit&&<p className="pass-note"><button className="pass-link" aria-label="Seek to pass peak" onClick={()=>{seek(Date.parse(orbit.release.pass.peakUtc));window.scrollTo({top:0,behavior:'instant'})}}>Culmination {fmtTime(Date.parse(orbit.release.pass.peakUtc))}</button> · {orbit.release.pass.maximumElevationDegrees.toFixed(1)}° elevation · Sun {orbit.release.pass.solarAltitudeDegrees.toFixed(1)}°</p>}
       <div className="camera-navigation"><button onClick={()=>setFollowing(x=>!x)} aria-pressed={following} disabled={!canFollow||progress!==0}>{following?'Stop following':'Focus and follow'}</button><button onClick={resetCamera} disabled={progress!==0}>Reset orbital view</button><button onClick={()=>setCameraZoom(x=>x+1)} disabled={progress!==0}>Zoom in</button><button onClick={()=>setCameraZoom(x=>x-1)} disabled={progress!==0}>Zoom out</button></div><p className="navigation-hint">{progress===0?(following?'Following the selected satellite. Drag to orbit it; scroll to zoom.':'Drag to orbit Earth · scroll to zoom · click a satellite to follow.'):'Orbital navigation resumes on return.'}<br/>Keyboard: arrow keys, + / −, Home to reset.</p>
-      <div className="control-heading camera-heading"><span>CAMERA DESCENT</span><span>{Math.round(progress*100)}%</span></div><label className="sr-only" htmlFor="descent">Descent to surface</label><input id="descent" type="range" min="0" max="1" step="0.001" value={progress} onChange={e=>{setTarget(null);setCue(false);setProgress(Number(e.target.value))}}/>
-      <div className="buttons"><button onClick={()=>{setCue(false);setTarget(1)}} disabled={progress===1||target===1}>Descend to surface</button><button onClick={()=>{setCue(false);setTarget(null)}} disabled={target===null}>Pause camera</button><button onClick={()=>{setCue(false);setTarget(0)}} disabled={progress===0||target===0}>Return to orbit</button></div><p className="camera-state" role="status">{target===null?'Camera paused':'Camera moving'}{reduced?' · reduced motion':''}</p>
+      <div className="control-heading camera-heading"><span>CAMERA DESCENT</span><span>{Math.round(progress*100)}%</span></div><label className="sr-only" htmlFor="descent">Descent to surface</label><input id="descent" type="range" min="0" max="1" step="0.001" value={progress} onChange={e=>{setPanelsOpen(true);setTarget(null);setCue(false);setProgress(Number(e.target.value))}}/>
+      <div className="buttons camera-buttons"><button onClick={()=>{window.scrollTo({top:0,behavior:'instant'});setPanelsOpen(false);setCue(false);setTarget(1)}} disabled={progress===1||target===1}>Descend to surface</button><button onClick={()=>{setCue(false);setTarget(null)}} disabled={target===null}>Pause camera</button><button onClick={()=>{setCue(false);setTarget(0)}} disabled={progress===0||target===0}>Return to orbit</button>{(progress>0||target!==null)&&<button className="panel-toggle" aria-expanded={panelsOpen} onClick={()=>setPanelsOpen(x=>!x)}>{panelsOpen?'Hide panels':'Show panels'}</button>}</div><p className="camera-state" role="status">{target===null?'Camera paused':'Camera moving'}{reduced?' · reduced motion':''}</p>
     </section>
     <footer><p>{failed?'WebGL unavailable. Object records and clock remain accessible.':`${cohorts?`${eligible??'Calculating'} eligible movers / ${filtered??'…'} filtered`:orbit?'1 propagated ISS object':'ISS snapshot '+orbitState} · ${catalogue?'5,070 HYG stars':'Stellar catalogue '+starState} · Earth-fixed view`}</p><nav aria-label="Study references"><a href={brief}>Study brief ↗</a><a href="https://github.com/emmettl/zenit">Source ↗</a><a href="./data/zenit-manifest.json">Evidence status ↗</a></nav></footer>
   </main>

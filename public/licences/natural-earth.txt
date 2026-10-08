@@ -1,0 +1,8 @@
+Made with Natural Earth. Tom Patterson, Nathaniel Vaughn Kelso and contributors.
+Public-domain land polygons at 1:110 million scale.
+Terms: https://www.naturalearthdata.com/about/terms-of-use/
+Pinned source: https://raw.githubusercontent.com/nvkelso/natural-earth-vector/ca96624a56bd078437bca8184e78163e5039ad19/geojson/ne_110m_land.geojson
+Source SHA-256: 9e0729ee253ca7d7a5c4ae9395fb1902264c5377c52e224d13dd85010e2835d9
+Compiled geometry SHA-256: b0791155ee9100bfce659dacd30ea4a4f93adc7ffb9ed777331faa522567f805
+All polygons and holes retained; four-decimal coordinates; canvas rasterisation at runtime.
+Generalised global map only; no local terrain or observing-condition model.

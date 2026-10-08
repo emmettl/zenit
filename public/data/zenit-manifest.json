@@ -76,5 +76,17 @@
     "ceiling": 1000,
     "capExclusions": 0,
     "missingStationMetadata": 0
+  },
+  "geography": {
+    "name": "Natural Earth 1:110m land",
+    "sourceSha256": "9e0729ee253ca7d7a5c4ae9395fb1902264c5377c52e224d13dd85010e2835d9",
+    "compiledSha256": "b0791155ee9100bfce659dacd30ea4a4f93adc7ffb9ed777331faa522567f805",
+    "polygons": 127,
+    "rings": 128,
+    "vertices": 5143,
+    "rights": "Public domain",
+    "rightsUrl": "https://www.naturalearthdata.com/about/terms-of-use/",
+    "delivery": "Bundled into the hashed application asset; offline reproduction, no provider fetch in CI or browsers.",
+    "limits": "Generalised global geography, not local coast accuracy, terrain, a Sydney skyline or observing conditions."
   }
 }

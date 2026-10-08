@@ -1,9 +1,10 @@
 import {useEffect,useRef} from 'react'
-import {BufferGeometry,DirectionalLight,Float32BufferAttribute,HemisphereLight,Line,LineBasicMaterial,LineSegments,Mesh,MeshPhongMaterial,PerspectiveCamera,Points,Scene,ShaderMaterial,SphereGeometry,Vector3,WebGLRenderer} from 'three'
+import {BufferGeometry,DirectionalLight,Float32BufferAttribute,HemisphereLight,Line,LineBasicMaterial,LineSegments,Mesh,MeshPhongMaterial,PerspectiveCamera,PlaneGeometry,Points,Scene,ShaderMaterial,Vector3,WebGLRenderer} from 'three'
 import {Body,GeoVector} from 'astronomy-engine'
-import {cameraPose,earthSurface,horizonDirection,OBSERVER,observerNormal,POLAR_RATIO,orbitalCamera,orbitView,type CameraPose,type OrbitalView} from './camera'
+import {cameraPose,earthSurface,horizonDirection,OBSERVER,observerNormal,POLAR_RATIO,orbitalCamera,orbitView,type CameraPose,type OrbitalView,ARRIVAL,cameraPhase,smoothBetween} from './camera'
 import {blockedByEarth,type Catalogue,catalogueDirection,stellarRotation,starColour,twilightOpacity} from './stellar'
 import {type Orbit,type Propagator,orbitalPosition,orbitalTrail} from './orbital'
+import {earthTexture,earthGeometry,land} from './geography'
 import {type Cohorts,type PopulationFrame,type GroupId,enabledMover,groupColour} from './cohorts'
 interface Props {cameraZoom:number;following:boolean;cameraReset:number;onReset:()=>void;progress:number; time:number; catalogue:Catalogue|null; orbit:Orbit|null; showStars:boolean; showTrail:boolean; cohorts:Cohorts|null; frame:PopulationFrame|null; groups:GroupId[]; scale:'whole'|'near'; traced:Propagator|null; selectedId:string|null; onSelect:(id:string)=>void; onFailure:()=>void}
 export function SceneView({progress,time,catalogue,orbit,showStars,showTrail,cohorts,frame,groups,scale,traced,selectedId,onSelect,onFailure,following,cameraReset,cameraZoom,onReset}:Props) {
@@ -16,10 +17,12 @@ export function SceneView({progress,time,catalogue,orbit,showStars,showTrail,coh
     let renderer:WebGLRenderer
     try {renderer=new WebGLRenderer({antialias:true,alpha:false})}catch{onFailure();return}
     renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));renderer.setClearColor('#05090e');renderer.autoClear=false
-    const scene=new Scene(),sky=new Scene(),camera=new PerspectiveCamera(43,1,0.000002,100),skyCamera=new PerspectiveCamera(43,1,.1,2)
-    const geometry=new SphereGeometry(1,96,64),material=new MeshPhongMaterial({color:'#102633',shininess:8,specular:'#42677b',polygonOffset:true,polygonOffsetFactor:1,polygonOffsetUnits:1})
-    const earth=new Mesh(geometry,material);earth.scale.y=POLAR_RATIO;scene.add(earth)
-    scene.add(new HemisphereLight('#94b8ca','#08131b',.35))
+    const scene=new Scene(),sky=new Scene(),groundScene=new Scene(),camera=new PerspectiveCamera(43,1,0.000002,100),skyCamera=new PerspectiveCamera(43,1,.1,2)
+    let texture:ReturnType<typeof earthTexture>|null=null
+    try{texture=earthTexture()}catch{/* The globe and analytic horizon remain usable without a texture. */}
+    const geometry=earthGeometry(),material=new MeshPhongMaterial({map:texture,color:texture?'#ffffff':'#102633',transparent:true,shininess:8,specular:'#42677b',polygonOffset:true,polygonOffsetFactor:1,polygonOffsetUnits:1})
+    const earth=new Mesh(geometry,material);scene.add(earth)
+    scene.add(new HemisphereLight('#94b8ca','#08131b',.65))
     const light=new DirectionalLight('#b6dae9',3.2);scene.add(light)
     const vertices:number[]=[]
     for(let lat=-60;lat<=60;lat+=30)for(let lon=-180;lon<180;lon+=2)vertices.push(...earthSurface(lat,lon).addScaledVector(observerNormal(lat,lon),.0000005).toArray(),...earthSurface(lat,lon+2).addScaledVector(observerNormal(lat,lon+2),.0000005).toArray())
@@ -32,6 +35,10 @@ export function SceneView({progress,time,catalogue,orbit,showStars,showTrail,coh
     starGeometry.setAttribute('magnitude',new Float32BufferAttribute((catalogue?.stars??[]).map(x=>x.mag),1))
     starGeometry.setAttribute('starIndex',new Float32BufferAttribute(directions.map((_,i)=>i),1))
     const up=observerNormal(OBSERVER.latitude,OBSERVER.longitude)
+    const groundGeometry=new PlaneGeometry(2,2)
+    const groundMaterial=new ShaderMaterial({transparent:true,depthTest:false,depthWrite:false,uniforms:{origin:{value:new Vector3()},cameraWorld:{value:camera.matrixWorld.clone()},inverseProjection:{value:camera.projectionMatrixInverse.clone()},up:{value:up},amount:{value:0}},vertexShader:`varying vec2 screen;void main(){screen=position.xy;gl_Position=vec4(position.xy,0.0,1.0);}`,fragmentShader:`precision highp float;varying vec2 screen;uniform vec3 origin;uniform mat4 cameraWorld;uniform mat4 inverseProjection;uniform vec3 up;uniform float amount;
+      void main(){vec3 ray=normalize(mat3(cameraWorld)*(inverseProjection*vec4(screen,1.0,1.0)).xyz);vec3 o=origin*vec3(1.0,${1/ (1-1/298.257223563)},1.0);vec3 d=ray*vec3(1.0,${1/ (1-1/298.257223563)},1.0);float a=dot(d,d),b=dot(o,d),c=dot(o,o)-1.0;float disc=b*b-a*c;bool ground=b<0.0&&disc>=0.0&&(-b-sqrt(max(0.0,disc)))/a>0.0;float band=exp(-abs(dot(ray,up)+0.0043)*70.0);vec3 colour=ground?vec3(0.018,0.035,0.041)+band*vec3(0.03,0.055,0.065):vec3(0.13,0.25,0.31);gl_FragColor=vec4(colour,amount*(ground?1.0:band*0.5));}`})
+    const groundQuad=new Mesh(groundGeometry,groundMaterial);groundQuad.frustumCulled=false;groundScene.add(groundQuad)
     const starMaterial=new ShaderMaterial({transparent:true,depthTest:false,depthWrite:false,uniforms:{pixelRatio:{value:renderer.getPixelRatio()},selected:{value:-1},ground:{value:0},solarOpacity:{value:1},up:{value:up}},vertexShader:`attribute vec3 tint; attribute float magnitude; attribute float starIndex;
       uniform float pixelRatio; uniform float selected; uniform float ground; uniform float solarOpacity; uniform vec3 up;
       varying vec3 colour; varying float opacity;
@@ -51,7 +58,7 @@ export function SceneView({progress,time,catalogue,orbit,showStars,showTrail,coh
     const trailGeometry=new BufferGeometry();trailGeometry.setAttribute('position',new Float32BufferAttribute(new Float32Array(31*3),3));trailGeometry.setAttribute('color',new Float32BufferAttribute(Array.from({length:31},(_,i)=>[.2+.15*i/30,.35+.53*i/30,.4+.6*i/30]).flat(),3))
     const trailMaterial=new LineBasicMaterial({vertexColors:true,transparent:true,opacity:.8});const trail=new Line(trailGeometry,trailMaterial);trail.frustumCulled=false;scene.add(trail)
     const marker=document.createElement('button');marker.className='iss-marker';marker.textContent='ISS';marker.setAttribute('aria-label','Inspect ISS');marker.onclick=()=>onSelect(values.current.selectedId??'iss:25544');element.appendChild(marker)
-    element.appendChild(renderer.domElement);renderer.domElement.tabIndex=0;renderer.domElement.setAttribute('role','group');renderer.domElement.setAttribute('aria-label','Orbital camera: arrow keys to orbit, plus and minus to zoom, Home to reset');renderer.domElement.dataset.starCount=String(directions.length)
+    element.appendChild(renderer.domElement);renderer.domElement.tabIndex=0;renderer.domElement.setAttribute('role','group');renderer.domElement.setAttribute('aria-label','Orbital camera: arrow keys to orbit, plus and minus to zoom, Home to reset');renderer.domElement.dataset.starCount=String(directions.length);renderer.domElement.dataset.landPolygons=String(land.polygons.length);renderer.domElement.dataset.geography=texture?'ready':'fallback'
     const aim=orbit?horizonDirection(orbit.release.pass.maximumElevationDegrees,orbit.release.pass.peakAzimuthDegrees):undefined
     let satelliteWorld:Vector3|null=null;let markerId='iss:25544'
     const draw=()=>{
@@ -77,13 +84,14 @@ export function SceneView({progress,time,catalogue,orbit,showStars,showTrail,coh
       renderer.domElement.style.touchAction=value.progress===0?'none':'pan-y';renderer.domElement.style.cursor=value.progress===0?'grab':'default'
       renderer.domElement.dataset.cameraPosition=pose.position.toArray().map(x=>x.toFixed(9)).join(',');renderer.domElement.dataset.cameraRotation=pose.rotation.toArray().map(x=>x.toFixed(9)).join(',');renderer.domElement.dataset.cameraTarget=value.progress===0&&value.following&&followed?followed.toArray().map(x=>x.toFixed(9)).join(','):'0,0,0';renderer.domElement.dataset.following=value.progress===0&&value.following&&followed?selectedBodyId??'':'none'
       camera.position.copy(pose.position);camera.quaternion.copy(pose.rotation);camera.fov=skyCamera.fov=pose.fieldOfView;camera.near=Math.min(.05,Math.max(.0000001,(new Vector3(pose.position.x,pose.position.y/POLAR_RATIO,pose.position.z).length()-1)*.15));camera.updateProjectionMatrix();camera.updateMatrixWorld()
+      const groundAmount=smoothBetween(.60,ARRIVAL,value.progress);earth.visible=groundAmount<1;material.opacity=1-groundAmount;gridMaterial.opacity=.42*(1-groundAmount);groundMaterial.uniforms.amount.value=groundAmount;groundMaterial.uniforms.origin.value.copy(pose.position);groundMaterial.uniforms.cameraWorld.value.copy(camera.matrixWorld);groundMaterial.uniforms.inverseProjection.value.copy(camera.projectionMatrixInverse);renderer.domElement.dataset.cameraPhase=cameraPhase(value.progress);renderer.domElement.dataset.groundOpacity=groundAmount.toFixed(3)
       skyCamera.quaternion.copy(pose.rotation);skyCamera.updateProjectionMatrix();skyCamera.updateMatrixWorld();stars.matrix.copy(rotation);stars.matrixWorldNeedsUpdate=true
-      stars.visible=value.showStars;starMaterial.uniforms.ground.value=value.progress>=.98?1:0;starMaterial.uniforms.selected.value=catalogue?.stars.findIndex(x=>x.id===value.selectedId)??-1
-      const sun=GeoVector(Body.Sun,date,false),sunDirection=new Vector3(sun.x,sun.y,sun.z).applyMatrix4(rotation).normalize();light.position.copy(sunDirection.clone().multiplyScalar(5));const opacity=value.progress>=.98?twilightOpacity(Math.asin(sunDirection.dot(up))*180/Math.PI):1;starMaterial.uniforms.solarOpacity.value=opacity;renderer.domElement.dataset.surfaceStarOpacity=opacity.toFixed(3)
+      stars.visible=value.showStars;starMaterial.uniforms.ground.value=value.progress>=ARRIVAL?1:0;starMaterial.uniforms.selected.value=catalogue?.stars.findIndex(x=>x.id===value.selectedId)??-1
+      const sun=GeoVector(Body.Sun,date,false),sunDirection=new Vector3(sun.x,sun.y,sun.z).applyMatrix4(rotation).normalize();light.position.copy(sunDirection.clone().multiplyScalar(5));const opacity=value.progress>=ARRIVAL?twilightOpacity(Math.asin(sunDirection.dot(up))*180/Math.PI):1;starMaterial.uniforms.solarOpacity.value=opacity;renderer.domElement.dataset.surfaceStarOpacity=opacity.toFixed(3)
       satelliteWorld=null
-      iss.visible=Boolean(position)&&issEnabled&&(value.progress<.98||position!.altitude>0);issMaterial.uniforms.selected.value=selectedBodyId==='25544'?1:0
+      iss.visible=Boolean(position)&&issEnabled&&(value.progress<ARRIVAL||position!.altitude>0);issMaterial.uniforms.selected.value=selectedBodyId==='25544'?1:0
       if(position){const attribute=issGeometry.getAttribute('position');attribute.setXYZ(0,...position.world.toArray());attribute.needsUpdate=true}
-      const traceEnabled=selectedBodyId==='25544'?issEnabled:selectedIndex>=0&&cohorts?enabledMover(cohorts.movers[selectedIndex],value.groups):false;const allPath=value.traced&&value.showTrail&&traceEnabled?orbitalTrail(value.traced,value.time):[];const site=earthSurface(OBSERVER.latitude,OBSERVER.longitude).addScaledVector(up,OBSERVER.heightKm/6378.137);const path=value.progress>=.98?allPath.filter(x=>x.clone().sub(site).dot(up)>0):allPath;trail.visible=path.length>1
+      const traceEnabled=selectedBodyId==='25544'?issEnabled:selectedIndex>=0&&cohorts?enabledMover(cohorts.movers[selectedIndex],value.groups):false;const allPath=value.traced&&value.showTrail&&traceEnabled?orbitalTrail(value.traced,value.time):[];const site=earthSurface(OBSERVER.latitude,OBSERVER.longitude).addScaledVector(up,OBSERVER.heightKm/6378.137);const path=value.progress>=ARRIVAL?allPath.filter(x=>x.clone().sub(site).dot(up)>0):allPath;trail.visible=path.length>1
       const trailAttribute=trailGeometry.getAttribute('position');path.forEach((x,i)=>trailAttribute.setXYZ(i,...x.toArray()));trailAttribute.needsUpdate=true;trailGeometry.setDrawRange(0,path.length)
       let eligible=0,shown=0,failedCount=0,markerWorld:Vector3|null=null
       const bodyPositions=populationGeometry.getAttribute('position'),active=populationGeometry.getAttribute('bodyVisible')
@@ -96,8 +104,8 @@ export function SceneView({progress,time,catalogue,orbit,showStars,showTrail,coh
         const enabled=status===1&&enabledMover(mover,value.groups)
         if(enabled)shown++
         const above=world.clone().sub(site).dot(up)>0
-        active.setX(i,enabled&&(mover.id!=='25544'||!orbit)&&(value.progress<.98||above)?1:0);bodyPositions.setXYZ(i,...world.toArray())
-        if(i===selectedIndex&&enabled&&(value.progress<.98||above))markerWorld=world
+        active.setX(i,enabled&&(mover.id!=='25544'||!orbit)&&(value.progress<ARRIVAL||above)?1:0);bodyPositions.setXYZ(i,...world.toArray())
+        if(i===selectedIndex&&enabled&&(value.progress<ARRIVAL||above))markerWorld=world
       }
       bodyPositions.needsUpdate=true;active.needsUpdate=true;populationMaterial.uniforms.selected.value=selectedIndex
       if(selectedBodyId==='25544'&&iss.visible&&position)markerWorld=position.world
@@ -106,16 +114,16 @@ export function SceneView({progress,time,catalogue,orbit,showStars,showTrail,coh
       if(markerWorld){const direction=markerWorld.clone().sub(camera.position).normalize(),ndc=markerWorld.clone().project(camera);visible=!blockedByEarth(camera.position,direction,markerWorld.distanceTo(camera.position))&&ndc.z>-1&&ndc.z<1&&Math.abs(ndc.x)<.94&&Math.abs(ndc.y)<.94;marker.style.left=`${(ndc.x+1)*50}%`;marker.style.top=`${(1-ndc.y)*50}%`;satelliteWorld=markerWorld}
       markerId=value.selectedId??'iss:25544';marker.textContent=attachment?attachment.name:selectedBodyId==='25544'?'ISS':cohorts?.movers[selectedIndex]?.name??'ISS';marker.setAttribute('aria-label',selectedBodyId==='25544'?'Inspect ISS':'Inspect selected satellite');marker.onclick=()=>onSelect(markerId);marker.hidden=!visible
       renderer.domElement.dataset.orbitalCount=String(eligible);renderer.domElement.dataset.filteredCount=String(shown);renderer.domElement.dataset.propagationFailures=String(failedCount);renderer.domElement.dataset.studyTime=String(value.time);renderer.domElement.dataset.issPosition=position?position.world.toArray().map(x=>x.toFixed(9)).join(','):''
-      renderer.clear();renderer.render(sky,skyCamera);renderer.clearDepth();renderer.render(scene,camera)
+      renderer.clear();renderer.render(sky,skyCamera);renderer.render(groundScene,skyCamera);renderer.clearDepth();renderer.render(scene,camera)
     }
     const resize=()=>{const {width,height}=element.getBoundingClientRect();renderer.setSize(width,height,false);camera.aspect=skyCamera.aspect=width/Math.max(1,height);draw()}
     const pick=(event:{clientX:number;clientY:number})=>{
       const bounds=element.getBoundingClientRect(),px=event.clientX-bounds.left,py=event.clientY-bounds.top
       if(satelliteWorld&&!marker.hidden){const ndc=satelliteWorld.clone().project(camera);if(Math.hypot((ndc.x+1)*bounds.width/2-px,(1-ndc.y)*bounds.height/2-py)<16){onSelect(markerId);return}}
-      if(cohorts&&values.current.frame){let best=-1,distance=144;for(let i=0;i<count;i++){const mover=cohorts.movers[i];if(values.current.frame.availability[i]!==1||!enabledMover(mover,values.current.groups))continue;const world=new Vector3().fromArray(values.current.frame.positions,i*3),direction=world.clone().sub(camera.position),length=direction.length();direction.divideScalar(length);if(blockedByEarth(camera.position,direction,length)||(values.current.progress>=.98&&world.clone().sub(earthSurface(OBSERVER.latitude,OBSERVER.longitude)).dot(up)<=0))continue;const ndc=world.project(camera);if(ndc.z< -1||ndc.z>1)continue;const dx=(ndc.x+1)*bounds.width/2-px,dy=(1-ndc.y)*bounds.height/2-py,d=dx*dx+dy*dy;if(d<distance){best=i;distance=d}}if(best>=0){onSelect(cohorts.movers[best].id==='25544'?'iss:25544':'sat:'+cohorts.movers[best].id);return}}
+      if(cohorts&&values.current.frame){let best=-1,distance=144;for(let i=0;i<count;i++){const mover=cohorts.movers[i];if(values.current.frame.availability[i]!==1||!enabledMover(mover,values.current.groups))continue;const world=new Vector3().fromArray(values.current.frame.positions,i*3),direction=world.clone().sub(camera.position),length=direction.length();direction.divideScalar(length);if(blockedByEarth(camera.position,direction,length)||(values.current.progress>=ARRIVAL&&world.clone().sub(earthSurface(OBSERVER.latitude,OBSERVER.longitude)).dot(up)<=0))continue;const ndc=world.project(camera);if(ndc.z< -1||ndc.z>1)continue;const dx=(ndc.x+1)*bounds.width/2-px,dy=(1-ndc.y)*bounds.height/2-py,d=dx*dx+dy*dy;if(d<distance){best=i;distance=d}}if(best>=0){onSelect(cohorts.movers[best].id==='25544'?'iss:25544':'sat:'+cohorts.movers[best].id);return}}
       if(!catalogue||!values.current.showStars)return
       const forward=new Vector3(0,0,-1).applyQuaternion(skyCamera.quaternion);let best=-1,distance=100
-      for(let i=0;i<directions.length;i++){const direction=directions[i].clone().applyMatrix4(stars.matrix);if(direction.dot(forward)<=0||blockedByEarth(camera.position,direction)||(values.current.progress>=.98&&direction.dot(up)<=0))continue;const ndc=direction.project(skyCamera),dx=(ndc.x+1)*bounds.width/2-px,dy=(1-ndc.y)*bounds.height/2-py,squared=dx*dx+dy*dy;if(squared<distance){best=i;distance=squared}}
+      for(let i=0;i<directions.length;i++){const direction=directions[i].clone().applyMatrix4(stars.matrix);if(direction.dot(forward)<=0||blockedByEarth(camera.position,direction)||(values.current.progress>=ARRIVAL&&direction.dot(up)<=0))continue;const ndc=direction.project(skyCamera),dx=(ndc.x+1)*bounds.width/2-px,dy=(1-ndc.y)*bounds.height/2-py,squared=dx*dx+dy*dy;if(squared<distance){best=i;distance=squared}}
       if(best>=0)onSelect(catalogue.stars[best].id)
     }
     const canvas=renderer.domElement
@@ -131,7 +139,7 @@ export function SceneView({progress,time,catalogue,orbit,showStars,showTrail,coh
     const keyboard=(event:KeyboardEvent)=>{if(values.current.progress!==0||event.target!==canvas)return;const actions:Record<string,()=>void>={ArrowLeft:()=>turn(-.08,0),ArrowRight:()=>turn(.08,0),ArrowUp:()=>turn(0,-.08),ArrowDown:()=>turn(0,.08),'+':()=>zoom(-.15),'=':()=>zoom(-.15),'-':()=>zoom(.15),Home:()=>resetHandler.current()};if(actions[event.key]){event.preventDefault();actions[event.key]()}}
     const lost=(event:Event)=>{event.preventDefault();onFailure()};canvas.addEventListener('webglcontextlost',lost);canvas.addEventListener('pointerdown',down);canvas.addEventListener('pointermove',move);canvas.addEventListener('pointerup',upPointer);canvas.addEventListener('pointercancel',cancel);canvas.addEventListener('lostpointercapture',cancel);canvas.addEventListener('wheel',wheel,{passive:false});canvas.addEventListener('keydown',keyboard)
     const observer=new ResizeObserver(resize);observer.observe(element);redraw.current=draw;resize()
-    return()=>{observer.disconnect();redraw.current=null;renderer.domElement.removeEventListener('webglcontextlost',lost);canvas.removeEventListener('pointerdown',down);canvas.removeEventListener('pointermove',move);canvas.removeEventListener('pointerup',upPointer);canvas.removeEventListener('pointercancel',cancel);canvas.removeEventListener('lostpointercapture',cancel);canvas.removeEventListener('wheel',wheel);canvas.removeEventListener('keydown',keyboard);for(const resource of [geometry,material,gridGeometry,gridMaterial,starGeometry,starMaterial,issGeometry,issMaterial,trailGeometry,trailMaterial,populationGeometry,populationMaterial])resource.dispose();renderer.dispose();renderer.domElement.remove();marker.remove()}
+    return()=>{observer.disconnect();redraw.current=null;renderer.domElement.removeEventListener('webglcontextlost',lost);canvas.removeEventListener('pointerdown',down);canvas.removeEventListener('pointermove',move);canvas.removeEventListener('pointerup',upPointer);canvas.removeEventListener('pointercancel',cancel);canvas.removeEventListener('lostpointercapture',cancel);canvas.removeEventListener('wheel',wheel);canvas.removeEventListener('keydown',keyboard);for(const resource of [geometry,material,gridGeometry,gridMaterial,starGeometry,starMaterial,issGeometry,issMaterial,trailGeometry,trailMaterial,populationGeometry,populationMaterial,groundGeometry,groundMaterial])resource.dispose();texture?.dispose();renderer.dispose();renderer.domElement.remove();marker.remove()}
   },[onFailure,onSelect,catalogue,orbit,cohorts])
   return <div ref={host} className="scene" role="region" aria-label={`Earth-fixed view of Earth, ${catalogue?.stars.length??0} HYG stars and ${cohorts?.movers.length??(orbit?1:0)} retained orbital movers.`}/>
 }

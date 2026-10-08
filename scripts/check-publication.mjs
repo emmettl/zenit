@@ -22,7 +22,7 @@ assert.ok(data.rows.every(x=>x[1]>0&&x[10]<=6&&Number.isFinite(x[8])&&Number.isF
 assert.deepEqual((await readdir('dist/data')).sort(),['orbital','stellar','zenit-manifest.json'])
 assert.deepEqual((await readdir('dist/data/stellar')).sort(),['NOTICE.txt',file.split('/')[1]].sort())
 assert.match(await readFile('dist/data/stellar/NOTICE.txt','utf8'),/David Nash.*Astronomy Nexus/)
-assert.equal((await readdir('dist/licences')).length,10)
+assert.equal((await readdir('dist/licences')).length,11)
 const stellarBytes=gzipSync(bytes).length
 assert.ok(stellarBytes<=500_000,`Stellar payload exceeds 500 KB gzip: ${stellarBytes}`)
 let total=0
@@ -58,3 +58,10 @@ assert.equal(Date.parse(orbital.study.endUtc)-Date.parse(orbital.study.startUtc)
 assert.ok([orbital.study.startUtc,orbital.study.endUtc].every(x=>Math.abs(Date.parse(x)-epoch)<=86400000))
 assert.ok(orbital.pass.solarAltitudeDegrees<-6)
 console.log('Orbital publication checked: 635 independent movers, 12 attachments, 69 excluded identities, retained ISS pass, source terms and payload SHA-256.')
+
+const geographyBytes=await readFile('src/earth-land.json'),geography=JSON.parse(geographyBytes)
+assert.equal(createHash('sha256').update(geographyBytes).digest('hex'),manifest.geography.compiledSha256)
+assert.equal(geography.source.sha256,'9e0729ee253ca7d7a5c4ae9395fb1902264c5377c52e224d13dd85010e2835d9')
+assert.equal(geography.polygons.length,127);assert.equal(geography.source.rights,'Public domain')
+assert.match(await readFile('dist/licences/natural-earth.txt','utf8'),/Public-domain land polygons/)
+console.log('Geography checked: pinned Natural Earth land, 127 polygons and public-domain notice; geometry bundled in the application.')
