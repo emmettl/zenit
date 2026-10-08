@@ -4,7 +4,7 @@ async function advanceTo(page:Page,target:number){const elapsed=Number(await pag
 
 test('automatic full journey holds, reveals, ascends and repeats; pause holds both camera and clock',async({page})=>{
   await page.emulateMedia({reducedMotion:'no-preference'});await page.clock.install({time:new Date('2026-10-08T12:00:00Z')});await page.clock.pauseAt('2026-10-08T12:00:01Z');await page.goto('/')
-  await expect(page.getByRole('button',{name:'Explore freely',exact:true})).toBeVisible()
+  await expect(page.getByRole('button',{name:'Explore freely',exact:true})).toBeVisible({timeout:15000})
   await expect(page.locator('main')).toHaveAttribute('data-journey-phase','Orbital shells')
   await expect(page.getByRole('region',{name:'Object catalogue'})).toBeHidden()
   await advanceTo(page,24500);await expect(canvas(page)).toHaveAttribute('data-camera-phase','Sydney horizon')

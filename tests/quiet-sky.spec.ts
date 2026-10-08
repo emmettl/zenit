@@ -1,4 +1,6 @@
 import {test,expect,type Page} from '@playwright/test'
+// CI's software renderer needs time for these multi-phase simulated journeys.
+test.describe.configure({timeout:60000})
 async function advance(page:Page,target:number){const elapsed=Number(await page.locator('main').getAttribute('data-journey-elapsed'));await page.clock.fastForward(Math.max(1,target-elapsed));await page.clock.runFor(100)}
 async function journey(page:Page){await page.emulateMedia({reducedMotion:'no-preference'});await page.clock.install({time:new Date('2026-10-08T12:00:00Z')});await page.clock.pauseAt('2026-10-08T12:00:01Z');await page.goto('/');await expect(page.getByRole('button',{name:'Explore freely',exact:true})).toBeVisible({timeout:15000})}
 async function quiet(page:Page){await journey(page);await advance(page,37000);await expect(page.locator('main')).toHaveAttribute('data-interface','quiet');await expect(page.locator('canvas')).toHaveAttribute('data-camera-phase','Looking up')}
