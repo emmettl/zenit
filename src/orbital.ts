@@ -54,11 +54,12 @@ export function orbitalPosition(orbit: Propagator,time: number) {
   return {...state,altitude:look.elevation*180/Math.PI,azimuth:look.azimuth*180/Math.PI,rangeKm:look.rangeSat,ageHours:(time-orbit.epoch)/3600000}
 }
 
-export function orbitalTrail(orbit: Propagator,time: number): Vector3[] {
-  const points: Vector3[]=[]
-  for(let seconds=60;seconds>=0;seconds-=2){const sample=orbitalPosition(orbit,time-seconds*1000);if(sample)points.push(sample.world)}
+export function orbitalTrailSamples(orbit: Propagator,time: number) {
+  const points: {time:number;world:Vector3}[]=[]
+  for(let seconds=60;seconds>=0;seconds-=2){const sample=orbitalPosition(orbit,time-seconds*1000);if(sample)points.push({time:time-seconds*1000,world:sample.world})}
   return points
 }
+export function orbitalTrail(orbit:Propagator,time:number):Vector3[]{return orbitalTrailSamples(orbit,time).map(x=>x.world)}
 export function advanceStudy(time: number,elapsed: number,rate: number,start: number,end: number) {
   const current=Math.max(start,Math.min(end,time)),span=end-start,delta=Math.max(0,elapsed)*rate
   if(span<=0||!Number.isFinite(delta))return current

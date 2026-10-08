@@ -2,6 +2,7 @@ import {describe,it,expect} from 'vitest'
 import {readFileSync} from 'node:fs'
 import {PerspectiveCamera,Vector3} from 'three'
 import {createPopulation,populationFrame,readCohorts} from './cohorts'
+import {earthFixedSun,illumination,illuminationWeight} from './illumination'
 import {orbitalState} from './orbital'
 import {cameraPose,earthSurface,observerNormal,OBSERVER,EARTH_RADIUS_KM} from './camera'
 import {surfaceTrailVertices,validSurfaceTrails,SURFACE_TRAIL_CANDIDATES,SURFACE_TRAIL_SAMPLES} from './surface-trails'
@@ -33,6 +34,9 @@ describe('surface motion tails',()=>{
     expect(desktop.visible.length).toBeGreaterThan(0);expect(desktop.visible.length).toBeLessThanOrEqual(3);expect(desktop.alphas.every(x=>x>=0&&x<=.34)).toBe(true);expect(desktop.alphas).toContain(0)
     camera.aspect=390/664;camera.updateProjectionMatrix()
     const phone=surfaceTrailVertices(frame,snapshot,camera,['stations','gnss','geo'],undefined,390,664,[]);expect(phone.visible.length).toBeGreaterThan(0);expect(phone.visible.length).toBeLessThanOrEqual(2)
+    const firstId=phone.visible[0].id,path=frame.surfaceTrails.find(x=>snapshot.movers[x.index].id===firstId)!
+    const expected:number[]=[];for(let i=1;i<SURFACE_TRAIL_SAMPLES;i++)if(path.valid[i-1]&&path.valid[i])for(const j of [i-1,i])expected.push(.34*(j/15)**1.4*illuminationWeight(illumination(new Vector3().fromArray(path.positions,j*3),earthFixedSun(time-(15-j)*3000)).transition))
+    expect(phone.alphas.slice(0,expected.length)).toEqual(expected)
     expect(surfaceTrailVertices(frame,snapshot,camera,[],undefined,390,664,[]).visible).toEqual([])
     expect(surfaceTrailVertices(frame,snapshot,camera,['stations','gnss','geo'],phone.visible[0].id,390,664,[]).visible.some(x=>x.id===phone.visible[0].id)).toBe(false)
     expect(surfaceTrailVertices(frame,snapshot,camera,['stations','gnss','geo'],undefined,390,664,[{x:0,y:0,width:390,height:664}]).visible).toEqual([])

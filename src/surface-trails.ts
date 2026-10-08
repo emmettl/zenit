@@ -2,6 +2,7 @@ import {PerspectiveCamera,Vector3} from 'three'
 import {EARTH_RADIUS_KM,OBSERVER,earthSurface,observerNormal} from './camera'
 import {orbitalState} from './orbital'
 import {enabledMover,groupColour,type Population,type PopulationFrame,type Cohorts,type GroupId} from './cohorts'
+import {earthFixedSun,illumination,illuminationWeight} from './illumination'
 import type {ScreenBox} from './orientation'
 export const SURFACE_TRAIL_SECONDS=45,SURFACE_TRAIL_STEP=3,SURFACE_TRAIL_SAMPLES=16,SURFACE_TRAIL_CANDIDATES=24
 export interface SurfaceTrail {index:number;positions:Float64Array;valid:Uint8Array}
@@ -31,9 +32,10 @@ export function validSurfaceTrails(frame:PopulationFrame,count:number):boolean {
   return typeof frame.trailsRequested==='boolean'&&Array.isArray(frame.surfaceTrails)&&frame.surfaceTrails.length<=SURFACE_TRAIL_CANDIDATES&&(!frame.trailsRequested?frame.surfaceTrails.length===0:true)&&new Set(frame.surfaceTrails.map(x=>x.index)).size===frame.surfaceTrails.length&&frame.surfaceTrails.every(x=>Number.isInteger(x.index)&&x.index>=0&&x.index<count&&x.positions instanceof Float64Array&&x.positions.length===SURFACE_TRAIL_SAMPLES*3&&x.positions.every(Number.isFinite)&&x.valid instanceof Uint8Array&&x.valid.length===SURFACE_TRAIL_SAMPLES&&x.valid.every(v=>v===0||v===1))
 }
 /** A small camera-dependent subset; pan reprojects a packet without running orbital calculations. */
-export function surfaceTrailVertices(frame:PopulationFrame,cohorts:Cohorts,camera:PerspectiveCamera,groups:readonly GroupId[],selected:string|undefined,width:number,height:number,exclusions:ScreenBox[]) {
+export function surfaceTrailVertices(frame:PopulationFrame,cohorts:Cohorts,camera:PerspectiveCamera,groups:readonly GroupId[],selected:string|undefined,width:number,height:number,exclusions:ScreenBox[],sunAt=earthFixedSun) {
   const positions:number[]=[],colours:number[]=[],alphas:number[]=[],visible:{id:string;head:number[];segments:number}[]=[]
   const limit=Math.min(width,height)<=650?2:3
+  const suns=frame.surfaceTrails.length?Array.from({length:SURFACE_TRAIL_SAMPLES},(_,i)=>sunAt(frame.time-(SURFACE_TRAIL_SAMPLES-1-i)*SURFACE_TRAIL_STEP*1000)):[]
   for(const path of frame.surfaceTrails){
     const mover=cohorts.movers[path.index];if(mover.id===selected||mover.id==='25544'||frame.availability[path.index]!==1||!enabledMover(mover,groups))continue
     const head=new Vector3().fromArray(path.positions,(SURFACE_TRAIL_SAMPLES-1)*3),ndc=head.clone().project(camera),x=(ndc.x+1)*width/2,y=(1-ndc.y)*height/2
@@ -44,7 +46,7 @@ export function surfaceTrailVertices(frame:PopulationFrame,cohorts:Cohorts,camer
     const colour=groupColour(mover);let segments=0
     for(let i=1;i<SURFACE_TRAIL_SAMPLES;i++){
       if(!path.valid[i-1]||!path.valid[i])continue // never bridge an invalid or below-horizon sample
-      for(const j of [i-1,i]){positions.push(...path.positions.slice(j*3,j*3+3));colours.push(...colour);alphas.push(.34*(j/(SURFACE_TRAIL_SAMPLES-1))**1.4)}
+      for(const j of [i-1,i]){positions.push(...path.positions.slice(j*3,j*3+3));colours.push(...colour);alphas.push(.34*(j/(SURFACE_TRAIL_SAMPLES-1))**1.4*illuminationWeight(illumination(new Vector3().fromArray(path.positions,j*3),suns[j]).transition))}
       segments++
     }
     if(segments)visible.push({id:mover.id,head:head.toArray(),segments})

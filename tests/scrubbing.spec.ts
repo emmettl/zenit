@@ -30,6 +30,7 @@ test('rapid seeks retain one coherent scene, reject superseded packets and settl
   const layout=()=>clock.evaluate(node=>{const scrubber=node.getBoundingClientRect(),panel=node.closest('.controls')!.getBoundingClientRect();return {scrubberTop:scrubber.top+scrollY,panelHeight:panel.height}})
   const settledLayout=await layout()
   const initial=await canvas.getAttribute('data-study-time'),iss=await canvas.getAttribute('data-iss-position'),target=await canvas.getAttribute('data-camera-target')
+  const initialIllumination=await canvas.getAttribute('data-illumination-counts')
   const first=Number(initial)+60000,latest=Number(initial)+90000
   await page.evaluate(()=>{
     const state=window as unknown as {populationGate:{held:boolean};blankFrames:number}
@@ -45,6 +46,8 @@ test('rapid seeks retain one coherent scene, reject superseded packets and settl
   await expect(canvas).toHaveAttribute('data-camera-target',target!)
   await expect(page.getByText('Updating orbital positions…',{exact:true})).toBeVisible()
   expect(await layout()).toEqual(settledLayout)
+  await expect(canvas).toHaveAttribute('data-illumination-time',initial!)
+  await expect(canvas).toHaveAttribute('data-illumination-counts',initialIllumination!)
   await clock.fill(String(Number(initial)+120000));await clock.fill(String(latest))
   await expect(clock).toHaveValue(String(latest))
   await page.evaluate(()=>(window as unknown as {populationGate:{release:()=>void}}).populationGate.release())
@@ -54,6 +57,7 @@ test('rapid seeks retain one coherent scene, reject superseded packets and settl
   await expect(canvas).toHaveAttribute('data-camera-target',target!)
   await page.evaluate(()=>{const gate=(window as unknown as {populationGate:{held:boolean;release:()=>void}}).populationGate;gate.held=false;gate.release()})
   await expect(canvas).toHaveAttribute('data-study-time',String(latest))
+  await expect(canvas).toHaveAttribute('data-illumination-time',String(latest))
   await expect(page.getByTestId('study-time')).toHaveText('2026-10-07 17:58:49 UTC')
   await expect(canvas).not.toHaveAttribute('data-iss-position',iss!)
   await expect(canvas).not.toHaveAttribute('data-camera-target',target!)
