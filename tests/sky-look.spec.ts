@@ -71,6 +71,7 @@ test('a surface gesture pauses the journey in the same pose and dated sky withou
   // Handover preserves the accepted scene, which can be one sample behind the request.
   await expect.poll(async()=>requested-Number(await canvas.getAttribute('data-study-time'))).toBeLessThanOrEqual(330)
   expect(Number(await canvas.getAttribute('data-study-time'))).toBeLessThanOrEqual(requested)
+  await page.getByRole('button',{name:'Show controls',exact:true}).click()
   const time=await canvas.getAttribute('data-study-time'),site=await canvas.getAttribute('data-camera-position'),size=page.viewportSize()!
   await page.mouse.move(size.width*.6,size.height*.32);await page.mouse.down();await page.mouse.move(size.width*.5,size.height*.36,{steps:5});await page.mouse.up()
   await expect(page.locator('main')).toHaveAttribute('data-journey-phase','Exploring');await expect(page.getByRole('button',{name:'Play study',exact:true})).toBeVisible();await expect(page.getByRole('region',{name:'Object catalogue'})).toBeHidden();await expect(canvas).toHaveAttribute('data-study-time',time!);await expect(canvas).toHaveAttribute('data-camera-position',site!)

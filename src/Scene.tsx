@@ -10,15 +10,15 @@ import {skyView,turnSky,skyPose,type SkyView} from './sky-camera'
 import {brightAnchors,compassBearing,COMPASS_POINTS,orientationOpacity,surfaceLabels,type ScreenBox} from './orientation'
 import {surfaceTrailVertices} from './surface-trails'
 import {type Cohorts,type PopulationFrame,type GroupId,enabledMover,groupColour} from './cohorts'
-interface Props {skyCentre:number;onSkyInteraction:()=>void;onCentreSky:()=>void;panelsOpen:boolean;reveal:Reveal|null;onInteraction:()=>void;opacity:number;cameraZoom:number;following:boolean;cameraReset:number;onReset:()=>void;progress:number; time:number; catalogue:Catalogue|null; orbit:Orbit|null; showStars:boolean; showTrail:boolean; cohorts:Cohorts|null; frame:PopulationFrame|null; groups:GroupId[]; scale:'whole'|'near'; traced:Propagator|null; selectedId:string|null; onSelect:(id:string)=>void; onFailure:()=>void}
-export function SceneView({skyCentre,onSkyInteraction,onCentreSky,panelsOpen,reveal,onInteraction,opacity,progress,time,catalogue,orbit,showStars,showTrail,cohorts,frame,groups,scale,traced,selectedId,onSelect,onFailure,following,cameraReset,cameraZoom,onReset}:Props) {
-  const host=useRef<HTMLDivElement>(null),values=useRef({skyCentre,panelsOpen,reveal,progress,time,showStars,showTrail,selectedId,frame,groups,scale,traced,following,cameraReset,cameraZoom}),redraw=useRef<(()=>void)|null>(null)
+interface Props {quiet:boolean;skyCentre:number;onSkyInteraction:()=>void;onCentreSky:()=>void;panelsOpen:boolean;reveal:Reveal|null;onInteraction:()=>void;opacity:number;cameraZoom:number;following:boolean;cameraReset:number;onReset:()=>void;progress:number; time:number; catalogue:Catalogue|null; orbit:Orbit|null; showStars:boolean; showTrail:boolean; cohorts:Cohorts|null; frame:PopulationFrame|null; groups:GroupId[]; scale:'whole'|'near'; traced:Propagator|null; selectedId:string|null; onSelect:(id:string)=>void; onFailure:()=>void}
+export function SceneView({quiet,skyCentre,onSkyInteraction,onCentreSky,panelsOpen,reveal,onInteraction,opacity,progress,time,catalogue,orbit,showStars,showTrail,cohorts,frame,groups,scale,traced,selectedId,onSelect,onFailure,following,cameraReset,cameraZoom,onReset}:Props) {
+  const host=useRef<HTMLDivElement>(null),values=useRef({quiet,skyCentre,panelsOpen,reveal,progress,time,showStars,showTrail,selectedId,frame,groups,scale,traced,following,cameraReset,cameraZoom}),redraw=useRef<(()=>void)|null>(null)
   const navigation=useRef<{surface:SkyView|null;centre:number;orbit:OrbitalView|null;follow:OrbitalView|null;followId:string|null;start:CameraPose|null;last:CameraPose|null;reset:number;scale:string;zoom:number}>({surface:null,centre:skyCentre,orbit:null,follow:null,followId:null,start:null,last:null,reset:cameraReset,scale,zoom:cameraZoom})
   const resetHandler=useRef(onReset);resetHandler.current=onReset
   const skyHandler=useRef(onSkyInteraction);skyHandler.current=onSkyInteraction
   const centreHandler=useRef(onCentreSky);centreHandler.current=onCentreSky
   const interactionHandler=useRef(onInteraction);interactionHandler.current=onInteraction
-  useEffect(()=>{values.current={skyCentre,panelsOpen,reveal,progress,time,showStars,showTrail,selectedId,frame,groups,scale,traced,following,cameraReset,cameraZoom};redraw.current?.()},[skyCentre,panelsOpen,reveal,progress,time,showStars,showTrail,selectedId,frame,groups,scale,traced,following,cameraReset,cameraZoom])
+  useEffect(()=>{values.current={quiet,skyCentre,panelsOpen,reveal,progress,time,showStars,showTrail,selectedId,frame,groups,scale,traced,following,cameraReset,cameraZoom};redraw.current?.()},[quiet,skyCentre,panelsOpen,reveal,progress,time,showStars,showTrail,selectedId,frame,groups,scale,traced,following,cameraReset,cameraZoom])
   useEffect(()=>{
     const element=host.current;if(!element)return
     let renderer:WebGLRenderer
@@ -84,7 +84,7 @@ export function SceneView({skyCentre,onSkyInteraction,onCentreSky,panelsOpen,rev
       orientation.hidden=guideOpacity===0
       const compassBounds=guideOpacity>0?compass.getBoundingClientRect():null
       // Read layout before writing scene styles; ordinary orbital playback does no label work.
-      const bounds=guideOpacity>0?element.getBoundingClientRect():{left:0,top:0,width:0,height:0},exclusions:ScreenBox[]=guideOpacity>0?ui.filter(node=>node.offsetWidth>0).map(node=>{const box=node.getBoundingClientRect();return {x:box.left-bounds.left,y:box.top-bounds.top,width:box.width,height:box.height}}):[]
+      const bounds=guideOpacity>0?element.getBoundingClientRect():{left:0,top:0,width:0,height:0},exclusions:ScreenBox[]=guideOpacity>0&&!value.quiet?ui.filter(node=>node.offsetWidth>0).map(node=>{const box=node.getBoundingClientRect();return {x:box.left-bounds.left,y:box.top-bounds.top,width:box.width,height:box.height}}):[]
       const selectedId=value.selectedId?.split(':')[1],attachment=cohorts?.attachments.find(x=>x.id===selectedId),selectedBodyId=attachment?.parentId??selectedId,selectedIndex=cohorts?.movers.findIndex(x=>x.id===selectedBodyId)??-1
       const position=orbit?orbitalPosition(orbit,value.time):null,issEnabled=!cohorts||value.groups.includes('stations')
       const packetTarget=selectedIndex>=0&&value.frame?.availability[selectedIndex]===1&&enabledMover(cohorts!.movers[selectedIndex],value.groups)?new Vector3().fromArray(value.frame.positions,selectedIndex*3):null
@@ -153,7 +153,8 @@ export function SceneView({skyCentre,onSkyInteraction,onCentreSky,panelsOpen,rev
         const chosen=value.showStars&&opacity>.08?surfaceLabels(anchors,rotation,skyCamera,bounds.width,bounds.height,exclusions):[]
         labels.forEach((node,i)=>{const label=chosen[i];node.hidden=!label;if(label){if(node.textContent!==label.name)node.textContent=label.name;node.dataset.starId=label.id;node.dataset.anchorX=label.anchorX.toFixed(3);node.dataset.anchorY=label.anchorY.toFixed(3);node.style.left=`${label.x}px`;node.style.top=`${label.y}px`;node.style.opacity=String(opacity)}})
       }else labels.forEach(node=>{node.hidden=true})
-      const tailExclusions=exclusions.concat(labels.filter(node=>!node.hidden).map(node=>{const box=node.getBoundingClientRect();return {x:box.left-bounds.left,y:box.top-bounds.top,width:box.width,height:box.height}}))
+      const quietPause=value.quiet?element.parentElement!.querySelector('.quiet-pause')?.getBoundingClientRect():null
+      const tailExclusions=value.quiet?(quietPause?[{x:quietPause.left-bounds.left,y:quietPause.top-bounds.top,width:quietPause.width,height:quietPause.height}]:[]):exclusions.concat(labels.filter(node=>!node.hidden).map(node=>{const box=node.getBoundingClientRect();return {x:box.left-bounds.left,y:box.top-bounds.top,width:box.width,height:box.height}}))
       const tailData=value.progress>=ARRIVAL&&value.showTrail&&packet?.time===value.time&&cohorts?surfaceTrailVertices(packet,cohorts,camera,value.groups,selectedBodyId,bounds.width,bounds.height,tailExclusions):{positions:[],colours:[],alphas:[],visible:[]}
       tails.visible=tailData.visible.length>0
       for(const [name,array] of [['position',tailData.positions],['tint',tailData.colours],['fade',tailData.alphas.map(alpha=>alpha*guideOpacity)]] as const){const attribute=tailsGeometry.getAttribute(name);(attribute.array as Float32Array).set(array);attribute.needsUpdate=true}tailsGeometry.setDrawRange(0,tailData.positions.length/3)
@@ -187,5 +188,5 @@ export function SceneView({skyCentre,onSkyInteraction,onCentreSky,panelsOpen,rev
     const observer=new ResizeObserver(resize);observer.observe(element);redraw.current=draw;resize()
     return()=>{observer.disconnect();window.removeEventListener('scroll',scroll);redraw.current=null;renderer.domElement.removeEventListener('webglcontextlost',lost);canvas.removeEventListener('pointerdown',down);canvas.removeEventListener('pointermove',move);canvas.removeEventListener('pointerup',upPointer);canvas.removeEventListener('pointercancel',cancel);canvas.removeEventListener('lostpointercapture',cancel);canvas.removeEventListener('wheel',wheel);canvas.removeEventListener('keydown',keyboard);for(const resource of [geometry,material,gridGeometry,gridMaterial,starGeometry,starMaterial,issGeometry,issMaterial,trailGeometry,trailMaterial,tailsGeometry,tailsMaterial,populationGeometry,populationMaterial,groundGeometry,groundMaterial])resource.dispose();texture?.dispose();renderer.dispose();renderer.domElement.remove();marker.remove();orientation.remove()}
   },[onFailure,onSelect,catalogue,orbit,cohorts])
-  return <div ref={host} className="scene" style={{opacity}} role="region" aria-label={`Earth-fixed view of Earth, ${catalogue?.stars.length??0} HYG stars and ${cohorts?.movers.length??(orbit?1:0)} retained orbital movers.`}/>
+  return <div inert={quiet} ref={host} className="scene" style={{opacity}} role="region" aria-label={`Earth-fixed view of Earth, ${catalogue?.stars.length??0} HYG stars and ${cohorts?.movers.length??(orbit?1:0)} retained orbital movers.`}/>
 }

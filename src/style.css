@@ -159,3 +159,14 @@ main:not(.cinematic) .horizon-compass{top:52px;right:36px}
 @media(max-width:650px){main:not(.cinematic) .horizon-compass{top:196px;right:22px}}
 
 .compass-help{display:block;margin-top:4px;font-size:8px;letter-spacing:0;color:#8a9da9}
+
+/* Leave the automatic surface hold to the moving sky; inspection stays explicit. */
+.cinematic header,.cinematic .composition,.cinematic .controls,.cinematic .sky-orientation,.cinematic .iss-marker{transition:opacity .6s ease,visibility 0s}
+.quiet-sky header,.quiet-sky .composition,.quiet-sky .controls,.quiet-sky .sky-orientation,.quiet-sky .iss-marker{opacity:0!important;visibility:hidden;pointer-events:none;transition:opacity .6s ease,visibility 0s .6s}
+.quiet-reveal{position:fixed;inset:0;z-index:2;width:100%;height:100%;padding:0;border:0;border-radius:0;background:transparent;color:transparent;touch-action:none;cursor:pointer}
+.quiet-reveal:hover{background:transparent}
+.quiet-reveal:focus-visible{outline:1px solid #91c8dc;outline-offset:-8px}
+.quiet-reveal:focus-visible::after{content:'Show controls';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);padding:10px 14px;background:#07121bdc;color:#d5e5ef;font:12px 'DM Mono',monospace}
+.quiet-pause{position:fixed;z-index:3;right:20px;bottom:20px;min-width:68px;min-height:44px;padding:10px 14px;background:#07121bbd;font:11px 'DM Mono',monospace}
+@media(max-width:650px){.quiet-pause{right:16px;bottom:16px}}
+@media(prefers-reduced-motion:reduce){.cinematic header,.cinematic .composition,.cinematic .controls,.cinematic .sky-orientation,.cinematic .iss-marker{transition:none}}

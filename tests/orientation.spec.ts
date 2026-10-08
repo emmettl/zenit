@@ -52,7 +52,7 @@ test('the journey fades orientation at landing and ascent, preserving names and 
   await expect(guides).toBeHidden()
   const advance=async(target:number)=>{const elapsed=Number(await page.locator('main').getAttribute('data-journey-elapsed'));await page.clock.fastForward(target-elapsed);await page.clock.runFor(100)}
   await advance(24500);await expect(guides).toBeVisible();const opacity=Number(await guides.evaluate(x=>(x as HTMLElement).style.opacity));expect(opacity).toBeGreaterThan(0);expect(opacity).toBeLessThan(1)
-  await advance(37000);await expect(guides).toHaveCSS('opacity','1');await checkLabels(page)
+  await advance(37000);await page.getByRole('button',{name:'Show controls',exact:true}).click();await expect(guides).toHaveCSS('opacity','1');await checkLabels(page)
   await page.getByRole('button',{name:'Pause study',exact:true}).click()
   const time=await guides.getAttribute('data-study-time'),names=await page.locator('.sky-star-label:visible').allTextContents()
   await page.clock.runFor(1000);await expect(guides).toHaveAttribute('data-study-time',time!);expect(await page.locator('.sky-star-label:visible').allTextContents()).toEqual(names)
