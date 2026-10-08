@@ -140,3 +140,20 @@ h1 { font-size: clamp(44px,5vw,64px); margin-top: 18px; }
 @media(max-width:650px){.introduction{left:20px;top:166px;width:calc(100% - 40px);max-width:290px}.introduction-reading{font-size:12px}.introduction-note{max-width:250px}}
 
 .introduction::before{content:"";position:absolute;inset:-8px -14px;background:linear-gradient(90deg,#05090ef5 0%,#05090ee8 78%,#05090e00 100%);z-index:-1}
+
+/* Surface annotations follow the projected sky; inputs still reach the scene. */
+.sky-orientation{position:absolute;inset:0;z-index:1;pointer-events:none;color:#b2c3cc;font:10px/20px 'DM Mono',monospace}
+.sky-orientation[hidden],.sky-star-label[hidden],.compass-tape span[hidden]{display:none}
+.horizon-compass{position:absolute;top:22px;right:26px;width:154px;text-align:center;text-shadow:0 1px 7px #05090e;letter-spacing:.08em}
+.compass-place{display:block;font-size:8px;color:#8a9da9;letter-spacing:.13em}
+.compass-bearing{display:block;color:#ced9df;margin-top:2px}
+.compass-tape{position:relative;height:27px;overflow:hidden;border-top:1px solid #a1b9c533;margin-top:5px;mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}
+.compass-tape::after{content:'';position:absolute;top:0;left:50%;height:6px;border-left:1px solid #debd8aaa}
+.compass-tape span{position:absolute;top:7px;transform:translateX(-50%);font-size:9px;color:#90a7b5}
+.compass-tape span::before{content:'';position:absolute;height:3px;border-left:1px solid #8199a666;top:-7px;left:50%}
+.sky-star-label{position:absolute;white-space:nowrap;color:#aabfcd;text-shadow:0 0 5px #05090e,0 1px 8px #05090e;background:linear-gradient(90deg,#05090e77,#05090e00);padding-right:6px}
+.sky-star-label::before{content:'';position:absolute;width:4px;left:-7px;top:10px;border-top:1px solid #aabfcd66}
+@media(max-width:650px){.horizon-compass{right:20px;top:20px;width:140px}.sky-star-label{font-size:10px}}
+
+main:not(.cinematic) .horizon-compass{top:52px;right:36px}
+@media(max-width:650px){main:not(.cinematic) .horizon-compass{top:196px;right:22px}}

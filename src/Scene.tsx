@@ -6,14 +6,15 @@ import {blockedByEarth,type Catalogue,catalogueDirection,stellarRotation,starCol
 import {type Orbit,type Propagator,orbitalPosition,orbitalTrail} from './orbital'
 import {earthTexture,earthGeometry,land} from './geography'
 import {type Reveal,moverEmphasis} from './introduction'
+import {brightAnchors,compassBearing,COMPASS_POINTS,orientationOpacity,surfaceLabels,type ScreenBox} from './orientation'
 import {type Cohorts,type PopulationFrame,type GroupId,enabledMover,groupColour} from './cohorts'
-interface Props {reveal:Reveal|null;onInteraction:()=>void;opacity:number;cameraZoom:number;following:boolean;cameraReset:number;onReset:()=>void;progress:number; time:number; catalogue:Catalogue|null; orbit:Orbit|null; showStars:boolean; showTrail:boolean; cohorts:Cohorts|null; frame:PopulationFrame|null; groups:GroupId[]; scale:'whole'|'near'; traced:Propagator|null; selectedId:string|null; onSelect:(id:string)=>void; onFailure:()=>void}
-export function SceneView({reveal,onInteraction,opacity,progress,time,catalogue,orbit,showStars,showTrail,cohorts,frame,groups,scale,traced,selectedId,onSelect,onFailure,following,cameraReset,cameraZoom,onReset}:Props) {
-  const host=useRef<HTMLDivElement>(null),values=useRef({reveal,progress,time,showStars,showTrail,selectedId,frame,groups,scale,traced,following,cameraReset,cameraZoom}),redraw=useRef<(()=>void)|null>(null)
+interface Props {panelsOpen:boolean;reveal:Reveal|null;onInteraction:()=>void;opacity:number;cameraZoom:number;following:boolean;cameraReset:number;onReset:()=>void;progress:number; time:number; catalogue:Catalogue|null; orbit:Orbit|null; showStars:boolean; showTrail:boolean; cohorts:Cohorts|null; frame:PopulationFrame|null; groups:GroupId[]; scale:'whole'|'near'; traced:Propagator|null; selectedId:string|null; onSelect:(id:string)=>void; onFailure:()=>void}
+export function SceneView({panelsOpen,reveal,onInteraction,opacity,progress,time,catalogue,orbit,showStars,showTrail,cohorts,frame,groups,scale,traced,selectedId,onSelect,onFailure,following,cameraReset,cameraZoom,onReset}:Props) {
+  const host=useRef<HTMLDivElement>(null),values=useRef({panelsOpen,reveal,progress,time,showStars,showTrail,selectedId,frame,groups,scale,traced,following,cameraReset,cameraZoom}),redraw=useRef<(()=>void)|null>(null)
   const navigation=useRef<{orbit:OrbitalView|null;follow:OrbitalView|null;followId:string|null;start:CameraPose|null;last:CameraPose|null;reset:number;scale:string;zoom:number}>({orbit:null,follow:null,followId:null,start:null,last:null,reset:cameraReset,scale,zoom:cameraZoom})
   const resetHandler=useRef(onReset);resetHandler.current=onReset
   const interactionHandler=useRef(onInteraction);interactionHandler.current=onInteraction
-  useEffect(()=>{values.current={reveal,progress,time,showStars,showTrail,selectedId,frame,groups,scale,traced,following,cameraReset,cameraZoom};redraw.current?.()},[reveal,progress,time,showStars,showTrail,selectedId,frame,groups,scale,traced,following,cameraReset,cameraZoom])
+  useEffect(()=>{values.current={panelsOpen,reveal,progress,time,showStars,showTrail,selectedId,frame,groups,scale,traced,following,cameraReset,cameraZoom};redraw.current?.()},[panelsOpen,reveal,progress,time,showStars,showTrail,selectedId,frame,groups,scale,traced,following,cameraReset,cameraZoom])
   useEffect(()=>{
     const element=host.current;if(!element)return
     let renderer:WebGLRenderer
@@ -61,11 +62,23 @@ export function SceneView({reveal,onInteraction,opacity,progress,time,catalogue,
     const trailGeometry=new BufferGeometry();trailGeometry.setAttribute('position',new Float32BufferAttribute(new Float32Array(31*3),3));trailGeometry.setAttribute('color',new Float32BufferAttribute(Array.from({length:31},(_,i)=>[.2+.15*i/30,.35+.53*i/30,.4+.6*i/30]).flat(),3))
     const trailMaterial=new LineBasicMaterial({vertexColors:true,transparent:true,opacity:.8});const trail=new Line(trailGeometry,trailMaterial);trail.frustumCulled=false;scene.add(trail)
     const marker=document.createElement('button');marker.className='iss-marker';marker.textContent='ISS';marker.setAttribute('aria-label','Inspect ISS');marker.onclick=()=>onSelect(values.current.selectedId??'iss:25544');element.appendChild(marker)
+    const orientation=document.createElement('div');orientation.className='sky-orientation';orientation.setAttribute('role','region');orientation.setAttribute('aria-label','Surface sky orientation');orientation.hidden=true;element.appendChild(orientation)
+    const compass=document.createElement('div');compass.className='horizon-compass';compass.setAttribute('role','img');orientation.appendChild(compass)
+    const place=document.createElement('span');place.className='compass-place';place.textContent='SYDNEY HORIZON';compass.appendChild(place)
+    const bearing=document.createElement('span');bearing.className='compass-bearing';compass.appendChild(bearing)
+    const tape=document.createElement('div');tape.className='compass-tape';tape.setAttribute('aria-hidden','true');compass.appendChild(tape)
+    const ticks=COMPASS_POINTS.map(point=>{const tick=document.createElement('span');tick.textContent=point;tape.appendChild(tick);return tick})
+    const labels=Array.from({length:4},()=>{const label=document.createElement('span');label.className='sky-star-label';label.hidden=true;orientation.appendChild(label);return label}),anchors=brightAnchors(catalogue?.stars??[])
+    const ui=Array.from(element.parentElement!.querySelectorAll<HTMLElement>('header,.edition-state,.composition,.controls,.stellar-panel'))
     element.appendChild(renderer.domElement);renderer.domElement.tabIndex=0;renderer.domElement.setAttribute('role','group');renderer.domElement.setAttribute('aria-label','Orbital camera: arrow keys to orbit, plus and minus to zoom, Home to reset');renderer.domElement.dataset.starCount=String(directions.length);renderer.domElement.dataset.landPolygons=String(land.polygons.length);renderer.domElement.dataset.geography=texture?'ready':'fallback'
     const aim=orbit?horizonDirection(orbit.release.pass.maximumElevationDegrees,orbit.release.pass.peakAzimuthDegrees):undefined
     let satelliteWorld:Vector3|null=null;let markerId='iss:25544'
     const draw=()=>{
-      const value=values.current,date=new Date(value.time),rotation=stellarRotation(date.toISOString())
+      const value=values.current,date=new Date(value.time),rotation=stellarRotation(date.toISOString()),guideOpacity=orientationOpacity(value.progress)
+      orientation.hidden=guideOpacity===0
+      const compassBounds=guideOpacity>0?compass.getBoundingClientRect():null
+      // Read layout before writing scene styles; ordinary orbital playback does no label work.
+      const bounds=guideOpacity>0?element.getBoundingClientRect():{left:0,top:0,width:0,height:0},exclusions:ScreenBox[]=guideOpacity>0?ui.filter(node=>node.offsetWidth>0).map(node=>{const box=node.getBoundingClientRect();return {x:box.left-bounds.left,y:box.top-bounds.top,width:box.width,height:box.height}}):[]
       const selectedId=value.selectedId?.split(':')[1],attachment=cohorts?.attachments.find(x=>x.id===selectedId),selectedBodyId=attachment?.parentId??selectedId,selectedIndex=cohorts?.movers.findIndex(x=>x.id===selectedBodyId)??-1
       const position=orbit?orbitalPosition(orbit,value.time):null,issEnabled=!cohorts||value.groups.includes('stations')
       const packetTarget=selectedIndex>=0&&value.frame?.availability[selectedIndex]===1&&enabledMover(cohorts!.movers[selectedIndex],value.groups)?new Vector3().fromArray(value.frame.positions,selectedIndex*3):null
@@ -117,6 +130,18 @@ export function SceneView({reveal,onInteraction,opacity,progress,time,catalogue,
       if(markerWorld){const direction=markerWorld.clone().sub(camera.position).normalize(),ndc=markerWorld.clone().project(camera);visible=!blockedByEarth(camera.position,direction,markerWorld.distanceTo(camera.position))&&ndc.z>-1&&ndc.z<1&&Math.abs(ndc.x)<.94&&Math.abs(ndc.y)<.94;marker.style.left=`${(ndc.x+1)*50}%`;marker.style.top=`${(1-ndc.y)*50}%`;satelliteWorld=markerWorld}
       markerId=value.selectedId??'iss:25544';marker.dataset.introduction=value.reveal?.focus??'none';marker.textContent=value.reveal?.focus==='iss'?'ISS · next: Sydney':attachment?attachment.name:selectedBodyId==='25544'?'ISS':cohorts?.movers[selectedIndex]?.name??'ISS';marker.setAttribute('aria-label',selectedBodyId==='25544'?'Inspect ISS':'Inspect selected satellite');marker.onclick=()=>onSelect(markerId);marker.hidden=!visible||Boolean(value.reveal&&value.reveal.focus!=='iss')
       renderer.domElement.dataset.introduction=value.reveal?.focus??'none';renderer.domElement.dataset.issEmphasis=issEmphasis.toFixed(3);renderer.domElement.dataset.familyEmphasis=value.reveal?JSON.stringify(value.reveal.weights):'none';renderer.domElement.dataset.orbitalCount=String(eligible);renderer.domElement.dataset.filteredCount=String(shown);renderer.domElement.dataset.propagationFailures=String(failedCount);renderer.domElement.dataset.studyTime=String(value.time);renderer.domElement.dataset.issPosition=position?position.world.toArray().map(x=>x.toFixed(9)).join(','):''
+      orientation.style.opacity=String(guideOpacity);orientation.dataset.studyTime=String(value.time)
+      if(guideOpacity>0){
+        const heading=compassBearing(skyCamera.getWorldDirection(new Vector3())),degrees=Math.round(heading.azimuth)%360
+        const bearingText=`${heading.point} · ${String(degrees).padStart(3,'0')}°`;if(bearing.textContent!==bearingText)bearing.textContent=bearingText
+        compass.setAttribute('aria-label',`Sydney horizon compass: ${heading.point}, ${degrees} degrees from true north`);compass.dataset.azimuth=heading.azimuth.toFixed(6)
+        for(let i=0;i<ticks.length;i++){const delta=((i*45-heading.azimuth+540)%360)-180;ticks[i].hidden=Math.abs(delta)>60;ticks[i].style.left=`${50+delta*100/120}%`}
+        // The compass occupies a reserved corner; panels and the satellite have priority.
+        exclusions.push({x:compassBounds!.left-bounds.left,y:compassBounds!.top-bounds.top,width:compassBounds!.width,height:compassBounds!.height})
+        if(markerWorld){const ndc=markerWorld.clone().project(camera);if(ndc.z> -1&&ndc.z<1){const x=(ndc.x+1)*bounds.width/2,y=(1-ndc.y)*bounds.height/2;exclusions.push({x:x-28,y:y-28,width:Math.max(100,marker.textContent!.length*6+42),height:56})}}
+        const chosen=value.showStars&&opacity>.08?surfaceLabels(anchors,rotation,skyCamera,bounds.width,bounds.height,exclusions):[]
+        labels.forEach((node,i)=>{const label=chosen[i];node.hidden=!label;if(label){if(node.textContent!==label.name)node.textContent=label.name;node.dataset.starId=label.id;node.dataset.anchorX=label.anchorX.toFixed(3);node.dataset.anchorY=label.anchorY.toFixed(3);node.style.left=`${label.x}px`;node.style.top=`${label.y}px`;node.style.opacity=String(opacity)}})
+      }else labels.forEach(node=>{node.hidden=true})
       renderer.clear();renderer.render(sky,skyCamera);renderer.render(groundScene,skyCamera);renderer.clearDepth();renderer.render(scene,camera)
     }
     const resize=()=>{const {width,height}=element.getBoundingClientRect();renderer.setSize(width,height,false);camera.aspect=skyCamera.aspect=width/Math.max(1,height);draw()}
@@ -141,8 +166,9 @@ export function SceneView({reveal,onInteraction,opacity,progress,time,catalogue,
     const wheel=(event:WheelEvent)=>{if(values.current.progress!==0)return;event.preventDefault();interactionHandler.current();zoom(Math.max(-.5,Math.min(.5,event.deltaY*(event.deltaMode===1?.03:event.deltaMode===2?.4:.0015))))}
     const keyboard=(event:KeyboardEvent)=>{if(values.current.progress!==0||event.target!==canvas)return;const actions:Record<string,()=>void>={ArrowLeft:()=>turn(-.08,0),ArrowRight:()=>turn(.08,0),ArrowUp:()=>turn(0,-.08),ArrowDown:()=>turn(0,.08),'+':()=>zoom(-.15),'=':()=>zoom(-.15),'-':()=>zoom(.15),Home:()=>resetHandler.current()};if(actions[event.key]){event.preventDefault();interactionHandler.current();actions[event.key]()}}
     const lost=(event:Event)=>{event.preventDefault();onFailure()};canvas.addEventListener('webglcontextlost',lost);canvas.addEventListener('pointerdown',down);canvas.addEventListener('pointermove',move);canvas.addEventListener('pointerup',upPointer);canvas.addEventListener('pointercancel',cancel);canvas.addEventListener('lostpointercapture',cancel);canvas.addEventListener('wheel',wheel,{passive:false});canvas.addEventListener('keydown',keyboard)
+    const scroll=()=>{if(values.current.progress>ARRIVAL)draw()};window.addEventListener('scroll',scroll,{passive:true})
     const observer=new ResizeObserver(resize);observer.observe(element);redraw.current=draw;resize()
-    return()=>{observer.disconnect();redraw.current=null;renderer.domElement.removeEventListener('webglcontextlost',lost);canvas.removeEventListener('pointerdown',down);canvas.removeEventListener('pointermove',move);canvas.removeEventListener('pointerup',upPointer);canvas.removeEventListener('pointercancel',cancel);canvas.removeEventListener('lostpointercapture',cancel);canvas.removeEventListener('wheel',wheel);canvas.removeEventListener('keydown',keyboard);for(const resource of [geometry,material,gridGeometry,gridMaterial,starGeometry,starMaterial,issGeometry,issMaterial,trailGeometry,trailMaterial,populationGeometry,populationMaterial,groundGeometry,groundMaterial])resource.dispose();texture?.dispose();renderer.dispose();renderer.domElement.remove();marker.remove()}
+    return()=>{observer.disconnect();window.removeEventListener('scroll',scroll);redraw.current=null;renderer.domElement.removeEventListener('webglcontextlost',lost);canvas.removeEventListener('pointerdown',down);canvas.removeEventListener('pointermove',move);canvas.removeEventListener('pointerup',upPointer);canvas.removeEventListener('pointercancel',cancel);canvas.removeEventListener('lostpointercapture',cancel);canvas.removeEventListener('wheel',wheel);canvas.removeEventListener('keydown',keyboard);for(const resource of [geometry,material,gridGeometry,gridMaterial,starGeometry,starMaterial,issGeometry,issMaterial,trailGeometry,trailMaterial,populationGeometry,populationMaterial,groundGeometry,groundMaterial])resource.dispose();texture?.dispose();renderer.dispose();renderer.domElement.remove();marker.remove();orientation.remove()}
   },[onFailure,onSelect,catalogue,orbit,cohorts])
   return <div ref={host} className="scene" style={{opacity}} role="region" aria-label={`Earth-fixed view of Earth, ${catalogue?.stars.length??0} HYG stars and ${cohorts?.movers.length??(orbit?1:0)} retained orbital movers.`}/>
 }

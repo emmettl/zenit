@@ -102,6 +102,8 @@ python3 scripts/compile-stellar.py --source work/sources/hyg-v44/hyg_v44.csv.gz 
 
 The compiler verifies source SHA-256 before parsing. The browser verifies the compiled SHA-256 before rendering and provides a retry state on failure. HYG data and this adapted subset are **CC BY-SA 4.0**, credited to David Nash / Astronomy Nexus. See [source notice](public/data/stellar/NOTICE.txt) and [licence](public/licences/HYG-CC-BY-SA-4.0.txt).
 
+The surface orientation layer fades in after landing and away on ascent. A small compass reports the camera’s azimuth from Sydney’s true north, with a bearing strip. Up to four named HYG stars (three on phones) are labelled where their actual sky rays appear. Candidates have V ≤ 2.0 and altitude above 5°; labels avoid panels, the compass, each other and the selected satellite. They follow the same displayed UTC, hide with the stellar layer, and share its twilight fade. The compass remains available without stellar data. These are fixed-observer sky directions, not a device compass.
+
 ## Sharing and page metadata
 
 The static HTML supplies the canonical subdomain identity, current description, complete Open Graph and Twitter large-image tags, image dimensions/type/alt text, CreativeWork JSON-LD, theme and matching SVG/PNG/touch icons. It remains readable to crawlers without JavaScript. The no-script copy describes the implemented dated scene.
