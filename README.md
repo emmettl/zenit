@@ -36,6 +36,14 @@ The cohort payload is about **54 KB gzip**. A local arm64 Node benchmark of 616 
 
 Reproduce offline with `node scripts/compile-cohorts.mjs`. The retained ISS group element set is identical to the existing pass input, so the signature sequence is preserved. Independent cohort, ISS and stellar load failures have explicit retry states. The compiler and browser verify each published data hash; CI and visitors do not contact providers.
 
+## Camera interaction
+
+Drag the sky to orbit Earth and scroll to zoom. Clicking a visible satellite selects and follows it; the object selector and **Focus and follow** button provide the same route without precision pointing. Attachments focus on their parent station. While following, drag around the selected object and zoom toward or away from it. **Stop following** returns to the previous Earth view; **Reset orbital view** restores the chosen whole/near framing. Zoom buttons support touch screens. Focus the sky for arrow-key orbiting, plus/minus zoom and Home reset.
+
+Camera gestures leave study time and physical positions unchanged. Follow uses the displayed packet timestamp, including direct seeks and reversal. A hidden, unavailable or expired selection ends follow. Camera distance stays within 1.08–60 Earth radii around Earth or 0.15–60 around a followed body; an ellipsoid clearance clamp prevents passing through Earth. Follow initially looks from 2.5 Earth radii outward from the body and carries its orientation in the body’s radial frame, with authored screen-size glyphs unchanged.
+
+Descent captures the current orbital pose and travels to the same Sydney observer on a reversible great-circle radial path. Rotation joins the starting view to the surface aim; clearance also covers antipodal starts. Orbit gestures are suspended during descent and at the surface. The **Watch Sydney pass** cue resets manual orbit/follow before descending to its retained composition. Reduced motion still lands directly and leaves study playback paused.
+
 ## Orbital evidence and frame
 
 The [ISS release audit](docs/evidence/iss-release-2026-10-08.json) records a single CelesTrak `CATNR=25544&FORMAT=json` response, upstream attribution to USSPACECOM / 18 SDS via Space-Track, SHA-256, capture time and the retained epoch. The input epoch is **7 October, 13:30:47.478528 UTC**, captured at **22:09:38 UTC**. The chosen pass precedes acquisition; the edition does not claim these elements were known at pass time. No optional provider enrichment or attachment records are included. Raw input, capture headers and reviewed source-rights pages remain in ignored `work/sources/iss-2026-10-08/`.
@@ -67,7 +75,7 @@ The compiler verifies source SHA-256 before parsing. The browser verifies the co
 Use Node 24 (`nvm use`) and npm 11.21.0. Run `npm ci`, then `npm run dev`.
 
 - `npm run check` validates ellipsoid clearance, catalogue integrity, independent stellar/orbital frames, horizon crossings, deterministic trails and reversible clock boundaries, TypeScript, the production build, relative asset URLs, canonical identity, evidence state and a two-megabyte compressed artifact ceiling.
-- `npx playwright install chromium webkit` then `npm run test:browser` checks desktop and phone layouts, full animated cue, reduced motion, identity/time preservation, selection, reversal, boundary stops, retry and tamper rejection.
+- `npx playwright install chromium webkit` then `npm run test:browser` checks desktop and phone layouts, drag/wheel/keyboard navigation, focus/follow and expiry, reversible custom-view descent, full animated cue, reduced motion, identity/time preservation, selection, reversal, boundary stops, retry and tamper rejection.
 
 ## Publication
 
@@ -77,6 +85,6 @@ Cloudflare uses a main-only `cloudflare` environment with `CLOUDFLARE_API_TOKEN`
 
 ## Next composition
 
-Develop freer orbital inspection and composition around the now-bounded families, while retaining explicit source groups and attachment handling. Measure the complete playback on a named physical phone before claiming the 30 fps target. Gaia stellar depth and much longer clocks remain distant optional research.
+Refine Earth geography, the horizon and the visual space around the interactive camera, while retaining explicit source groups and attachment handling. Measure the complete playback on a named physical phone before claiming the 30 fps target. Gaia stellar depth and much longer clocks remain distant optional research.
 
 The build includes dependency and font licence notices under `licences/`. Code is MIT licensed. The stellar dataset retains its separate CC BY-SA 4.0 licence and attribution; the code licence does not grant data rights.

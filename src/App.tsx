@@ -10,6 +10,7 @@ import {type Cohorts,type GroupId,GROUP_IDS,loadCohorts,enabledMover} from './co
 import {usePopulation} from './use-population'
 const brief='https://github.com/emmettl/motionstudies/blob/main/docs/ZENIT.md'
 export function App() {
+  const [following,setFollowing]=useState(false),[cameraReset,setCameraReset]=useState(0),[cameraZoom,setCameraZoom]=useState(0)
   const [progress,setProgress]=useState(0),[target,setTarget]=useState<number|null>(null),[failed,setFailed]=useState(false)
   const [catalogue,setCatalogue]=useState<Catalogue|null>(null),[orbit,setOrbit]=useState<Orbit|null>(null)
   const [starState,setStarState]=useState('loading'),[orbitState,setOrbitState]=useState('loading'),[starAttempt,setStarAttempt]=useState(0),[orbitAttempt,setOrbitAttempt]=useState(0)
@@ -20,7 +21,7 @@ export function App() {
   const [reduced,setReduced]=useState(()=>window.matchMedia('(prefers-reduced-motion: reduce)').matches)
   const current=useRef(progress);current.current=progress
   const reducedCurrent=useRef(reduced);reducedCurrent.current=reduced
-  const fail=useCallback(()=>setFailed(true),[]),select=useCallback((id:string)=>setSelectedId(id),[])
+  const fail=useCallback(()=>setFailed(true),[]),select=useCallback((id:string)=>{setSelectedId(id);setFollowing(current.current===0&&(id.startsWith('sat:')||id.startsWith('iss:')))},[])
   useEffect(()=>{const controller=new AbortController();setStarState('loading');loadCatalogue(controller.signal).then(value=>{setCatalogue(value);setStarState('ready')}).catch(()=>{if(!controller.signal.aborted)setStarState('error')});return()=>controller.abort()},[starAttempt])
   useEffect(()=>{const controller=new AbortController();setOrbitState('loading');loadOrbit(controller.signal).then(value=>{setOrbit(value);setTime(Date.parse(value.release.study.initialUtc));setRevision(x=>x+1);setOrbitState('ready')}).catch(()=>{if(!controller.signal.aborted)setOrbitState('error')});return()=>controller.abort()},[orbitAttempt])
   useEffect(()=>{const controller=new AbortController();setCohortState('loading');loadCohorts(controller.signal).then(value=>{setCohorts(value);setCohortState('ready')}).catch(()=>{if(!controller.signal.aborted)setCohortState('error')});return()=>controller.abort()},[cohortAttempt])
@@ -50,19 +51,22 @@ export function App() {
   const sunAltitude=solarAltitude(displayTime)
   const view=progress===0?'Earth-fixed orbital view':progress===1?'Looking up':'Descending / ascending'
   const seek=(value:number)=>{setPlaying(false);setCue(false);setRevision(x=>x+1);setTime(value)}
-  const watchPass=()=>{if(!orbit)return;window.scrollTo({top:0,behavior:'instant'});setPlaying(false);setRevision(x=>x+1);setGroups(x=>x.includes('stations')?x:[...x,'stations']);setTime(Date.parse(orbit.release.study.initialUtc));setRate(10);setSelectedId('iss:25544');if(progress===1){if(!reduced)setPlaying(true)}else{setCue(true);setTarget(1)}}
+  const watchPass=()=>{if(!orbit)return;setFollowing(false);setCameraReset(x=>x+1);window.scrollTo({top:0,behavior:'instant'});setPlaying(false);setRevision(x=>x+1);setGroups(x=>x.includes('stations')?x:[...x,'stations']);setTime(Date.parse(orbit.release.study.initialUtc));setRate(10);setSelectedId('iss:25544');if(progress===1){if(!reduced)setPlaying(true)}else{setCue(true);setTarget(1)}}
   const satelliteId=selectedId?.startsWith('sat:')||selectedId==='iss:25544'?selectedId.split(':')[1]:null
   const attached=cohorts?.attachments.find(x=>x.id===satelliteId)??null
   const mover=cohorts?.movers.find(x=>x.id===(attached?.parentId??satelliteId))??null
   const traced=useMemo<Propagator|null>(()=>mover?{baseline:json2satrec(mover.element,'a'),epoch:Date.parse(mover.element.EPOCH),start:Date.parse(mover.eligibleStartUtc),end:Date.parse(mover.eligibleEndUtc)}:satelliteId==='25544'?orbit:null,[mover,orbit,satelliteId])
   const selectedPosition=traced?orbitalPosition(traced,displayTime):null
+  const canFollow=Boolean(satelliteId&&selectedPosition&&(!mover||enabledMover(mover,groups)))
+  useEffect(()=>{if(following&&!canFollow)setFollowing(false)},[following,canFollow])
+  const resetCamera=()=>{setFollowing(false);setCameraReset(x=>x+1)}
   const eligible=population.frame?Array.from(population.frame.availability).filter(x=>x===1).length:cohorts?null:position?1:0
   const filtered=population.frame&&cohorts?cohorts.movers.filter((x,i)=>population.frame!.availability[i]===1&&enabledMover(x,groups)).length:null
   const selectedChildren=cohorts?.attachments.filter(x=>x.parentId===mover?.id)??[]
   const satelliteChoices=useMemo(()=>[...(cohorts?.movers??[]).map(x=>({id:x.id,name:x.name,attached:false})),...(cohorts?.attachments??[]).map(x=>({id:x.id,name:x.name,attached:true}))].sort((a,b)=>a.name.localeCompare(b.name)||Number(a.id)-Number(b.id)),[cohorts])
   const fmtTime=(value:number)=>new Date(value).toISOString().slice(11,19)+' UTC'
   return <main>
-    <SceneView progress={progress} time={displayTime} catalogue={catalogue} orbit={orbit} showStars={showStars} showTrail={showTrail} cohorts={cohorts} frame={population.frame} groups={groups} scale={scale} traced={traced} selectedId={selectedId} onSelect={select} onFailure={fail}/>
+    <SceneView progress={progress} time={displayTime} catalogue={catalogue} orbit={orbit} showStars={showStars} showTrail={showTrail} cohorts={cohorts} frame={population.frame} groups={groups} scale={scale} traced={traced} selectedId={selectedId} onSelect={select} onFailure={fail} following={following} cameraZoom={cameraZoom} cameraReset={cameraReset} onReset={resetCamera}/>
     <header><a className="series" href="https://motionstudies.app/">MOTION STUDIES</a><h1>ZENIT</h1><p className="subtitle">Earth orbit / the sky above us</p></header>
     <aside className="edition-state"><span className="status-light"/> ORBITAL FAMILIES</aside>
     <section className="composition" aria-labelledby="composition-title"><p className="eyebrow" id="composition-title">{view}</p><h2>{progress===1?'The sky above a place.':'A world surrounded by motion.'}</h2><p>{progress===1?`${OBSERVER.name} · a moving light above a turning sky.`:'Three families. One clock. Shells and planes around the world.'}</p></section>
@@ -101,6 +105,7 @@ export function App() {
       <div className="clock-window">{orbit&&<><span>{fmtTime(orbit.start)}</span><span>{fmtTime(orbit.end)}</span></>}</div>
       <div className="buttons clock-buttons"><button disabled={!orbit} onClick={()=>{setCue(false);setPlaying(x=>!x)}}>{playing?'Pause study':'Play study'}</button><button disabled={!orbit} onClick={()=>{setCue(false);setTime(displayTime);setRevision(x=>x+1);setRate(x=>-x)}}>Reverse time</button><label className="speed-label">Speed<select aria-label="Study speed" value={Math.abs(rate)} onChange={e=>setRate(x=>Math.sign(x)*Number(e.target.value))}><option value="1">1×</option><option value="10">10×</option><option value="60">60×</option><option value="600">600×</option></select></label><button disabled={!orbit} onClick={watchPass}>Watch Sydney pass</button></div>
       {orbit&&<p className="pass-note"><button className="pass-link" aria-label="Seek to pass peak" onClick={()=>{seek(Date.parse(orbit.release.pass.peakUtc));window.scrollTo({top:0,behavior:'instant'})}}>Culmination {fmtTime(Date.parse(orbit.release.pass.peakUtc))}</button> · {orbit.release.pass.maximumElevationDegrees.toFixed(1)}° elevation · Sun {orbit.release.pass.solarAltitudeDegrees.toFixed(1)}°</p>}
+      <div className="camera-navigation"><button onClick={()=>setFollowing(x=>!x)} aria-pressed={following} disabled={!canFollow||progress!==0}>{following?'Stop following':'Focus and follow'}</button><button onClick={resetCamera} disabled={progress!==0}>Reset orbital view</button><button onClick={()=>setCameraZoom(x=>x+1)} disabled={progress!==0}>Zoom in</button><button onClick={()=>setCameraZoom(x=>x-1)} disabled={progress!==0}>Zoom out</button></div><p className="navigation-hint">{progress===0?(following?'Following the selected satellite. Drag to orbit it; scroll to zoom.':'Drag to orbit Earth · scroll to zoom · click a satellite to follow.'):'Orbital navigation resumes on return.'}<br/>Keyboard: arrow keys, + / −, Home to reset.</p>
       <div className="control-heading camera-heading"><span>CAMERA DESCENT</span><span>{Math.round(progress*100)}%</span></div><label className="sr-only" htmlFor="descent">Descent to surface</label><input id="descent" type="range" min="0" max="1" step="0.001" value={progress} onChange={e=>{setTarget(null);setCue(false);setProgress(Number(e.target.value))}}/>
       <div className="buttons"><button onClick={()=>{setCue(false);setTarget(1)}} disabled={progress===1||target===1}>Descend to surface</button><button onClick={()=>{setCue(false);setTarget(null)}} disabled={target===null}>Pause camera</button><button onClick={()=>{setCue(false);setTarget(0)}} disabled={progress===0||target===0}>Return to orbit</button></div><p className="camera-state" role="status">{target===null?'Camera paused':'Camera moving'}{reduced?' · reduced motion':''}</p>
     </section>
