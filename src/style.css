@@ -118,14 +118,15 @@ h1 { font-size: clamp(44px,5vw,64px); margin-top: 18px; }
 .cinematic .edition-state, .cinematic footer { display:none; }
 .cinematic .composition { position:fixed; top:90px; left:26px; margin:0; padding:0; max-width:350px; }
 .cinematic .composition h2 { font-size:18px; } .cinematic .composition > p:last-child { display:none; }
-.cinematic .controls { position:fixed; bottom:18px; left:50%; transform:translateX(-50%); width:min(600px,calc(100% - 36px)); margin:0; padding:12px 16px; background:#07121bdc; }
+.cinematic .controls { position:fixed; bottom:18px; left:50%; transform:translateX(-50%); width:min(600px,calc(100% - 36px)); margin:0; padding:12px 16px; background:#07121bdc; display:grid; grid-template-columns:max-content minmax(0,1fr); column-gap:8px; }
+.cinematic .controls > * { grid-column:1 / -1; }
 .cinematic .cinematic-object { display:flex; justify-content:space-between; gap:12px; font:10px/1.6 'DM Mono',monospace; margin:0 0 10px; color:#c8dce8; }
 .cinematic .cinematic-object span { color:#8b9daa; text-align:right; }
 .cinematic .controls .ms-timeline-scrubber, .cinematic .controls .timeline-scrubber, .cinematic .controls .clock-window, .cinematic .controls .pass-note, .cinematic .controls .camera-navigation, .cinematic .controls .navigation-hint, .cinematic .controls .camera-heading, .cinematic .controls label[for=descent], .cinematic .controls #descent { display:none; }
 .cinematic .clock-buttons > :not(:first-child) { display:none; }
-.cinematic .clock-buttons { float:left; margin-right:8px; margin-top:10px; }
-.cinematic .camera-buttons { margin-top:10px; } .cinematic .camera-buttons button:disabled { display:none; }
-.cinematic .camera-state { clear:both; padding-top:8px; }
+.cinematic .clock-buttons { grid-column:1; margin:10px 0 0; align-self:start; align-items:flex-start; }
+.cinematic .camera-buttons { grid-column:2; margin:10px 0 0; align-self:start; } .cinematic .camera-buttons button:disabled { display:none; }
+.cinematic .camera-state { padding-top:8px; }
 .cinematic .controls button { min-height:36px; }
 @media (max-width:650px) { .cinematic header { padding:20px; } .cinematic .composition { left:20px; } .cinematic .cinematic-object { flex-direction:column; gap:2px; } .cinematic .cinematic-object span { text-align:left; } .cinematic .controls { bottom:12px; padding:10px 12px; } }
 
