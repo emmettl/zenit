@@ -138,7 +138,7 @@ Manual time scrubbing keeps the last complete orbital packet visible while the w
 
 ## Development
 
-Use Node 24 (`nvm use`) and npm 11.21.0. Run `npm ci`, then `npm run dev`.
+Use Node 24 (`nvm use`) and npm 11.21.1. Run `npm ci`, then `npm run dev`.
 
 - `npm run check` validates ellipsoid clearance, catalogue integrity, independent stellar/orbital frames, horizon crossings, deterministic trails and reversible clock boundaries, TypeScript, the production build, relative asset URLs, canonical identity, evidence state and a two-megabyte compressed artifact ceiling.
 - `npx playwright install chromium webkit` then `npm run test:browser` checks desktop and phone layouts, drag/wheel/keyboard navigation, focus/follow and expiry, reversible custom-view descent, full animated cue, reduced motion, identity/time preservation, selection, reversal, forward/reverse loop boundaries, full automatic camera loop, pause/resume, exploration handover, replay, reduced motion, retry and tamper rejection.
