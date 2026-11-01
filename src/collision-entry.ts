@@ -15,7 +15,8 @@ function mount(){
   const canvas=renderer.domElement;canvas.tabIndex=0;canvas.setAttribute('aria-label','Synthetic collision view. Drag or use arrow keys to orbit; plus and minus zoom; space pauses.')
   const controls=new OrbitControls(camera,canvas);controls.enablePan=false;controls.enableDamping=false;controls.minDistance=.000004;controls.maxDistance=12
   const inertial=new Group(),origin=new Vector3();scene.add(inertial)
-  const earth=new Mesh(earthGeometry(),new MeshPhongMaterial({map:earthTexture(),shininess:8,specular:'#42677b'}));inertial.add(earth)
+  const geography=earthTexture({width:4096,coastlines:false,edgeSoftness:1.5});geography.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy())
+  const earth=new Mesh(earthGeometry(),new MeshPhongMaterial({map:geography,shininess:8,specular:'#42677b'}));inertial.add(earth)
   scene.add(new HemisphereLight('#c3e4ef','#354355',1.45),new AmbientLight('#ffffff',.4));const sun=new DirectionalLight('#e7eef1',2.3);sun.position.set(4,3,4);scene.add(sun)
   const paths=PARENTS.map((orbit,family)=>{
     const geometry=new BufferGeometry().setFromPoints(Array.from({length:257},(_,i)=>world(orbit.at(i*PERIOD/256).position)))
