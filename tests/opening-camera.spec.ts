@@ -25,3 +25,26 @@ test('the first camera key during the opening turns the current near-Earth view 
   await start(page);await advance(page,2000);const canvas=page.locator('canvas'),pose=await canvas.getAttribute('data-camera-position'),radius=await canvas.getAttribute('data-camera-radius')
   await canvas.press('ArrowRight');await expect(page.locator('main')).toHaveAttribute('data-journey-phase','Exploring');await expect(canvas).toHaveAttribute('data-opening-camera','none');await expect(canvas).not.toHaveAttribute('data-camera-position',pose!);expect(Number(await canvas.getAttribute('data-camera-radius'))).toBeCloseTo(Number(radius),8)
 })
+
+test('landscape phone controls leave the family captions and introduced station unobscured',async({page})=>{
+  await page.setViewportSize({width:667,height:320});await start(page)
+  for(const elapsed of [2000,6000,10000,15500]){
+    await advance(page,elapsed)
+    const controls=await page.getByRole('region',{name:'Study and camera controls'}).boundingBox()
+    expect(controls).not.toBeNull()
+    for(const selector of ['.composition','.introduction']){
+      const caption=await page.locator(selector).boundingBox();expect(caption).not.toBeNull()
+      expect(caption!.y+caption!.height).toBeLessThan(controls!.y)
+    }
+    for(const name of ['Pause study','Explore freely','Show panels']){
+      const button=page.getByRole('button',{name,exact:true}),box=await button.boundingBox()
+      await expect(button).toBeInViewport();expect(box!.height).toBeGreaterThanOrEqual(44)
+    }
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true)
+  }
+  const marker=await page.getByRole('button',{name:'Inspect ISS',exact:true}).boundingBox(),controls=await page.getByRole('region',{name:'Study and camera controls'}).boundingBox()
+  expect(marker).not.toBeNull();expect(marker!.y+marker!.height).toBeLessThan(controls!.y)
+  await page.setViewportSize({width:390,height:664})
+  const caption=await page.locator('.introduction').boundingBox(),portraitControls=await page.getByRole('region',{name:'Study and camera controls'}).boundingBox()
+  expect(caption!.y+caption!.height).toBeLessThan(portraitControls!.y)
+})
