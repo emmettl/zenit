@@ -39,8 +39,8 @@ describe('synthetic encounter physics',()=>{
     }
     expect(()=>experiment(NaN)).toThrow();expect(()=>experiment(1501)).toThrow();expect(()=>new Orbit({position:[1,0,0],velocity:[1,0,0]})).toThrow()
   })
-  it('separates authored pacing from physical time and holds contact before release',()=>{
-    expect(guidedTime(-1)).toBe(START);expect(guidedTime(12.25)).toBe(0);expect(guidedTime(200)).toBe(END)
+  it('separates authored pacing from physical time and keeps moving through contact',()=>{
+    expect(guidedTime(-1)).toBe(START);expect(guidedTime(12)).toBe(0);expect(guidedTime(12.25)).toBeGreaterThan(0);expect(guidedTime(200)).toBe(END)
     for(const t of [START,-1,0,1,600,PERIOD,100*PERIOD,END])expect(guidedTime(guidedCue(t))).toBeCloseTo(t,7)
   })
   it('agrees with an independent Cartesian RK4 integration through three orbits',()=>{
@@ -99,8 +99,22 @@ describe('long-clock dynamics and secondary release',()=>{
     }
   })
   it('slows the secondary encounter independently of the primary clock and reaches 500 orbits',()=>{
-    expect(END/PERIOD).toBeCloseTo(500,10);expect(guidedTime(87.25,true)).toBe(SECONDARY_TIME)
+    expect(END/PERIOD).toBeCloseTo(500,10);expect(guidedTime(87,true)).toBe(SECONDARY_TIME);expect(guidedTime(87.25,true)).toBeGreaterThan(SECONDARY_TIME)
     for(const t of [0,60,10*PERIOD,SECONDARY_TIME-1,SECONDARY_TIME,SECONDARY_TIME+10,END])expect(guidedTime(guidedCue(t,true),true)).toBeCloseTo(t,6)
+  })
+  it('has positive, continuous playback speed around both impacts and every pace change',()=>{
+    for(const secondary of [false,true]){
+      const joins=secondary?[4,7,12,19,29,39,48,60,76,78,82,87,94,104,114,123,143]:[4,7,12,19,29,39,48,60,78,105]
+      for(const cue of joins){
+        const dt=.00001,left=(guidedTime(cue,secondary)-guidedTime(cue-dt,secondary))/dt,right=(guidedTime(cue+dt,secondary)-guidedTime(cue,secondary))/dt
+        expect(left).toBeGreaterThan(0);expect(right).toBeGreaterThan(0)
+        expect(Math.abs(left-right)/Math.max(left,right)).toBeLessThan(.01)
+      }
+      for(const cue of secondary?[12,87]:[12]){
+        let previous=guidedTime(cue-.75,secondary)
+        for(let frame=1;frame<=90;frame++){const next=guidedTime(cue-.75+frame/60,secondary);expect(next).toBeGreaterThan(previous);previous=next}
+      }
+    }
   })
   it('agrees with an independent Cartesian J2 integration on nodal drift over five days',()=>{
     const radius=RADIUS+800,v=Math.sqrt(MU/radius),inc=55*Math.PI/180,initial={position:[radius,0,0] as Vec3,velocity:[0,v*Math.cos(inc),v*Math.sin(inc)] as Vec3},orbit=new Orbit(initial,true)

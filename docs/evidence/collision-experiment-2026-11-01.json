@@ -5,7 +5,7 @@
   "path": "how-a-debris-cloud-forms/",
   "implementation": {
     "file": "src/collision-model.ts",
-    "sha256": "b62e5790007747acb061a44edbb4d74a68318ad89773b6e135df73e181233e07"
+    "sha256": "dbcff8f49df650cfc2f569597ef006ce8123c06438f274c12438e7a068bd5474"
   },
   "identity": {
     "synthetic": true,
@@ -88,13 +88,14 @@
   "presentation": {
     "label": "AN INDICATIVE SIMULATION",
     "clock": "Elapsed time from primary contact, with days/hours and original-orbit count. The scrubber follows the active guided sequence, including the optional secondary event. Playback stops at 500 original orbits.",
-    "guidedPace": "145-second primary sequence: slowed contact and young cloud; 3, 25, 100, 250 and 500 original orbits. Secondary mode adds a separately slowed encounter at orbit 100 and follows the new C cloud, giving a 183-second sequence. Native playback also offers 0.1, 1, 5 and 20 original orbits per real second.",
+    "guidedPace": "145-second primary sequence: slowed contact and young cloud; 3, 25, 100, 250 and 500 original orbits. Secondary mode adds a separately slowed encounter at orbit 100 and follows the new C cloud, giving a 183-second sequence. Native playback also offers 0.1, 1, 5 and 20 original orbits per real second. Both impacts have no constant-time hold. Positive harmonic-mean slopes join monotone cubic Hermite segments, making playback speed continuous across the cues; inverse seeking uses a bounded binary solve.",
     "camera": "Close on two illustrative bodies, hold the last 10 km camera distance for visible convergence; push into cloud A and follow its actual centroid for ten model minutes; continuously pull back to Earth from +10 to +40 minutes. Follow cloud retains the close camera; Frame Earth reveals the whole scene. Floating origin preserves local precision; positions are not exaggerated. The secondary branch uses the projectile and target positions for the approach and follows the C centroid after impact. Global framing fits the largest release apogee.",
     "glyphs": "Two authored 3D body diagrams before contact; 768 primary and 256 optional secondary irregular shaded shard glyphs after contact. Display sizes, rotation and body shapes are authored, not material-fracture outputs. Contact ring is a marker, not a fireball. 24 short model histories in the frame translating with the family mean release orbit reveal dispersion within cloud A; tips meet exact current fragment positions. Original orbit paths default off. Scale bar reports target-plane distance.",
     "slider": "Pauses at the displayed time; changes the maximum paired kick magnitude while holding seed, directions and relative magnitudes fixed; directly recomputes physical states and periods.",
     "reducedMotion": "Opening and replay stay paused. Later preference changes pause and never automatically restart.",
     "navigation": "Discover and cross-links distinguish the synthetic experiment from the retained catalogue chapter.",
-    "diagram": "Linked Gabbard-style perigee/apogee against orbital period, coloured by primary A/B and secondary C. Future samples are hidden and removed/consumed samples dim. Heights are release-element quantities; J2 changes orientation rather than perigee/apogee."
+    "diagram": "Linked Gabbard-style perigee/apogee against orbital period, coloured by primary A/B and secondary C. Future samples are hidden and removed/consumed samples dim. Heights are release-element quantities; J2 changes orientation rather than perigee/apogee.",
+    "startup": "All scene materials and geometry/instance buffers receive a hidden warm render before the playback timestamp starts, including debris and histories that first appear at impact."
   },
   "references": [
     {
@@ -133,8 +134,8 @@
     "context": "Only factual numerical parameters and original mathematical implementation are published. Source PDFs are retained in ignored work storage; no NASA figures or third-party illustrations are redistributed. The authored synthetic model remains MIT; this does not relicense source reports."
   },
   "validation": {
-    "unit": "Two-body energy/angular momentum and independent RK4 agreement through three orbits; J2 rate checks and independent Cartesian J2 integration of nodal drift over five days; deterministic 500-orbit seeks; first-entry boundary and reversal; conditioned secondary intersection, exact mass-weighted release momentum and energy budget, consumption and birth times; guided clock inversion for both branches; camera continuity and aspect adaptation.",
-    "browser": "Slowed primary and secondary encounters; 500-orbit stop; orbit-per-second playback; seek/replay and seed retention; physical-time preservation on gestures; J2 and secondary controls; linked perigee/apogee plot; portrait/landscape and /zenit/ assets; no provider requests; actual young-cloud raster footprint.",
+    "unit": "Two-body energy/angular momentum and independent RK4 agreement through three orbits; J2 rate checks and independent Cartesian J2 integration of nodal drift over five days; deterministic 500-orbit seeks; first-entry boundary and reversal; conditioned secondary intersection, exact mass-weighted release momentum and energy budget, consumption and birth times; guided clock inversion for both branches; camera continuity and aspect adaptation. Positive continuous clock rates at all internal cues, strictly increasing frame samples through both impacts, and inverse-clock agreement are verified.",
+    "browser": "Slowed primary and secondary encounters; 500-orbit stop; orbit-per-second playback; seek/replay and seed retention; physical-time preservation on gestures; J2 and secondary controls; linked perigee/apogee plot; portrait/landscape and /zenit/ assets; no provider requests; actual young-cloud raster footprint. Consecutive rendered frames advance through both impacts; shader compilation is instrumented to ensure no shader is compiled when debris first appears.",
     "interpretation": "Numerical validation of this authored two-body experiment, not empirical validation of fragmentation physics or a historical event."
   },
   "review": {

@@ -154,19 +154,41 @@ export function cloudHistory(sample:Sample,centre:Orbit,time:number,past:number)
 
 // Slow the last fraction of a second, then travel with the young cloud.
 // Physical elapsed time remains explicit and every seek evaluates the same states.
-const OPENING:Array<[number,number]>=[[0,START],[4,-2],[7,-.2],[12,0],[12.5,0],[19,5],[29,60],[39,600],[48,3*PERIOD],[60,25*PERIOD]]
+const OPENING:Array<[number,number]>=[[0,START],[4,-2],[7,-.2],[12,0],[19,5],[29,60],[39,600],[48,3*PERIOD],[60,25*PERIOD]]
 const CUES:Array<[number,number]>=[...OPENING,[78,100*PERIOD],[105,250*PERIOD],[145,END]]
-const SECONDARY_CUES:Array<[number,number]>=[...OPENING,[76,SECONDARY_TIME-5*PERIOD],[78,SECONDARY_TIME-30],[82,SECONDARY_TIME-.2],[87,SECONDARY_TIME],[87.5,SECONDARY_TIME],[94,SECONDARY_TIME+5],[104,SECONDARY_TIME+60],[114,SECONDARY_TIME+600],[123,SECONDARY_TIME+3*PERIOD],[143,250*PERIOD],[183,END]]
+const SECONDARY_CUES:Array<[number,number]>=[...OPENING,[76,SECONDARY_TIME-5*PERIOD],[78,SECONDARY_TIME-30],[82,SECONDARY_TIME-.2],[87,SECONDARY_TIME],[94,SECONDARY_TIME+5],[104,SECONDARY_TIME+60],[114,SECONDARY_TIME+600],[123,SECONDARY_TIME+3*PERIOD],[143,250*PERIOD],[183,END]]
+function viewingClock(cues:Array<[number,number]>){
+  const secants=cues.slice(1).map(([x,y],i)=>(y-cues[i][1])/(x-cues[i][0]))
+  // Positive harmonic-mean slopes keep the clock monotone, with continuous speed
+  // across each cue. Contact is a moving instant, never a constant-time segment.
+  const slopes=cues.map((_,i)=>i===0?secants[0]:i===cues.length-1?secants.at(-1)!:2/(1/secants[i-1]+1/secants[i]))
+  return (seconds:number)=>{
+    if(seconds<=cues[0][0])return cues[0][1]
+    for(let i=1;i<cues.length;i++){
+      const [b,tb]=cues[i],[a,ta]=cues[i-1]
+      if(seconds<=b){
+        const width=b-a,u=(seconds-a)/width,u2=u*u,u3=u2*u
+        return ta+(tb-ta)*(3*u2-2*u3)+width*(slopes[i-1]*(u3-2*u2+u)+slopes[i]*(u3-u2))
+      }
+    }
+    return cues.at(-1)![1]
+  }
+}
+const primaryClock=viewingClock(CUES),secondaryClock=viewingClock(SECONDARY_CUES)
 export const GUIDED_DURATION=145
 export function guidedDuration(secondary=false){return secondary?183:GUIDED_DURATION}
 export function guidedTime(cue:number,secondary=false):number {
-  const cues=secondary?SECONDARY_CUES:CUES,seconds=Math.max(0,Math.min(guidedDuration(secondary),cue))
-  for(let i=1;i<cues.length;i++){const [b,tb]=cues[i],[a,ta]=cues[i-1];if(seconds<=b)return ta+(tb-ta)*(seconds-a)/(b-a)}
-  return END
+  return (secondary?secondaryClock:primaryClock)(Math.max(0,Math.min(guidedDuration(secondary),cue)))
 }
 export function guidedCue(time:number,secondary=false):number {
   const cues=secondary?SECONDARY_CUES:CUES
   const t=Math.max(START,Math.min(END,time))
-  for(let i=1;i<cues.length;i++){const [b,tb]=cues[i],[a,ta]=cues[i-1];if(t<=tb&&tb>ta)return a+(b-a)*(t-ta)/(tb-ta)}
+  for(let i=1;i<cues.length;i++)if(t<=cues[i][1]){
+    let lo=cues[i-1][0],hi=cues[i][0]
+    if(t===cues[i-1][1])return lo
+    if(t===cues[i][1])return hi
+    for(let n=0;n<48;n++){const mid=(lo+hi)/2;if(guidedTime(mid,secondary)<t)lo=mid;else hi=mid}
+    return (lo+hi)/2
+  }
   return guidedDuration(secondary)
 }

@@ -13,7 +13,7 @@ async function advance(page:Page,ms:number){await page.clock.fastForward(ms);awa
 test('the guided experiment meets, releases, spreads and stops at five hundred orbits',async({page,baseURL},info)=>{
   const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));const external:string[]=[];page.on('request',r=>{if(!r.url().startsWith(baseURL+'/')&&!r.url().startsWith('data:'))external.push(r.url())})
   const canvas=await open(page);await expect(canvas).toHaveAttribute('data-count','2');await page.screenshot({path:info.outputPath('approach.png')})
-  await advance(page,12100);await expect(page.locator('#stage-title')).toHaveText('A fraction of a second.');await expect(canvas).toHaveAttribute('data-time','0');await expect(canvas).toHaveAttribute('data-count','768');await page.screenshot({path:info.outputPath('contact.png')})
+  await advance(page,12100);expect(Number(await canvas.getAttribute('data-time'))).toBeGreaterThan(0);expect(Number(await canvas.getAttribute('data-time'))).toBeLessThan(.1);await expect(canvas).toHaveAttribute('data-count','768');await page.screenshot({path:info.outputPath('contact.png')})
   await advance(page,10000);await expect.poll(async()=>Number(await canvas.getAttribute('data-time'))).toBeGreaterThan(5);await expect(canvas).toHaveAttribute('data-count','768');await page.screenshot({path:info.outputPath('release.png')})
   await page.getByRole('button',{name:'Pause',exact:true}).click();const held=await canvas.getAttribute('data-time');await advance(page,1000);await expect(canvas).toHaveAttribute('data-time',held!)
   await page.getByRole('button',{name:'Play',exact:true}).click();await advance(page,200000);await atTime(canvas,END);await expect(canvas).toHaveAttribute('data-playing','false');await page.screenshot({path:info.outputPath('five-hundred-orbits.png')});await advance(page,1000);await atTime(canvas,END);expect(errors).toEqual([]);expect(external).toEqual([])
@@ -79,4 +79,29 @@ test('a controlled secondary collision consumes both participants and propagates
   await page.getByRole('button',{name:'+500 orbits',exact:true}).click();const on=Number(await canvas.getAttribute('data-count'));await atTime(canvas,END);await page.screenshot({path:info.outputPath('secondary-500.png')})
   await page.getByRole('button',{name:'Orbits & model',exact:true}).click();await expect(page.locator('#secondary-readings')).toContainText('J/g');await expect(page.locator('.spread-summary')).toContainText('new C family');await page.keyboard.press('Escape')
   await page.getByRole('button',{name:'Secondary',exact:true}).click();await expect(canvas).toHaveAttribute('data-secondary','false');expect(Number(await canvas.getAttribute('data-count'))).toBeLessThan(on);await atTime(canvas,END)
+})
+
+test('both impacts keep advancing on rendered frames without compiling shaders at first release',async({page})=>{
+  await page.addInitScript(()=>{
+    const state=window as unknown as {collisionShaderCompiles:number};state.collisionShaderCompiles=0
+    const original=WebGL2RenderingContext.prototype.compileShader
+    WebGL2RenderingContext.prototype.compileShader=function(this:WebGL2RenderingContext,shader:WebGLShader){state.collisionShaderCompiles++;original.call(this,shader)}
+  })
+  const canvas=await open(page,true)
+  const count=()=>page.evaluate(()=>(window as unknown as {collisionShaderCompiles:number}).collisionShaderCompiles)
+  const warmed=await count();expect(warmed).toBeGreaterThan(0)
+  for(const secondary of [false,true]){
+    if(secondary)await page.getByRole('button',{name:'Secondary',exact:true}).click()
+    const cue=secondary?87:12,impact=secondary?SECONDARY_TIME:0
+    await page.getByRole('slider',{name:'Encounter timeline'}).fill((cue-.15).toFixed(2))
+    await page.getByRole('button',{name:'Play',exact:true}).click()
+    let previous=Number(await canvas.getAttribute('data-time'));expect(previous).toBeLessThan(impact)
+    for(let frame=0;frame<24;frame++){
+      await page.clock.runFor(32)
+      const next=Number(await canvas.getAttribute('data-time'));expect(next).toBeGreaterThan(previous);previous=next
+      await expect(canvas).toHaveAttribute('data-playing','true')
+    }
+    expect(previous).toBeGreaterThan(impact);expect(await count()).toBe(warmed)
+    await page.getByRole('button',{name:'Pause',exact:true}).click()
+  }
 })

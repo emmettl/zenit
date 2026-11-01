@@ -12,7 +12,7 @@ const status=element('simulation-state')
 function mount(){
   const host=element('simulation-scene'),scene=new Scene(),camera=new PerspectiveCamera(43,1,.000001,8)
   const renderer=new WebGLRenderer({antialias:true});renderer.setClearColor('#05090e');renderer.setPixelRatio(Math.min(devicePixelRatio,2));host.append(renderer.domElement)
-  const canvas=renderer.domElement;canvas.tabIndex=0;canvas.setAttribute('aria-label','Synthetic collision view. Drag or use arrow keys to orbit; plus and minus zoom; space pauses.')
+  const canvas=renderer.domElement;canvas.style.visibility='hidden';canvas.tabIndex=0;canvas.setAttribute('aria-label','Synthetic collision view. Drag or use arrow keys to orbit; plus and minus zoom; space pauses.')
   const controls=new OrbitControls(camera,canvas);controls.enablePan=false;controls.enableDamping=false;controls.minDistance=.000004;controls.maxDistance=12
   const inertial=new Group(),origin=new Vector3();scene.add(inertial)
   const geography=earthTexture({width:4096,coastlines:false,edgeSoftness:1.5});geography.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy())
@@ -167,7 +167,11 @@ function mount(){
   reduced.addEventListener('change',()=>{if(reduced.matches){pause();update()}});document.addEventListener('visibilitychange',()=>{if(document.hidden){pause();update()}})
   canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();failed=true;pause();status.hidden=false;status.textContent='The graphics context was interrupted. Reload to reopen the experiment.'})
   new ResizeObserver(()=>{fit();update()}).observe(host)
-  fit();update();status.hidden=true;document.documentElement.dataset.simulation='ready'
+  fit();camera.position.copy(fullPosition);camera.lookAt(0,0,0)
+  // Warm every material and its buffers while the canvas is hidden. Shards and
+  // histories first become visible at impact; their first draw must not stall it.
+  renderer.compile(scene,camera);renderer.render(scene,camera)
+  last=performance.now();update();canvas.style.visibility='';status.hidden=true;document.documentElement.dataset.simulation='ready'
   function tick(now:number){const dt=Math.max(0,(now-last)/1000);last=now
     if(playing){if(pace.value==='guided'){cue=Math.min(guidedDuration(secondaryOn()),cue+dt);time=guidedTime(cue,secondaryOn())}else{time=Math.min(END,time+dt*(pace.value.startsWith('orbit-')?Number(pace.value.slice(6))*PERIOD:Number(pace.value)));cue=guidedCue(time,secondaryOn())}if(time>=END)pause();update()}
     requestAnimationFrame(tick)
