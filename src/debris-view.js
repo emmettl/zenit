@@ -11,7 +11,7 @@ let time=start,playing=false,rate=60,selected=-1,following=false,points=[],last=
 const objects=proof.movers.map(m=>({...m,epoch:Date.parse(m.element.EPOCH),first:Date.parse(m.eligibleStartUtc),last:Date.parse(m.eligibleEndUtc),baseline:json2satrec(m.element,'a')}))
 for(const [i,m] of objects.entries()){const option=document.createElement('option');option.value=String(i);option.textContent=`${m.name} · ${m.id}${m.role==='original-catalogue-identity'?' · original identity':''}`;$('object').append(option)}
 const renderer=new WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setClearColor('#05090e');$('scene').append(renderer.domElement);const canvas=renderer.domElement;canvas.tabIndex=0;canvas.setAttribute('aria-label','Debris orbital view. Drag or use arrow keys to orbit; plus and minus zoom. Select a light to inspect.')
-const scene=new Scene(),camera=new PerspectiveCamera(43,1,.00001,100);camera.position.copy(new Vector3(0,1.7,3.7).multiplyScalar(Math.max(1,innerHeight/innerWidth)))
+const scene=new Scene(),camera=new PerspectiveCamera(43,1,.05,100);camera.position.copy(new Vector3(0,1.7,3.7).multiplyScalar(Math.max(1,innerHeight/innerWidth)))
 const controls=new OrbitControls(camera,canvas);controls.minDistance=1.08;controls.maxDistance=12;controls.enablePan=false;controls.enableDamping=false
 const earth=new Mesh(earthGeometry(),new MeshPhongMaterial({map:earthTexture(),shininess:8,specular:'#42677b'}));scene.add(earth);scene.add(new HemisphereLight('#94b8ca','#08131b',.75));const sun=new DirectionalLight('#b6dae9',3.2);scene.add(sun)
 const geometry=new BufferGeometry();for(const name of ['position','tint'])geometry.setAttribute(name,new Float32BufferAttribute(new Float32Array(objects.length*3),3));for(const name of ['bodyVisible','chosen','original'])geometry.setAttribute(name,new Float32BufferAttribute(new Float32Array(objects.length),1))
@@ -20,7 +20,13 @@ const dots=new Points(geometry,material);dots.frustumCulled=false;scene.add(dots
 const trailGeometry=new BufferGeometry(),trail=new Line(trailGeometry,new LineBasicMaterial({color:'#e9d3a6',transparent:true,opacity:.6}));scene.add(trail)
 let previousTarget=null
 function state(m,t){if(t<m.first||t>m.last||Math.abs(t-m.epoch)>86400000)return null;const pv=sgp4({...m.baseline},(t-m.epoch)/60000);if(!pv||!Object.values(pv.position).every(Number.isFinite))return null;const gmst=gstime(new Date(t)),p=eciToEcf(pv.position,gmst);return {world:new Vector3(p.x,p.z,-p.y).divideScalar(6378.137),height:eciToGeodetic(pv.position,gmst).height}}
-function clearance(){const radius=new Vector3(camera.position.x,camera.position.y/(1-1/298.257223563),camera.position.z).length();if(radius<1.03)camera.position.multiplyScalar(1.03/Math.max(radius,1e-12))}
+function clearance(){
+ const radius=new Vector3(camera.position.x,camera.position.y/(1-1/298.257223563),camera.position.z).length()
+ if(radius<1.03)camera.position.multiplyScalar(1.03/Math.max(radius,1e-12))
+ // A surface-sized near plane wastes orbital depth precision: fragments can fail Earth's depth test.
+ const near=Math.min(.05,Math.max(.000001,(Math.max(radius,1.03)-1)*.15))
+ if(camera.near!==near){camera.near=near;camera.updateProjectionMatrix()}
+}
 function view(){controls.update();clearance();renderer.render(scene,camera)}
 function applyIntroduction(){if(introElapsed===null)return;const beat=debrisIntroduction(introElapsed);for(const group of proof.groups)$(group.id).checked=beat.groups.includes(group.id);if($('introduction')){$('introduction').hidden=false;$('intro-step').textContent=`0${beat.index+1} / 03 · THE AFTERMATH`;$('intro-title').textContent=beat.title;$('intro-note').textContent=beat.note+' '+objects.filter(m=>beat.groups.includes(m.group)&&time>=m.first&&time<=m.last).length+' eligible catalogue records.';$('intro-pause').textContent=playing?'Pause introduction':'Resume introduction'}const within=introElapsed%8000;material.uniforms.attention.value=Math.min(1,within/500,beat.index<2?(8000-within)/500:1);canvas.dataset.introduction=String(beat.index)}
 function stopIntroduction(together=false){if(introElapsed===null)return;introElapsed=null;material.uniforms.attention.value=1;pause();document.body.classList.remove('introducing');if($('introduction'))$('introduction').hidden=true;if(together)for(const group of proof.groups)$(group.id).checked=true;canvas.dataset.introduction='exploring'}
