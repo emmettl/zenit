@@ -5,7 +5,7 @@
   "path": "how-a-debris-cloud-forms/",
   "implementation": {
     "file": "src/collision-model.ts",
-    "sha256": "a8750f127a920d4c08b113935a95ef829f65fb620f041b4596e4c69440873a90"
+    "sha256": "61b28c86dd260a9e8e0564addcd0f87e58d3b8e304c1239d81c39772d0b1da50"
   },
   "identity": {
     "synthetic": true,
@@ -26,30 +26,30 @@
       -30,
       18157.240648476334
     ],
-    "sampleCount": 192,
-    "samplesPerFamily": 96,
+    "sampleCount": 768,
+    "samplesPerFamily": 384,
     "sampleWeights": "Equal representative weights, not physical masses or predicted fragment yield.",
     "seed": 1514491465,
-    "randomAlgorithm": "Mulberry32; uniform spherical directions from uniform z and azimuth, paired with opposite vectors.",
+    "randomAlgorithm": "Mulberry32; uniform spherical direction from uniform z and azimuth; magnitude = cube root of a third uniform variate. Paired opposite vectors fill a ball uniformly in velocity space.",
     "releaseSpeedMPerSecond": {
       "minimum": 10,
       "maximum": 100,
       "step": 10,
       "initial": 60,
-      "distribution": "Every kick has the selected magnitude relative to its family mean. No fitted breakup distribution."
+      "distribution": "Uniform volume in the velocity ball, from zero to the selected maximum speed. Same relative magnitudes and directions on replay; no fitted breakup distribution."
     },
     "relativeMeanVelocityRetention": 0.995,
     "momentum": "Equal-weight family means conserve total incoming linear momentum; paired kicks sum to zero.",
     "energy": "Relative mean velocity contraction removes more kinetic energy than the kicks add throughout the allowed slider range.",
-    "minimumSamplePerigeeAtMaximumSpreadKm": 361.1617573307103,
+    "minimumSamplePerigeeAtMaximumSpreadKm": 369.58213366844575,
     "periodRangesSecondsAtMaximumSpread": [
       [
-        5784.391263250497,
-        6248.59386202563
+        5782.281856555804,
+        6250.898200211102
       ],
       [
-        5777.0644157347,
-        6256.944768337874
+        5789.824724912837,
+        6242.060602910649
       ]
     ],
     "frame": "Synthetic inertial Cartesian axes mapped to Three world (x,z,-y). Earth rotates about its polar axis at 7.292115e-5 rad/s, with arbitrary orientation at contact and no dated geographical claim.",
@@ -66,11 +66,11 @@
   },
   "presentation": {
     "label": "AN INDICATIVE SIMULATION",
-    "clock": "Elapsed seconds from contact; separate from all dated catalogue clocks.",
-    "guidedPace": "50 authored seconds: approach 8s; contact hold 2s; release to +3min over 8s; +3min to +30min over 10s; +30min to three original periods over 22s. Stops at the bound.",
-    "camera": "Continuous close encounter to Earth composition over the first 15 model minutes; gestures hand over the camera and preserve physical time.",
-    "glyphs": "Two diamonds before contact; 192 samples at/after contact, with no duplicate parent glyphs. Authored point sizes and direction arrow lengths.",
-    "slider": "Pauses at the displayed time; changes kick magnitudes with fixed seed/directions; directly recomputes states and period ranges.",
+    "clock": "Elapsed seconds from contact, separate from all dated catalogue clocks. The scrubber follows the authored viewing pace so sub-second encounter motion is accessible alongside the five-hour interval. Its value text reports physical elapsed time.",
+    "guidedPace": "66 authored seconds: -30s to -2s over 4s; to -0.2s over 3s; to contact over 5s; contact hold 0.5s; to +5s over 6.5s; to +60s over 10s; to +10min over 10s; to half an original orbit over 9s; to three original periods over 18s. Stops at the bound.",
+    "camera": "Close on two illustrative bodies, hold the last 10 km camera distance for visible convergence; push into cloud A and follow its actual centroid for ten model minutes; continuously pull back to Earth from +10 to +40 minutes. Follow cloud retains the close camera; Frame Earth reveals the whole scene. Floating origin preserves local precision; positions are not exaggerated.",
+    "glyphs": "Two authored 3D body diagrams before contact; 768 irregular shaded shard glyphs after contact. Display sizes, rotation and body shapes are authored, not material-fracture outputs. Contact ring is a marker, not a fireball. 24 short model histories in the frame translating with the family mean release orbit reveal dispersion within cloud A; tips meet exact current fragment positions. Original orbit paths default off. Scale bar reports target-plane distance.",
+    "slider": "Pauses at the displayed time; changes the maximum paired kick magnitude while holding seed, directions and relative magnitudes fixed; directly recomputes physical states and periods.",
     "reducedMotion": "Opening and replay stay paused. Later preference changes pause and never automatically restart.",
     "navigation": "Discover and cross-links distinguish the synthetic experiment from the retained catalogue chapter."
   },
@@ -89,8 +89,8 @@
     "geography": "Existing audited Natural Earth public-domain geometry is unchanged."
   },
   "validation": {
-    "unit": "Encounter geometry, circular closure, seeded replay, fixed paired kicks, momentum and kinetic energy at slider extrema, positive perigees, orbital energy/angular momentum on forward/reverse seeks. Independent Cartesian RK4 with 2-second steps agrees after three orbits within 0.1 m position and 1 mm/s velocity.",
-    "browser": "Guided hold/release/stop, seek/replay/spread, camera clock preservation, reduced motion, keyboard, model scrolling, portrait/landscape, /zenit/ assets, no external requests.",
+    "unit": "Encounter geometry, circular closure, seeded replay, paired variable-speed kicks filling velocity space, momentum and kinetic energy at slider extrema, positive perigees, orbital energy/angular momentum on forward/reverse seeks. Independent Cartesian RK4 with 2-second steps agrees after three orbits within 0.1 m position and 1 mm/s velocity. Camera checks cover real-centroid following, contact and pullback continuity, and aspect adaptation.",
+    "browser": "Guided hold/release/stop, seek/replay/spread, camera clock preservation, reduced motion, keyboard, model scrolling, portrait/landscape, /zenit/ assets, no external requests. Actual bright-shard raster footprint spans a filled area in the young cloud; cloud follow is independent of the orbital reveal and preserves time.",
     "interpretation": "Numerical validation of this authored two-body experiment, not empirical validation of fragmentation physics or a historical event."
   }
 }

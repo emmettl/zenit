@@ -127,7 +127,7 @@ console.log('Debris publication checked: 462 audited identities, two family role
 const simulationAudit=JSON.parse(await readFile('docs/evidence/collision-experiment-2026-11-01.json','utf8'))
 assert.equal(simulationAudit.kind,'indicative-collision-experiment');assert.equal(simulationAudit.identity.synthetic,true);assert.equal(simulationAudit.identity.providerData,false);assert.equal(simulationAudit.identity.historicalEvent,null);assert.deepEqual(simulationAudit.identity.catalogueIdentities,[])
 assert.equal(createHash('sha256').update(await readFile(simulationAudit.implementation.file)).digest('hex'),simulationAudit.implementation.sha256)
-assert.equal(simulationAudit.physics.sampleCount,192);assert.equal(simulationAudit.physics.seed,0x5a454e49);assert.ok(simulationAudit.physics.minimumSamplePerigeeAtMaximumSpreadKm>300)
+assert.equal(simulationAudit.physics.sampleCount,768);assert.equal(simulationAudit.physics.seed,0x5a454e49);assert.ok(simulationAudit.physics.minimumSamplePerigeeAtMaximumSpreadKm>300)
 const simulationHtml=await readFile('dist/how-a-debris-cloud-forms/index.html','utf8')
 assert.match(simulationHtml,/rel="canonical" href="https:\/\/zenit\.motionstudies\.app\/how-a-debris-cloud-forms\//)
 assert.match(simulationHtml,/AN INDICATIVE SIMULATION/);assert.match(simulationHtml,/Neither body represents an actual satellite or historical event/)

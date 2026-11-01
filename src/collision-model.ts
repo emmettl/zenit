@@ -5,7 +5,7 @@ export const MU = 398600.4418 // km³/s², conventional Earth GM
 export const RADIUS = 6378.137 // km; spherical reference height, not WGS84 altitude
 export const RELEASE_HEIGHT = 800
 export const SEED = 0x5a454e49
-export const SAMPLES_PER_FAMILY = 96
+export const SAMPLES_PER_FAMILY = 384
 export const RETENTION = .995 // assumed retention of velocity relative to the equal-weight COM
 export const START = -30
 export const add = (a:Vec3,b:Vec3):Vec3 => [a[0]+b[0],a[1]+b[1],a[2]+b[2]]
@@ -61,28 +61,38 @@ export const PERIOD = PARENTS[0].period
 export const END = 3*PERIOD
 export const RELATIVE_SPEED = norm(add(PARENTS[0].initial.velocity,scale(PARENTS[1].initial.velocity,-1)))
 export interface Sample {family:0|1; orbit:Orbit; kick:Vec3}
-export interface Experiment {spread:number; samples:Sample[]; periods:[number,number][]}
+export interface Experiment {spread:number; samples:Sample[]; centres:Orbit[]; periods:[number,number][]}
 
 function random(seed:number){let value=seed;return()=>{value+=0x6d2b79f5;let t=Math.imul(value^value>>>15,1|value);t^=t+Math.imul(t^t>>>7,61|t);return((t^t>>>14)>>>0)/4294967296}}
 export function experiment(spread:number):Experiment {
   if(!Number.isFinite(spread)||spread<10||spread>100)throw new Error('Release speed must be 10–100 m/s')
-  const rng=random(SEED), com=scale(add(PARENTS[0].initial.velocity,PARENTS[1].initial.velocity),.5),samples:Sample[]=[]
+  const rng=random(SEED), com=scale(add(PARENTS[0].initial.velocity,PARENTS[1].initial.velocity),.5),samples:Sample[]=[],centres:Orbit[]=[]
   for(const family of [0,1] as const){
     const mean=add(com,scale(add(PARENTS[family].initial.velocity,scale(com,-1)),RETENTION))
+    centres.push(new Orbit({position:[radius,0,0],velocity:mean}))
     for(let i=0;i<SAMPLES_PER_FAMILY/2;i++){
-      const z=2*rng()-1,angle=2*Math.PI*rng(),r=Math.sqrt(1-z*z),direction:Vec3=[r*Math.cos(angle),r*Math.sin(angle),z]
+      const z=2*rng()-1,angle=2*Math.PI*rng(),r=Math.sqrt(1-z*z),magnitude=Math.cbrt(rng()),direction:Vec3=[r*Math.cos(angle),r*Math.sin(angle),z]
       for(const sign of [-1,1]){
-        const kick=scale(direction,sign*spread/1000)
+        // Uniform volume in velocity space: a filled cloud, rather than a shell.
+        const kick=scale(direction,sign*magnitude*spread/1000)
         samples.push({family,kick,orbit:new Orbit({position:[radius,0,0],velocity:add(mean,kick)})})
       }
     }
   }
-  return {spread,samples,periods:[0,1].map(family=>{const periods=samples.filter(s=>s.family===family).map(s=>s.orbit.period);return[Math.min(...periods),Math.max(...periods)]})}
+  return {spread,samples,centres,periods:[0,1].map(family=>{const periods=samples.filter(s=>s.family===family).map(s=>s.orbit.period);return[Math.min(...periods),Math.max(...periods)]})}
 }
 
-// A 50-second authored viewing clock; the physical elapsed time remains explicit.
-const CUES:[[number,number],...Array<[number,number]>]=[[0,START],[8,0],[10,0],[18,180],[28,1800],[50,END]]
-export const GUIDED_DURATION=50
+/** A history in the frame translating with the family's mean release orbit.
+ * The tip remains the fragment's exact current inertial position.
+ */
+export function cloudHistory(sample:Sample,centre:Orbit,time:number,past:number):Vec3 {
+  return add(add(sample.orbit.at(past).position,scale(centre.at(past).position,-1)),centre.at(time).position)
+}
+
+// Slow the last fraction of a second, then travel with the young cloud.
+// Physical elapsed time remains explicit and every seek evaluates the same states.
+const CUES:[[number,number],...Array<[number,number]>]=[[0,START],[4,-2],[7,-.2],[12,0],[12.5,0],[19,5],[29,60],[39,600],[48,PERIOD/2],[66,END]]
+export const GUIDED_DURATION=66
 export function guidedTime(cue:number):number {
   const seconds=Math.max(0,Math.min(GUIDED_DURATION,cue))
   for(let i=1;i<CUES.length;i++){const [b,tb]=CUES[i],[a,ta]=CUES[i-1];if(seconds<=b)return ta+(tb-ta)*(seconds-a)/(b-a)}
