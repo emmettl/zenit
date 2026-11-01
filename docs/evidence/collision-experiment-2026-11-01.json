@@ -5,7 +5,7 @@
   "path": "how-a-debris-cloud-forms/",
   "implementation": {
     "file": "src/collision-model.ts",
-    "sha256": "61b28c86dd260a9e8e0564addcd0f87e58d3b8e304c1239d81c39772d0b1da50"
+    "sha256": "b62e5790007747acb061a44edbb4d74a68318ad89773b6e135df73e181233e07"
   },
   "identity": {
     "synthetic": true,
@@ -15,16 +15,16 @@
     "purpose": "Illustrate a prescribed fragment release and cloud stretching over the first three revolutions."
   },
   "physics": {
-    "model": "Edition-owned elliptic Kepler propagation from Cartesian release states, evaluated directly at every displayed time.",
+    "model": "Elliptic propagation with optional first-order secular J2 node, apsis and mean-anomaly rates. Release elements are treated as mean elements; short-period corrections are omitted. Direct deterministic evaluation at displayed elapsed time.",
     "muKm3PerSecond2": 398600.4418,
     "sphericalReferenceRadiusKm": 6378.137,
     "releaseHeightKm": 800,
-    "incomingGeometry": "Two equal-weight circular bodies meet at [R+h,0,0]; velocity inclinations +55 and -35 degrees give perpendicular paths.",
-    "incomingRelativeSpeedKmPerSecond": 10.538480936333066,
-    "originalPeriodSeconds": 6052.413549492111,
+    "incomingGeometry": "Idealised circular encounter at 800 km and 72.5 degrees north, with inclinations 86.4 / 74 degrees. Inclinations and latitude are informed by NASA's published 2009 event analysis. These are synthetic circular states, not recovered historical ephemerides.",
+    "incomingRelativeSpeedKmPerSecond": 11.541978081403812,
+    "originalPeriodSeconds": 6052.413549492112,
     "intervalSeconds": [
       -30,
-      18157.240648476334
+      3026206.774746056
     ],
     "sampleCount": 768,
     "samplesPerFamily": 384,
@@ -32,47 +32,69 @@
     "seed": 1514491465,
     "randomAlgorithm": "Mulberry32; uniform spherical direction from uniform z and azimuth; magnitude = cube root of a third uniform variate. Paired opposite vectors fill a ball uniformly in velocity space.",
     "releaseSpeedMPerSecond": {
-      "minimum": 10,
-      "maximum": 100,
-      "step": 10,
-      "initial": 60,
+      "minimum": 50,
+      "maximum": 1500,
+      "step": 50,
+      "initial": 600,
       "distribution": "Uniform volume in the velocity ball, from zero to the selected maximum speed. Same relative magnitudes and directions on replay; no fitted breakup distribution."
     },
-    "relativeMeanVelocityRetention": 0.995,
+    "relativeMeanVelocityRetention": 0.97,
     "momentum": "Equal-weight family means conserve total incoming linear momentum; paired kicks sum to zero.",
     "energy": "Relative mean velocity contraction removes more kinetic energy than the kicks add throughout the allowed slider range.",
-    "minimumSamplePerigeeAtMaximumSpreadKm": 369.58213366844575,
+    "minimumSamplePerigeeAtMaximumSpreadKm": -3002.1879239518094,
     "periodRangesSecondsAtMaximumSpread": [
       [
-        5782.281856555804,
-        6250.898200211102
+        3816.133824063307,
+        11922.094687656705
       ],
       [
-        5789.824724912837,
-        6242.060602910649
+        3836.64763811428,
+        11693.000007044966
       ]
     ],
     "frame": "Synthetic inertial Cartesian axes mapped to Three world (x,z,-y). Earth rotates about its polar axis at 7.292115e-5 rad/s, with arbitrary orientation at contact and no dated geographical claim.",
     "drawnEarth": "Existing WGS84 ellipsoid and pinned Natural Earth geography. Experiment heights are above the spherical reference, distinct from WGS84 geodetic altitude.",
     "excluded": [
-      "Material fracture or impact hydrodynamics",
-      "NASA Standard Breakup Model or fitted size/mass/velocity distributions",
-      "Atmospheric drag, reentry and long-term decay",
-      "Oblateness / J2, third bodies and radiation pressure",
-      "Secondary collisions and cascades",
-      "Optical visibility or collision probability",
-      "Historical event reconstruction"
-    ]
+      "Fitted historical Iridium/Cosmos reconstruction",
+      "Material fracture and calibrated size/mass spectra",
+      "Atmospheric drag and decay above the prescribed entry boundary",
+      "Short-period J2 corrections and higher gravity harmonics",
+      "Third bodies and radiation pressure",
+      "Population-wide stochastic collisions, avoidance, collision probability and cascade timing",
+      "Optical visibility"
+    ],
+    "originalOrbits": 500,
+    "days": 35.02554137437565,
+    "j2": 0.00108262668,
+    "entryBoundary": {
+      "heightKm": 120,
+      "rule": "Remove on the first inbound radial crossing of a spherical R+120 km boundary. Reversible by seek; no atmospheric drag or lifetime estimate above this boundary."
+    },
+    "secondary": {
+      "conditional": true,
+      "timeSeconds": 605241.3549492112,
+      "source": "First surviving primary sample at orbit 100 whose height is 500–1,200 km.",
+      "target": "Synthetic circular orbit through the selected fragment position, tangential direction rotated 130 degrees from its transverse velocity. The target is propagated backwards from the specified encounter.",
+      "projectileMassKg": 1,
+      "targetMassKg": 1000,
+      "samples": 256,
+      "momentum": "Paired kicks sum to zero about the combined mass-weighted centre-of-mass velocity; both incoming bodies are consumed at contact.",
+      "energy": "Maximum kick is 0.7 sqrt(2 K_relative / total_mass), capped at 400 m/s; a filled velocity ball uses less than the available relative kinetic energy.",
+      "defaultRelativeSpeedKmPerSecond": 13.210590189376273,
+      "defaultSpecificImpactEnergyJPerGram": 87.25984657582231,
+      "meaning": "A controlled second breakup, not a probabilistically generated collision or a population-wide cascade prediction."
+    }
   },
   "presentation": {
     "label": "AN INDICATIVE SIMULATION",
-    "clock": "Elapsed seconds from contact, separate from all dated catalogue clocks. The scrubber follows the authored viewing pace so sub-second encounter motion is accessible alongside the five-hour interval. Its value text reports physical elapsed time.",
-    "guidedPace": "66 authored seconds: -30s to -2s over 4s; to -0.2s over 3s; to contact over 5s; contact hold 0.5s; to +5s over 6.5s; to +60s over 10s; to +10min over 10s; to half an original orbit over 9s; to three original periods over 18s. Stops at the bound.",
-    "camera": "Close on two illustrative bodies, hold the last 10 km camera distance for visible convergence; push into cloud A and follow its actual centroid for ten model minutes; continuously pull back to Earth from +10 to +40 minutes. Follow cloud retains the close camera; Frame Earth reveals the whole scene. Floating origin preserves local precision; positions are not exaggerated.",
-    "glyphs": "Two authored 3D body diagrams before contact; 768 irregular shaded shard glyphs after contact. Display sizes, rotation and body shapes are authored, not material-fracture outputs. Contact ring is a marker, not a fireball. 24 short model histories in the frame translating with the family mean release orbit reveal dispersion within cloud A; tips meet exact current fragment positions. Original orbit paths default off. Scale bar reports target-plane distance.",
+    "clock": "Elapsed time from primary contact, with days/hours and original-orbit count. The scrubber follows the active guided sequence, including the optional secondary event. Playback stops at 500 original orbits.",
+    "guidedPace": "145-second primary sequence: slowed contact and young cloud; 3, 25, 100, 250 and 500 original orbits. Secondary mode adds a separately slowed encounter at orbit 100 and follows the new C cloud, giving a 183-second sequence. Native playback also offers 0.1, 1, 5 and 20 original orbits per real second.",
+    "camera": "Close on two illustrative bodies, hold the last 10 km camera distance for visible convergence; push into cloud A and follow its actual centroid for ten model minutes; continuously pull back to Earth from +10 to +40 minutes. Follow cloud retains the close camera; Frame Earth reveals the whole scene. Floating origin preserves local precision; positions are not exaggerated. The secondary branch uses the projectile and target positions for the approach and follows the C centroid after impact. Global framing fits the largest release apogee.",
+    "glyphs": "Two authored 3D body diagrams before contact; 768 primary and 256 optional secondary irregular shaded shard glyphs after contact. Display sizes, rotation and body shapes are authored, not material-fracture outputs. Contact ring is a marker, not a fireball. 24 short model histories in the frame translating with the family mean release orbit reveal dispersion within cloud A; tips meet exact current fragment positions. Original orbit paths default off. Scale bar reports target-plane distance.",
     "slider": "Pauses at the displayed time; changes the maximum paired kick magnitude while holding seed, directions and relative magnitudes fixed; directly recomputes physical states and periods.",
     "reducedMotion": "Opening and replay stay paused. Later preference changes pause and never automatically restart.",
-    "navigation": "Discover and cross-links distinguish the synthetic experiment from the retained catalogue chapter."
+    "navigation": "Discover and cross-links distinguish the synthetic experiment from the retained catalogue chapter.",
+    "diagram": "Linked Gabbard-style perigee/apogee against orbital period, coloured by primary A/B and secondary C. Future samples are hidden and removed/consumed samples dim. Heights are release-element quantities; J2 changes orientation rather than perigee/apogee."
   },
   "references": [
     {
@@ -82,15 +104,43 @@
     {
       "url": "https://earth-info.nga.mil/index.php?action=wgs84&dir=wgs84",
       "role": "Primary reference for Earth GM, reference radius and nominal rotation rate. Numerical constants only."
+    },
+    {
+      "url": "https://ntrs.nasa.gov/api/citations/20090013858/downloads/20090013858.pdf",
+      "role": "Primary NASA reference for first-order secular J2 rates. Edition-owned implementation; no copied code.",
+      "retained": {
+        "path": "work/sources/collision-context-2026-11-01/nasa-j2-formation-dynamics.pdf",
+        "sha256": "37050823c1be055c74f27b146889919da42e5ed70bdab5801a2cd5b994e6b7e5"
+      }
+    },
+    {
+      "url": "https://ntrs.nasa.gov/api/citations/20100008433/downloads/20100008433.pdf",
+      "role": "NASA analysis of the actual 2009 collision, including observed Gabbard diagrams and multidecade consequences. Context only: no historical satellite elements, figure images or digitised observations imported.",
+      "retained": {
+        "path": "work/sources/collision-context-2026-11-01/nasa-iridium-cosmos-2010.pdf",
+        "sha256": "862bb0653a89933d48e4b9e98cadff30a40c3bf9cffc7a3420963a7032fbbdbd",
+        "factsUsed": "72.50 degree event latitude, 86.4 and 74 degree orbital inclinations; event context and Gabbard diagrams. No figure, image, spacecraft identity, orbital element set or digitised fragment record is reproduced."
+      }
+    },
+    {
+      "url": "https://www.nasa.gov/wp-content/uploads/2024/05/2024-otps-cba-of-orbital-debris-phase-2-plus-svgs-v3-tjc-tagged.pdf",
+      "role": "Primary NASA context for catastrophic-impact specific energy and statistical breakup modelling. The conditional release here is not a complete Standard Breakup Model implementation."
     }
   ],
   "rights": {
     "model": "Edition-owned MIT code and synthetic initial conditions; no satellite records or licensed breakup dataset acquired.",
-    "geography": "Existing audited Natural Earth public-domain geometry is unchanged."
+    "geography": "Existing audited Natural Earth public-domain geometry is unchanged.",
+    "context": "Only factual numerical parameters and original mathematical implementation are published. Source PDFs are retained in ignored work storage; no NASA figures or third-party illustrations are redistributed. The authored synthetic model remains MIT; this does not relicense source reports."
   },
   "validation": {
-    "unit": "Encounter geometry, circular closure, seeded replay, paired variable-speed kicks filling velocity space, momentum and kinetic energy at slider extrema, positive perigees, orbital energy/angular momentum on forward/reverse seeks. Independent Cartesian RK4 with 2-second steps agrees after three orbits within 0.1 m position and 1 mm/s velocity. Camera checks cover real-centroid following, contact and pullback continuity, and aspect adaptation.",
-    "browser": "Guided hold/release/stop, seek/replay/spread, camera clock preservation, reduced motion, keyboard, model scrolling, portrait/landscape, /zenit/ assets, no external requests. Actual bright-shard raster footprint spans a filled area in the young cloud; cloud follow is independent of the orbital reveal and preserves time.",
+    "unit": "Two-body energy/angular momentum and independent RK4 agreement through three orbits; J2 rate checks and independent Cartesian J2 integration of nodal drift over five days; deterministic 500-orbit seeks; first-entry boundary and reversal; conditioned secondary intersection, exact mass-weighted release momentum and energy budget, consumption and birth times; guided clock inversion for both branches; camera continuity and aspect adaptation.",
+    "browser": "Slowed primary and secondary encounters; 500-orbit stop; orbit-per-second playback; seek/replay and seed retention; physical-time preservation on gestures; J2 and secondary controls; linked perigee/apogee plot; portrait/landscape and /zenit/ assets; no provider requests; actual young-cloud raster footprint.",
     "interpretation": "Numerical validation of this authored two-body experiment, not empirical validation of fragmentation physics or a historical event."
+  },
+  "review": {
+    "reason": "User requested hundreds of orbits, broader orbital divergence, and secondary collisions.",
+    "qualitativeLimits": "35 days of first-order gravity evolution, with an imposed entry boundary. No long-term lifetime or collision-frequency claim.",
+    "defaultPrimaryActiveAt500": 418,
+    "defaultWithSecondaryActiveAt500": 672
   }
 }

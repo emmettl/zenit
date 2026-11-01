@@ -1,5 +1,4 @@
 import {expect,it} from 'vitest'
-import {Vector3} from 'three'
 import {experiment,SAMPLES_PER_FAMILY,RADIUS} from './collision-model'
 import {cloudFrame,composition,world} from './collision-composition'
 const run=experiment(60)
@@ -28,5 +27,5 @@ it('joins both camera stages continuously and preserves the physical framing acr
   const narrow=composition(60,cloud(60),.5),wide=composition(60,cloud(60),2)
   expect(narrow.position.distanceTo(narrow.target)/wide.position.distanceTo(wide.target)).toBeCloseTo(2)
   expect(narrow.target.distanceTo(wide.target)).toBe(0)
-  expect(wide.up.dot(new Vector3(1,0,0))).toBeGreaterThan(.8)
+  expect(wide.up.dot(cloud(60).radial)).toBeGreaterThan(.8)
 })

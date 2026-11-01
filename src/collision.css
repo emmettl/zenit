@@ -93,3 +93,6 @@ aside .family-a{color:#79cbe2}aside .family-b{color:#e4b17d}
   .experiment-control{grid-column:2;grid-row:2 / 4;margin:0;padding:6px 0 0}.experiment-control label{font-size:10px}.experiment-control p{display:block;font-size:8px}.experiment-control input{height:24px}
   footer{display:none}aside{top:66px;bottom:8px;left:auto;right:18px;width:350px}#simulation-state{top:80px;left:22px}
 }
+.family-c{color:#ed9dc7}#secondary{color:#ed9dc7}#secondary[aria-pressed=true]{border-color:#ed9dc7;background:#362136}#model-panel{width:390px}#spread-plot svg{display:block;width:100%;height:auto}#spread-plot text{fill:#8eabbc;font:8px ui-monospace,monospace}.spread-grid{stroke:#30424e;stroke-width:.7;fill:none}.entry-boundary{stroke:#e4b17d;stroke-width:.6;stroke-dasharray:3 3;fill:none}.spread-legend,.spread-summary{font:9px/1.7 ui-monospace,monospace}.spread-description{font-size:11px}#secondary-readings{color:#ed9dc7}.playback select{max-width:110px}
+@media(max-width:800px){#model-panel{width:auto}.chapter-nav a,.chapter-nav button{font-size:8px;padding:6px 7px}.playback select{max-width:100px}.waypoints button{font-size:8px}}
+@media(min-width:651px) and (max-height:500px){#model-panel{width:350px}}

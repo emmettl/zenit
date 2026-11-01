@@ -1,9 +1,9 @@
 import {Group,Mesh,MeshPhongMaterial,BoxGeometry,CylinderGeometry,EdgesGeometry,LineSegments,LineBasicMaterial,InstancedMesh,TetrahedronGeometry,Color,DynamicDrawUsage} from 'three'
 
-export const FAMILY_COLOURS=['#79cbe2','#e4b17d']
+export const FAMILY_COLOURS=['#79cbe2','#e4b17d','#ed9dc7']
 /** Authored diagram glyphs, with no identity or physical-dimension claim. */
 export function bodyGlyph(family:number){
-  const group=new Group(),hull=new MeshPhongMaterial({color:family===0?'#d9e9ef':'#d9ae78',shininess:35,flatShading:true}),panel=new MeshPhongMaterial({color:'#224b74',shininess:60})
+  const group=new Group(),hull=new MeshPhongMaterial({color:family===0?'#d9e9ef':family===1?'#d9ae78':'#ed9dc7',shininess:35,flatShading:true}),panel=new MeshPhongMaterial({color:'#224b74',shininess:60})
   const box=(x:number,y:number,z:number,material:MeshPhongMaterial,px=0,py=0)=>{
     const geometry=new BoxGeometry(x,y,z),mesh=new Mesh(geometry,material);mesh.position.set(px,py,0);group.add(mesh)
     const edges=new LineSegments(new EdgesGeometry(geometry),new LineBasicMaterial({color:family===0?'#a3dfef':'#f1cda0',transparent:true,opacity:.5}));edges.position.copy(mesh.position);group.add(edges)
@@ -17,9 +17,9 @@ export function bodyGlyph(family:number){
   }
   return group
 }
-export function fragmentGlyphs(count:number){
+export function fragmentGlyphs(count:number,familySize=count/2){
   const material=new MeshPhongMaterial({color:'#ffffff',shininess:30,flatShading:true,specular:'#b7d9df'})
   const mesh=new InstancedMesh(new TetrahedronGeometry(1,0),material,count);mesh.instanceMatrix.setUsage(DynamicDrawUsage);mesh.frustumCulled=false
-  for(let i=0;i<count;i++){const base=new Color(FAMILY_COLOURS[Math.floor(i/(count/2))]);base.lerp(new Color('#f4f2e7'),i%19===0?.65:.1);mesh.setColorAt(i,base)}
+  for(let i=0;i<count;i++){const base=new Color(FAMILY_COLOURS[Math.min(2,Math.floor(i/familySize))]);base.lerp(new Color('#f4f2e7'),i%19===0?.65:.1);mesh.setColorAt(i,base)}
   return mesh
 }
