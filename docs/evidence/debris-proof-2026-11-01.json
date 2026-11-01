@@ -1,0 +1,1593 @@
+{
+  "capturedOn": "2026-11-01",
+  "title": "After the collision \u2014 two-family source and composition proof",
+  "status": "private-research-proof",
+  "event": {
+    "dateUtc": "2009-02-10",
+    "contextUrl": "https://celestrak.org/events/collision/",
+    "treatment": "Documented context only; no animation of the collision instant"
+  },
+  "study": {
+    "startUtc": "2026-11-01T10:30:00.000Z",
+    "endUtc": "2026-11-01T16:30:00.000Z",
+    "initialUtc": "2026-11-01T10:30:00.000Z"
+  },
+  "sources": [
+    {
+      "id": "iridium-33",
+      "url": "https://celestrak.org/NORAD/elements/gp.php?GROUP=iridium-33-debris&FORMAT=JSON",
+      "finalUrl": "https://celestrak.org/NORAD/elements/gp.php?GROUP=iridium-33-debris&FORMAT=JSON",
+      "capturedAt": "2026-11-01T10:24:26.174620+00:00",
+      "completedAt": "2026-11-01T10:24:27.088526+00:00",
+      "responseStatus": 200,
+      "sha256": "748a8d806094a8afac6b8f3002b4656d443ee098bf34d6368404e19c551b5576",
+      "bytes": 46131,
+      "responseHeaders": {
+        "Content-Type": "application/json; charset=UTF-8",
+        "Content-Disposition": "filename=\"iridium-33-debris.json\"",
+        "Date": "Sun, 01 Nov 2026 10:24:26 GMT",
+        "Content-Length": "46131"
+      }
+    },
+    {
+      "id": "cosmos-2251",
+      "url": "https://celestrak.org/NORAD/elements/gp.php?GROUP=cosmos-2251-debris&FORMAT=JSON",
+      "finalUrl": "https://celestrak.org/NORAD/elements/gp.php?GROUP=cosmos-2251-debris&FORMAT=JSON",
+      "capturedAt": "2026-11-01T10:24:27.088750+00:00",
+      "completedAt": "2026-11-01T10:24:28.545235+00:00",
+      "responseStatus": 200,
+      "sha256": "33994dd25bccd8388d13ba86ad16d89961d54310f02f71abdfd404c9fb9ff2c6",
+      "bytes": 248100,
+      "responseHeaders": {
+        "Content-Type": "application/json; charset=UTF-8",
+        "Content-Disposition": "filename=\"cosmos-2251-debris.json\"",
+        "Date": "Sun, 01 Nov 2026 10:24:27 GMT",
+        "Content-Length": "248100"
+      }
+    },
+    {
+      "id": "celestrak-usage",
+      "url": "https://celestrak.org/usage-policy.php",
+      "finalUrl": "https://celestrak.org/usage-policy.php",
+      "capturedAt": "2026-11-01T10:24:22.419096+00:00",
+      "completedAt": "2026-11-01T10:24:23.184723+00:00",
+      "responseStatus": 200,
+      "sha256": "dfbb6396dd9cf56d67d846462fc8bcc71b0c5bf4304535c91dd80c0d257e5582",
+      "bytes": 13980,
+      "responseHeaders": {
+        "Content-Type": "text/html; charset=UTF-8",
+        "Date": "Sun, 01 Nov 2026 10:24:22 GMT",
+        "Content-Length": "13980"
+      }
+    },
+    {
+      "id": "celestrak-formats",
+      "url": "https://celestrak.org/NORAD/documentation/gp-data-formats.php",
+      "finalUrl": "https://celestrak.org/NORAD/documentation/gp-data-formats.php",
+      "capturedAt": "2026-11-01T10:24:23.184945+00:00",
+      "completedAt": "2026-11-01T10:24:24.948470+00:00",
+      "responseStatus": 200,
+      "sha256": "bef6565246a07bd42021c48aed1af4e7ac98ab9ccb0e34c8701077c24a0e860f",
+      "bytes": 40338,
+      "responseHeaders": {
+        "Content-Type": "text/html; charset=UTF-8",
+        "Date": "Sun, 01 Nov 2026 10:24:24 GMT",
+        "Content-Length": "40338"
+      }
+    },
+    {
+      "id": "space-track-terms",
+      "url": "https://www.space-track.org/documentation",
+      "finalUrl": "https://www.space-track.org/documentation",
+      "capturedAt": "2026-11-01T10:24:24.948664+00:00",
+      "completedAt": "2026-11-01T10:24:25.320494+00:00",
+      "responseStatus": 200,
+      "sha256": "5c30eff7963aaa061e33fa4d1f18272d4555eaf61d16a9d6bf35af4c1a423f6d",
+      "bytes": 186504,
+      "responseHeaders": {
+        "date": "Sun, 01 Nov 2026 10:24:25 GMT",
+        "content-type": "text/html; charset=UTF-8"
+      }
+    },
+    {
+      "id": "collision-context",
+      "url": "https://celestrak.org/events/collision/",
+      "finalUrl": "https://celestrak.org/events/collision/",
+      "capturedAt": "2026-11-01T10:24:25.320749+00:00",
+      "completedAt": "2026-11-01T10:24:26.174447+00:00",
+      "responseStatus": 200,
+      "sha256": "bde4e40be53644f4d9cb12ac50091bee42a019afa66a559e65f0bb43d9a681e3",
+      "bytes": 30794,
+      "responseHeaders": {
+        "Content-Type": "text/html; charset=UTF-8",
+        "Date": "Sun, 01 Nov 2026 10:24:25 GMT",
+        "Content-Length": "30794"
+      }
+    }
+  ],
+  "rights": {
+    "status": "private-research-proof",
+    "basis": "Basic TLE/OMM redistribution approval with citation retained from Space-Track documentation. CelesTrak usage and format statements retained separately. No optional enrichment, imagery, or event-page prose redistributed.",
+    "attribution": "CelesTrak; USSPACECOM / 18th Space Defense Squadron via Space-Track.org.",
+    "groupMembership": "Provider-supplied current snapshot association; not independently reconstructed fragment genealogy. Exact original catalogue identities are separately labelled and are not described as intact spacecraft.",
+    "publicReleaseGate": "Review family attribution and exclusions, independent numerical agreement, visual composition and physical-phone performance before a public chapter."
+  },
+  "model": {
+    "library": "satellite.js",
+    "version": "7.1.0",
+    "gravity": "WGS72",
+    "operationMode": "a",
+    "propagationFrame": "TEME",
+    "displayFrame": "Earth-fixed PEF approximation using GMST, UTC approximates UT1; polar motion omitted",
+    "geography": "WGS84 ellipsoid; public-domain Natural Earth geography from the existing edition",
+    "ageLimitHours": 24,
+    "eligibility": "Absolute element offset <=24 hours at each displayed UTC. Invalid and wholly stale records excluded; changing eligibility retained. No age-to-error conversion.",
+    "sampling": "Direct SGP4 from a cloned baseline at each displayed instant; no state interpolation. Numerical scan every 60 seconds including eligible bounds.",
+    "scope": "Six-hour contemporary aftermath snapshot. No collision reconstruction, historical population evolution, risk calculation, physical sizes or optical visibility claim."
+  },
+  "groups": [
+    {
+      "id": "iridium-33",
+      "label": "Iridium 33",
+      "parentId": "24946",
+      "designator": "1997-051",
+      "name": "IRIDIUM 33",
+      "colour": "#79cbe2",
+      "inputRecords": 109,
+      "retainedRecords": 74,
+      "initialEligibleRecords": 74,
+      "endEligibleRecords": 60,
+      "originalCatalogueIdentities": [
+        "24946"
+      ],
+      "excludedRecords": 35,
+      "medianInitialHeightKm": 720.0112716325025,
+      "medianMeanPeriodMinutes": 99.26179022201705
+    },
+    {
+      "id": "cosmos-2251",
+      "label": "Cosmos 2251",
+      "parentId": "22675",
+      "designator": "1993-036",
+      "name": "COSMOS 2251",
+      "colour": "#e4b17d",
+      "inputRecords": 585,
+      "retainedRecords": 388,
+      "initialEligibleRecords": 388,
+      "endEligibleRecords": 299,
+      "originalCatalogueIdentities": [
+        "22675"
+      ],
+      "excludedRecords": 197,
+      "medianInitialHeightKm": 736.5430370132485,
+      "medianMeanPeriodMinutes": 99.43701010954295
+    }
+  ],
+  "statistics": {
+    "inputRows": 694,
+    "distinctIdentities": 694,
+    "retainedIdentities": 462,
+    "initialEligibleIdentities": 462,
+    "endEligibleIdentities": 359,
+    "excludedIdentities": 232,
+    "capExclusions": 0
+  },
+  "exclusionLedger": [
+    {
+      "id": "34375",
+      "group": "iridium-33",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T07:47:25.287072Z"
+    },
+    {
+      "id": "34833",
+      "group": "iridium-33",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T02:59:06.189216Z"
+    },
+    {
+      "id": "34870",
+      "group": "iridium-33",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T09:07:18.253632Z"
+    },
+    {
+      "id": "35052",
+      "group": "iridium-33",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T03:54:40.514688Z"
+    },
+    {
+      "id": "35297",
+      "group": "iridium-33",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-24T06:16:24.856320Z"
+    },
+    {
+      "id": "35480",
+      "group": "iridium-33",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T02:23:45.157344Z"
+    },
+    {
+      "id": "35484",
+      "group": "iridium-33",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-28T11:07:01.509024Z"
+    },
+    {
+      "id": "35618",
+      "group": "iridium-33",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-29T11:54:13.519584Z"
+    },
+    {
+      "id": "35625",
+      "group": "iridium-33",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-09T04:46:20.253792Z"
+    },
+    {
+      "id": "35680",
+      "group": "iridium-33",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T14:31:19.954848Z"
+    },
+    {
+      "id": "35806",
+      "group": "iridium-33",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-29T13:39:08.805024Z"
+    },
+    {
+      "id": "35809",
+      "group": "iridium-33",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T10:22:43.065696Z"
+    },
+    {
+      "id": "35846",
+      "group": "iridium-33",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T21:54:02.160864Z"
+    },
+    {
+      "id": "35848",
+      "group": "iridium-33",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T02:24:02.912544Z"
+    },
+    {
+      "id": "35918",
+      "group": "iridium-33",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T17:50:32.178336Z"
+    },
+    {
+      "id": "35929",
+      "group": "iridium-33",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T08:30:44.447040Z"
+    },
+    {
+      "id": "36028",
+      "group": "iridium-33",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T08:09:03.133440Z"
+    },
+    {
+      "id": "36080",
+      "group": "iridium-33",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-29T01:41:07.953216Z"
+    },
+    {
+      "id": "36390",
+      "group": "iridium-33",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T08:06:08.985600Z"
+    },
+    {
+      "id": "36493",
+      "group": "iridium-33",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T01:51:37.877472Z"
+    },
+    {
+      "id": "36497",
+      "group": "iridium-33",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-23T04:57:23.220864Z"
+    },
+    {
+      "id": "37136",
+      "group": "iridium-33",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-28T23:17:58.514496Z"
+    },
+    {
+      "id": "37548",
+      "group": "iridium-33",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T15:01:35.294880Z"
+    },
+    {
+      "id": "38022",
+      "group": "iridium-33",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-27T12:59:41.274816Z"
+    },
+    {
+      "id": "38228",
+      "group": "iridium-33",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T04:48:52.873344Z"
+    },
+    {
+      "id": "38241",
+      "group": "iridium-33",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T01:33:09.191808Z"
+    },
+    {
+      "id": "38474",
+      "group": "iridium-33",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T01:25:33.530304Z"
+    },
+    {
+      "id": "38477",
+      "group": "iridium-33",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T02:18:05.728032Z"
+    },
+    {
+      "id": "39781",
+      "group": "iridium-33",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-17T20:12:09.179424Z"
+    },
+    {
+      "id": "40996",
+      "group": "iridium-33",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-24T17:25:53.572800Z"
+    },
+    {
+      "id": "46435",
+      "group": "iridium-33",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-28T02:05:16.291104Z"
+    },
+    {
+      "id": "46734",
+      "group": "iridium-33",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T00:42:13.125312Z"
+    },
+    {
+      "id": "46965",
+      "group": "iridium-33",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T23:09:41.256576Z"
+    },
+    {
+      "id": "46971",
+      "group": "iridium-33",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T10:02:33.052704Z"
+    },
+    {
+      "id": "46972",
+      "group": "iridium-33",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T04:36:58.254624Z"
+    },
+    {
+      "id": "33822",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T05:19:27.084000Z"
+    },
+    {
+      "id": "33892",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T06:28:19.038720Z"
+    },
+    {
+      "id": "34011",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T08:52:36.532992Z"
+    },
+    {
+      "id": "34307",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T01:54:34.327008Z"
+    },
+    {
+      "id": "34316",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T05:55:12.975744Z"
+    },
+    {
+      "id": "34344",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T16:20:00.058272Z"
+    },
+    {
+      "id": "34346",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-27T10:56:42.539424Z"
+    },
+    {
+      "id": "34476",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T21:42:21.078432Z"
+    },
+    {
+      "id": "34544",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T13:32:22.000128Z"
+    },
+    {
+      "id": "34546",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T04:43:21.029952Z"
+    },
+    {
+      "id": "34547",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T02:18:20.416896Z"
+    },
+    {
+      "id": "34554",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T07:36:48.415392Z"
+    },
+    {
+      "id": "34560",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T05:56:28.811616Z"
+    },
+    {
+      "id": "34572",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T05:19:16.417056Z"
+    },
+    {
+      "id": "34615",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T07:52:09.943968Z"
+    },
+    {
+      "id": "34619",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T08:55:34.594752Z"
+    },
+    {
+      "id": "34671",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T05:47:18.176640Z"
+    },
+    {
+      "id": "34672",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T01:56:31.180416Z"
+    },
+    {
+      "id": "34682",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T09:09:32.153760Z"
+    },
+    {
+      "id": "34683",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T02:56:00.861216Z"
+    },
+    {
+      "id": "34689",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T04:40:35.630112Z"
+    },
+    {
+      "id": "34728",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T12:42:14.565600Z"
+    },
+    {
+      "id": "34750",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T23:58:27.953760Z"
+    },
+    {
+      "id": "34784",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T14:42:16.623360Z"
+    },
+    {
+      "id": "34813",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T02:08:22.458048Z"
+    },
+    {
+      "id": "34818",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T18:30:30.269952Z"
+    },
+    {
+      "id": "34819",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T05:40:52.081824Z"
+    },
+    {
+      "id": "34823",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T17:27:57.965472Z"
+    },
+    {
+      "id": "34845",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T04:14:22.659360Z"
+    },
+    {
+      "id": "34846",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T09:10:54.560352Z"
+    },
+    {
+      "id": "34878",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T06:02:30.157152Z"
+    },
+    {
+      "id": "34879",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T23:00:08.766720Z"
+    },
+    {
+      "id": "34882",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T11:41:19.669344Z"
+    },
+    {
+      "id": "34908",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T08:46:51.284640Z"
+    },
+    {
+      "id": "34909",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T01:01:30.785952Z"
+    },
+    {
+      "id": "34910",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T10:17:24.082080Z"
+    },
+    {
+      "id": "34913",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T01:48:41.480640Z"
+    },
+    {
+      "id": "34955",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T08:22:59.926944Z"
+    },
+    {
+      "id": "34963",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T08:30:08.700768Z"
+    },
+    {
+      "id": "34964",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-28T22:02:53.762784Z"
+    },
+    {
+      "id": "34969",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T07:44:31.833888Z"
+    },
+    {
+      "id": "34972",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T23:41:24.009216Z"
+    },
+    {
+      "id": "34979",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T02:21:03.707712Z"
+    },
+    {
+      "id": "34990",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-28T22:37:11.739936Z"
+    },
+    {
+      "id": "34998",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-29T21:54:48.680352Z"
+    },
+    {
+      "id": "35012",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-29T04:28:05.800800Z"
+    },
+    {
+      "id": "35018",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T23:19:52.237632Z"
+    },
+    {
+      "id": "35022",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T14:27:36.418176Z"
+    },
+    {
+      "id": "35032",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T21:32:11.046048Z"
+    },
+    {
+      "id": "35033",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T05:42:12.865824Z"
+    },
+    {
+      "id": "35043",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T21:49:04.562112Z"
+    },
+    {
+      "id": "35062",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T05:20:49.767072Z"
+    },
+    {
+      "id": "35290",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-29T23:24:21.699360Z"
+    },
+    {
+      "id": "35440",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-26T18:24:13.245408Z"
+    },
+    {
+      "id": "35441",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T23:41:12.968160Z"
+    },
+    {
+      "id": "35445",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T16:49:40.807200Z"
+    },
+    {
+      "id": "35446",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-29T14:45:23.875488Z"
+    },
+    {
+      "id": "35453",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-28T07:10:24.028608Z"
+    },
+    {
+      "id": "35456",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T01:26:32.347968Z"
+    },
+    {
+      "id": "35459",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T17:54:59.593248Z"
+    },
+    {
+      "id": "35465",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T07:16:05.225664Z"
+    },
+    {
+      "id": "35469",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-28T22:29:15.366624Z"
+    },
+    {
+      "id": "35586",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T19:55:36.782112Z"
+    },
+    {
+      "id": "35587",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T07:28:15.542400Z"
+    },
+    {
+      "id": "35593",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-28T15:15:46.044576Z"
+    },
+    {
+      "id": "35611",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T07:34:21.206208Z"
+    },
+    {
+      "id": "35614",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T00:37:23.686176Z"
+    },
+    {
+      "id": "35650",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T09:40:59.796768Z"
+    },
+    {
+      "id": "35663",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T12:17:36.735072Z"
+    },
+    {
+      "id": "35670",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T05:14:57.614496Z"
+    },
+    {
+      "id": "35671",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-28T04:07:40.137312Z"
+    },
+    {
+      "id": "35703",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-29T21:46:56.469792Z"
+    },
+    {
+      "id": "35705",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-19T15:13:41.981952Z"
+    },
+    {
+      "id": "35706",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T12:45:39.572928Z"
+    },
+    {
+      "id": "35716",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-29T06:41:34.729152Z"
+    },
+    {
+      "id": "35717",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-29T09:37:39.197568Z"
+    },
+    {
+      "id": "35759",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T06:57:08.247456Z"
+    },
+    {
+      "id": "35764",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-28T15:21:30.424608Z"
+    },
+    {
+      "id": "35771",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T09:55:26.278176Z"
+    },
+    {
+      "id": "35784",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-29T01:28:19.782912Z"
+    },
+    {
+      "id": "35789",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T06:33:19.610496Z"
+    },
+    {
+      "id": "35825",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-27T09:23:53.516832Z"
+    },
+    {
+      "id": "35829",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T08:29:07.675584Z"
+    },
+    {
+      "id": "35837",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-29T00:44:48.246144Z"
+    },
+    {
+      "id": "35840",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T04:55:09.194592Z"
+    },
+    {
+      "id": "35883",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T02:40:46.087392Z"
+    },
+    {
+      "id": "35887",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-29T05:42:06.314976Z"
+    },
+    {
+      "id": "35895",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T19:38:00.573216Z"
+    },
+    {
+      "id": "35905",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T06:53:59.327808Z"
+    },
+    {
+      "id": "35961",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T21:19:24.450816Z"
+    },
+    {
+      "id": "35975",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-27T04:51:22.661568Z"
+    },
+    {
+      "id": "35987",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-25T18:31:07.819392Z"
+    },
+    {
+      "id": "35989",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-28T23:54:13.302720Z"
+    },
+    {
+      "id": "35993",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-25T15:39:43.171200Z"
+    },
+    {
+      "id": "35996",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T07:22:27.529248Z"
+    },
+    {
+      "id": "35997",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-27T06:58:46.998336Z"
+    },
+    {
+      "id": "36000",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-28T20:29:58.739712Z"
+    },
+    {
+      "id": "36008",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-13T02:40:58.611936Z"
+    },
+    {
+      "id": "36045",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-26T20:19:28.773984Z"
+    },
+    {
+      "id": "36061",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T04:45:42.730272Z"
+    },
+    {
+      "id": "36371",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-29T14:44:54.770784Z"
+    },
+    {
+      "id": "36379",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T02:32:30.501312Z"
+    },
+    {
+      "id": "36420",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T00:56:58.471296Z"
+    },
+    {
+      "id": "36430",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T13:36:53.908704Z"
+    },
+    {
+      "id": "36439",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T04:23:32.334432Z"
+    },
+    {
+      "id": "36441",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-18T02:48:52.029504Z"
+    },
+    {
+      "id": "36451",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-11T09:12:11.877120Z"
+    },
+    {
+      "id": "36453",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-29T15:44:14.334144Z"
+    },
+    {
+      "id": "36459",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-29T05:33:45.847296Z"
+    },
+    {
+      "id": "36528",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T04:19:06.278592Z"
+    },
+    {
+      "id": "36529",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-23T04:05:46.231008Z"
+    },
+    {
+      "id": "36550",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T19:44:43.564416Z"
+    },
+    {
+      "id": "36557",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T10:12:34.179840Z"
+    },
+    {
+      "id": "36622",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T03:13:29.210304Z"
+    },
+    {
+      "id": "36632",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T13:28:39.826848Z"
+    },
+    {
+      "id": "37101",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T09:12:16.940160Z"
+    },
+    {
+      "id": "37108",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T16:56:57.616224Z"
+    },
+    {
+      "id": "37118",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T07:28:27.283296Z"
+    },
+    {
+      "id": "37126",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T02:48:57.104640Z"
+    },
+    {
+      "id": "37132",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T18:07:16.563648Z"
+    },
+    {
+      "id": "37270",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-27T01:36:04.677120Z"
+    },
+    {
+      "id": "37278",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-29T20:37:36.253632Z"
+    },
+    {
+      "id": "37280",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-28T09:51:28.765440Z"
+    },
+    {
+      "id": "37284",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-19T09:07:52.443840Z"
+    },
+    {
+      "id": "37293",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-11T17:31:09.794208Z"
+    },
+    {
+      "id": "37295",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T04:44:54.550176Z"
+    },
+    {
+      "id": "37305",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T00:37:48.088128Z"
+    },
+    {
+      "id": "37312",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T09:28:07.375584Z"
+    },
+    {
+      "id": "37320",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T08:18:44.247744Z"
+    },
+    {
+      "id": "37326",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-29T15:25:34.865760Z"
+    },
+    {
+      "id": "37331",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-28T23:50:47.716512Z"
+    },
+    {
+      "id": "37340",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T23:20:09.811392Z"
+    },
+    {
+      "id": "37484",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-20T21:40:36.518016Z"
+    },
+    {
+      "id": "37496",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T22:42:29.769696Z"
+    },
+    {
+      "id": "37498",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T05:31:32.282400Z"
+    },
+    {
+      "id": "37499",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T03:18:55.500768Z"
+    },
+    {
+      "id": "37530",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-29T20:02:41.255808Z"
+    },
+    {
+      "id": "37531",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-29T20:20:18.187872Z"
+    },
+    {
+      "id": "37532",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T08:32:55.515840Z"
+    },
+    {
+      "id": "37533",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T08:50:41.573472Z"
+    },
+    {
+      "id": "37537",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-29T22:10:00.697152Z"
+    },
+    {
+      "id": "37961",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T06:14:45.837600Z"
+    },
+    {
+      "id": "37968",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-29T08:48:41.814432Z"
+    },
+    {
+      "id": "37969",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-24T17:22:28.101504Z"
+    },
+    {
+      "id": "37971",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-28T23:19:11.245152Z"
+    },
+    {
+      "id": "37973",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-24T17:48:43.211520Z"
+    },
+    {
+      "id": "37975",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T23:10:11.602848Z"
+    },
+    {
+      "id": "37985",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T14:07:45.186816Z"
+    },
+    {
+      "id": "37988",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-29T11:53:30.855264Z"
+    },
+    {
+      "id": "37996",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T13:07:59.210976Z"
+    },
+    {
+      "id": "38001",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-29T18:12:33.663744Z"
+    },
+    {
+      "id": "38006",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T19:55:15.741120Z"
+    },
+    {
+      "id": "38055",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-27T06:38:59.017344Z"
+    },
+    {
+      "id": "38056",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T09:06:50.899392Z"
+    },
+    {
+      "id": "38057",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-06T06:17:08.884032Z"
+    },
+    {
+      "id": "38058",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-27T04:59:32.069184Z"
+    },
+    {
+      "id": "38060",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T23:49:35.688288Z"
+    },
+    {
+      "id": "38062",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-17T00:41:14.463168Z"
+    },
+    {
+      "id": "38197",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T18:56:35.653920Z"
+    },
+    {
+      "id": "38208",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T00:37:29.168256Z"
+    },
+    {
+      "id": "38212",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T08:05:02.136192Z"
+    },
+    {
+      "id": "38479",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T07:07:25.084704Z"
+    },
+    {
+      "id": "38481",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-27T22:28:13.899936Z"
+    },
+    {
+      "id": "38483",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-29T06:51:49.027104Z"
+    },
+    {
+      "id": "38486",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T17:02:33.245664Z"
+    },
+    {
+      "id": "38487",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-04T06:44:04.818048Z"
+    },
+    {
+      "id": "39109",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T18:30:37.137024Z"
+    },
+    {
+      "id": "39110",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-28T07:04:57.078048Z"
+    },
+    {
+      "id": "39546",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T00:28:42.396960Z"
+    },
+    {
+      "id": "39553",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T06:22:20.121024Z"
+    },
+    {
+      "id": "39583",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T19:53:31.830432Z"
+    },
+    {
+      "id": "39585",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T13:20:10.091040Z"
+    },
+    {
+      "id": "39586",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-29T21:21:40.252608Z"
+    },
+    {
+      "id": "40233",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-27T04:18:09.369504Z"
+    },
+    {
+      "id": "40235",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-17T11:05:38.252256Z"
+    },
+    {
+      "id": "40238",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-28T16:13:43.590144Z"
+    },
+    {
+      "id": "40792",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T19:51:26.814816Z"
+    },
+    {
+      "id": "40793",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-24T19:29:01.063104Z"
+    },
+    {
+      "id": "40794",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T00:49:02.155008Z"
+    },
+    {
+      "id": "40796",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T13:27:29.642400Z"
+    },
+    {
+      "id": "40797",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T06:12:13.082400Z"
+    },
+    {
+      "id": "40799",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T07:30:48.444480Z"
+    },
+    {
+      "id": "40802",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T02:46:16.118976Z"
+    },
+    {
+      "id": "40803",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-27T09:24:02.132640Z"
+    },
+    {
+      "id": "40808",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-29T06:31:06.240864Z"
+    },
+    {
+      "id": "40810",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T09:46:01.644672Z"
+    },
+    {
+      "id": "46271",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-19T01:31:41.303136Z"
+    },
+    {
+      "id": "46432",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T19:54:24.518880Z"
+    },
+    {
+      "id": "47048",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-29T15:26:56.507712Z"
+    },
+    {
+      "id": "47051",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-29T11:45:58.648032Z"
+    },
+    {
+      "id": "47053",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-19T06:50:03.120576Z"
+    },
+    {
+      "id": "47062",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T15:53:23.519328Z"
+    },
+    {
+      "id": "47067",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-29T22:35:45.166272Z"
+    },
+    {
+      "id": "47069",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T09:49:26.498208Z"
+    },
+    {
+      "id": "47073",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-31T10:05:24.105696Z"
+    },
+    {
+      "id": "47074",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-30T15:41:03.060960Z"
+    },
+    {
+      "id": "47119",
+      "group": "cosmos-2251",
+      "reason": "outside-age-window",
+      "epoch": "2026-10-29T14:17:13.252992Z"
+    }
+  ],
+  "release": {
+    "privateFile": "work/debris-proof/proof.json",
+    "sha256": "64b7583c069a146552bcd64c0957f6c607af5eb6b11cc8233fd371894ac4c723",
+    "bytes": 331609
+  },
+  "validation": {
+    "minuteScan": "passed",
+    "sampleCount": 1333,
+    "independentAgreement": {
+      "payloadSha256": "64b7583c069a146552bcd64c0957f6c607af5eb6b11cc8233fd371894ac4c723",
+      "implementation": "Python sgp4 2.25 / Vallado C++",
+      "gravity": "WGS72",
+      "operationMode": "a",
+      "epochPrecision": "Source fractional epoch retained; both calculations use JavaScript millisecond precision.",
+      "samples": 1333,
+      "identities": 462,
+      "maxPositionDifferenceMetres": 2.1503011109061513e-07,
+      "maxVelocityDifferenceMetresPerSecond": 2.254478916682278e-10,
+      "positionToleranceMetres": 0.02,
+      "velocityToleranceMetresPerSecond": 0.0001,
+      "passed": true,
+      "limitation": "Independent implementation agreement, not source accuracy or historical reconstruction."
+    }
+  }
+}

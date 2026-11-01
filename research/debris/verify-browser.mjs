@@ -1,0 +1,17 @@
+/** Manual private-proof checks against an already running local preview. */
+import {chromium,webkit,expect} from '@playwright/test'
+import {readFile} from 'node:fs/promises'
+const base=process.argv[2]??'http://127.0.0.1:4196/',proof=JSON.parse(await readFile('work/debris-proof/proof.json','utf8')),start=Date.parse(proof.study.startUtc),end=Date.parse(proof.study.endUtc)
+for(const [name,engine,viewport] of [['chromium-desktop',chromium,{width:1280,height:850}],['webkit-phone',webkit,{width:390,height:844}]]){
+ const browser=await engine.launch();try{const page=await browser.newPage({viewport,reducedMotion:'reduce'}),errors=[],requests=[];page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')errors.push(m.text())});page.on('request',r=>requests.push(r.url()));await page.clock.install();await page.goto(base);const canvas=page.locator('canvas');await expect(canvas).toHaveAttribute('data-eligible','462');await expect(canvas).toHaveAttribute('data-shown','462')
+ await page.locator('#cosmos-2251').uncheck();await expect(canvas).toHaveAttribute('data-shown','74');await page.locator('#cosmos-2251').check()
+ const parent=proof.movers.findIndex(m=>m.id==='24946');await page.locator('#object').selectOption(String(parent));await expect(page.locator('#identity')).toContainText('original catalogue identity');await page.getByRole('button',{name:'Follow this record',exact:true}).click();await expect(canvas).toHaveAttribute('data-following','24946')
+ await page.locator('#iridium-33').uncheck();await expect(canvas).toHaveAttribute('data-following','');await page.locator('#iridium-33').check()
+ const expires=proof.movers.findIndex(m=>Date.parse(m.eligibleEndUtc)<end);await page.locator('#object').selectOption(String(expires));await page.getByRole('button',{name:'Follow this record',exact:true}).click();await page.getByRole('slider',{name:'Study time',exact:true}).fill(String(end-start));await expect(canvas).toHaveAttribute('data-eligible','359');await expect(canvas).toHaveAttribute('data-following','');await expect(page.getByRole('button',{name:'Follow this record',exact:true})).toBeDisabled()
+ await page.getByRole('slider',{name:'Study time',exact:true}).fill('0');await expect(canvas).toHaveAttribute('data-time',String(start));await expect(canvas).toHaveAttribute('data-eligible','462')
+ await page.getByRole('button',{name:'Reverse time'}).click();await page.getByRole('button',{name:'Play',exact:true}).click();await page.clock.runFor(200);await expect(canvas).not.toHaveAttribute('data-time',String(start));await page.getByRole('button',{name:'Pause',exact:true}).click();const held=await canvas.getAttribute('data-time');await page.clock.runFor(500);await expect(canvas).toHaveAttribute('data-time',held)
+ await page.getByRole('button',{name:'Return to Earth view',exact:true}).click();await page.getByRole('slider',{name:'Study time',exact:true}).fill('0');await page.locator('#object').selectOption('');await page.evaluate(()=>window.scrollTo(0,0));await page.screenshot({path:`work/debris-proof/${name}.png`,fullPage:true})
+ await page.setViewportSize({width:667,height:320});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true)
+ expect(errors).toEqual([]);expect(requests.every(url=>url.startsWith(base)||url.startsWith('data:'))).toBe(true);console.log(name+': passed — 462/359 eligibility, filters, identities, follow expiry, seek/reverse/pause, local-only requests, no shader or script errors')
+ }finally{await browser.close()}
+}

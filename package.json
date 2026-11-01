@@ -16,7 +16,9 @@
     "build": "npm run typecheck && vite build && node scripts/copy-licences.mjs && node scripts/check-publication.mjs",
     "check": "npm run test && npm run build",
     "preview": "vite preview --host 127.0.0.1",
-    "test:browser": "playwright test"
+    "test:browser": "playwright test",
+    "proof:debris": "node scripts/compile-debris-proof.mjs && vite build --config research/debris/vite.config.mjs",
+    "proof:debris:preview": "vite preview --config research/debris/vite.config.mjs --port 4196 --strictPort"
   },
   "dependencies": {
     "@motionstudies/core": "0.1.0-alpha.31",
