@@ -9,3 +9,16 @@ Positions, pass times and trails are calculated with SGP4, not observed tracks o
 Cohort release: retained 7 October 2026 stations, GNSS and active geosynchronous GP inputs, with selected stations SATCAT fields. Group membership and attachment relationships are frozen provider snapshot facts, not complete orbital regimes or a docking history. Deduplicated by NORAD identity and latest epoch; all memberships retained; docked records attached to parents; invalid, expired and failed records recorded in the exclusion ledger. No optional operating-status enrichment is included.
 
 Observer windows: additional 8 October evening and 9 October morning studies compiled offline from four retained 8 October 2026 captures. Original source epochs, hashes, capture dates and exclusion ledgers are retained. Source fields and attachment relationships are frozen snapshot facts. Night/day station passages and observer readings are calculated; no optical visibility, terrain, observing conditions or docking history is reconstructed.
+
+Debris chapter: After the collision — ZENIT debris chapter.
+Provider: CelesTrak standard GP. Upstream: USSPACECOM / 18th Space Defense Squadron via Space-Track.org.
+Basic SSA redistribution approval with appropriate citation: https://www.space-track.org/documentation#/odr
+Provider usage policy: https://celestrak.org/usage-policy.php
+Two retained 1 November 2026 group captures, source hashes and rights/context audit: https://github.com/emmettl/zenit/blob/main/docs/evidence/debris-chapter-2026-11-01.json
+Standard GP/OMM fields retained. Group association checked against source group, OBJECT_NAME, International Designator prefix and the two original NORAD identities; this is provider-labelled association, not independently established fragment genealogy. No optional status or physical-properties enrichment.
+UTC suffix and explicit documented Earth/TEME/UTC/SGP4 defaults; decimal-string NORAD identities; eligibility bounds and per-record roles added.
+462 unique catalogue records, including 460 debris-labelled records and two original catalogue identities. The original identities do not establish intact spacecraft. 232 wholly stale input records excluded. No visual cap.
+Study: 1 November 2026, 10:30–11:00 UTC; absolute element offset <=24 hours at each displayed instant. The 462-to-454 eligibility change is not a reentry history. Positions are direct SGP4 calculations, not observed tracks.
+The 10 February 2009 collision is documented context only: https://celestrak.org/events/collision/
+Glyph colour/size is authored. No physical debris sizes, collision risk, optical visibility or historical fragmentation reconstruction is represented.
+WGS84 Earth geography: Natural Earth public-domain data, as retained by the edition.

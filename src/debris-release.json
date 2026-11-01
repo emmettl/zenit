@@ -1,0 +1,10 @@
+{
+  "file": "./data/orbital/cohorts-e489b9a6aeb8.json",
+  "sha256": "e489b9a6aeb819800aa71be659b44e7837274831d07a672654406323511d1a65",
+  "records": 462,
+  "study": {
+    "startUtc": "2026-11-01T10:30:00.000Z",
+    "endUtc": "2026-11-01T11:00:00.000Z",
+    "initialUtc": "2026-11-01T10:30:00.000Z"
+  }
+}

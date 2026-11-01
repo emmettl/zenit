@@ -294,3 +294,5 @@ main:not(.cinematic) .horizon-compass{top:52px;right:36px}
 @media(max-width:650px){.cinematic:has(.sky-orientation:not([hidden])) .mode-navigation{left:20px}}
 .cinematic:has(.sky-orientation:not([hidden])) .explorer-browse{top:150px}
 .exploring.cinematic .controls button{min-height:44px}
+
+.explorer-card.debris-entry{display:block;text-decoration:none;border:1px solid #63513e;border-left:2px solid #e4b17d;border-radius:3px}.explorer-card.debris-entry:hover{background:#1b303c}.explorer-card.debris-entry>span{color:#e4b17d}

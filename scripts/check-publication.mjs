@@ -78,7 +78,7 @@ assert.deepEqual(cohorts.source.sources.map(x=>x.sha256),['9a8dd20063818e9782e17
 assert.equal(cohorts.statistics.distinctIdentities,716);assert.equal(cohorts.statistics.inputRows,762)
 assert.equal(cohorts.movers.length,635);assert.equal(new Set(cohorts.movers.map(x=>x.id)).size,635)
 assert.deepEqual(cohorts.study,manifest.study)
-const studyIndex=JSON.parse(await readFile('src/study-windows.json','utf8')),allowedOrbital=new Set(['NOTICE.txt',orbitalFile.split('/')[1],cohortFile.split('/')[1]])
+const studyIndex=JSON.parse(await readFile('src/study-windows.json','utf8')),allowedOrbital=new Set(['NOTICE.txt',orbitalFile.split('/')[1],cohortFile.split('/')[1],JSON.parse(await readFile('src/debris-release.json','utf8')).file.split('/').at(-1)])
 assert.equal(studyIndex.schemaVersion,1);assert.equal(studyIndex.windows.length,3);assert.equal(studyIndex.observers.length,5)
 const nightPlaces=new Set()
 for(const window of studyIndex.windows){
@@ -108,3 +108,18 @@ assert.equal(geography.source.sha256,'9e0729ee253ca7d7a5c4ae9395fb1902264c5377c5
 assert.equal(geography.polygons.length,127);assert.equal(geography.source.rights,'Public domain')
 assert.match(await readFile('dist/licences/natural-earth.txt','utf8'),/Public-domain land polygons/)
 console.log('Geography checked: pinned Natural Earth land, 127 polygons and public-domain notice; geometry bundled in the application.')
+
+const debrisIndex=JSON.parse(await readFile('src/debris-release.json','utf8')),debrisAudit=JSON.parse(await readFile('docs/evidence/debris-chapter-2026-11-01.json','utf8'))
+assert.match(debrisIndex.file,/^\.\/data\/orbital\/cohorts-[a-f0-9]{12}\.json$/)
+const debrisBytes=await readFile('dist/'+debrisIndex.file.slice(2)),debris=JSON.parse(debrisBytes)
+assert.equal(createHash('sha256').update(debrisBytes).digest('hex'),debrisIndex.sha256);assert.equal(debrisIndex.sha256,debrisAudit.release.sha256)
+assert.ok((await readdir('dist/data/orbital')).includes(debrisIndex.file.split('/').at(-1)))
+assert.equal(debris.kind,'debris-chapter');assert.equal(debris.rights.id,'basic-ssa-citation');assert.deepEqual(debris.study,debrisIndex.study);assert.equal(Date.parse(debris.study.endUtc)-Date.parse(debris.study.startUtc),1800000)
+assert.equal(debris.movers.length,462);assert.equal(new Set(debris.movers.map(m=>m.id)).size,462);assert.equal(debris.statistics.excludedIdentities,232);assert.equal(debris.statistics.capExclusions,0)
+assert.equal(debris.model.gravity,'WGS72');assert.equal(debris.model.operationMode,'a');assert.equal(debris.model.propagationFrame,'TEME');assert.equal(debris.model.ageLimitHours,24)
+assert.equal(debrisAudit.validation.proofAgreement.passed,true);assert.equal(debrisAudit.validation.proofAgreement.payloadSha256,JSON.parse(await readFile('docs/evidence/debris-proof-2026-11-01.json','utf8')).release.sha256)
+for(const mover of debris.movers){const epoch=Date.parse(mover.element.EPOCH);assert.equal(Date.parse(mover.eligibleStartUtc),Math.max(Date.parse(debris.study.startUtc),epoch-86400000));assert.equal(Date.parse(mover.eligibleEndUtc),Math.min(Date.parse(debris.study.endUtc),epoch+86400000))}
+assert.equal(debris.movers.filter(m=>m.role==='original-catalogue-identity').length,2);assert.equal(debris.movers.filter(m=>Date.parse(m.eligibleEndUtc)>=Date.parse(debris.study.endUtc)).length,454)
+const chapterHtml=await readFile('dist/after-the-collision/index.html','utf8');assert.match(chapterHtml,/https:\/\/zenit\.motionstudies\.app\/after-the-collision\//);assert.doesNotMatch(chapterHtml,/(?:src|href)="\/(?:assets|data)\//);assert.match(chapterHtml,/href="\.\.\/\?explore=discover"/);assert.match(await readFile('dist/data/orbital/NOTICE.txt','utf8'),/USSPACECOM/)
+for(const asset of await readdir('dist/assets'))if(asset.endsWith('.js'))assert.doesNotMatch(await readFile('dist/assets/'+asset,'utf8'),/work\/sources|work\/debris-proof|private-research-proof/)
+console.log('Debris publication checked: 462 audited identities, two family roles, 30-minute window, integrity hashes, relative chapter navigation and source notice; private work excluded.')

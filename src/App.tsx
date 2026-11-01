@@ -16,6 +16,7 @@ import {type Orbit,type Propagator,advanceStudy,loadOrbit,orbitalPosition,utcLab
 import {json2satrec} from 'satellite.js'
 import {type Cohorts,type GroupId,GROUP_IDS,loadCohorts,enabledMover} from './cohorts'
 import {usePopulation} from './use-population'
+const returnToExplore=new URLSearchParams(window.location.search).get('explore')==='discover'
 const brief='https://github.com/emmettl/motionstudies/blob/main/docs/ZENIT.md'
 export function App() {
   const [observer,setObserver]=useState<ObserverLocation>(OBSERVER),[study,setStudy]=useState(STUDIES[0]),[pendingStudy,setPendingStudy]=useState(''),[studyError,setStudyError]=useState('')
@@ -25,7 +26,7 @@ export function App() {
   useEffect(()=>()=>windowLoad.current?.abort(),[])
 
   const [guideOpen,setGuideOpen]=useState(true)
-  const [exploration,setExploration]=useState(false),[exploreTab,setExploreTab]=useState<ExploreTab>('orbits')
+  const [exploration,setExploration]=useState(returnToExplore),[exploreTab,setExploreTab]=useState<ExploreTab>(returnToExplore?'discover':'orbits')
   const [panelsOpen,setPanelsOpen]=useState(false)
   const [interfaceAwake,setInterfaceAwake]=useState(false),[wakeSerial,setWakeSerial]=useState(0),[interfaceFocus,setInterfaceFocus]=useState(false)
   const playbackHandler=useRef<()=>void>(()=>{})
@@ -48,7 +49,7 @@ export function App() {
   const journeyFrame=journey!==null&&orbit&&storyPass?journeySample(journey,Date.parse(storyPass.peakUtc)-90000,orbit.start,orbit.end,observer.name):null
   const cameraProgress=journeyFrame?.progress??progress
   const interaction=useRef(()=>{})
-  const autoplayPending=useRef(!reduced)
+  const autoplayPending=useRef(!reduced&&!returnToExplore)
   const current=useRef(cameraProgress);current.current=cameraProgress
   const reducedCurrent=useRef(reduced);reducedCurrent.current=reduced
   const fail=useCallback(()=>setFailed(true),[]),select=useCallback((id:string)=>{interaction.current();setSelectedId(id);setFollowing(current.current===0&&(id.startsWith('sat:')||id.startsWith('iss:')))},[])
