@@ -262,7 +262,6 @@ main:not(.cinematic) .horizon-compass{top:52px;right:36px}
 @media(prefers-reduced-motion:reduce){.mode-navigation,.explorer{scroll-behavior:auto}}
 .exploring.cinematic .composition{display:none}
 .explorer-browse{position:fixed;z-index:2;top:100px;right:26px;background:#0b141bed;min-height:44px}
-.exploring.cinematic .controls .position-state:empty{display:none}
 .exploring:has(canvas[data-camera-phase="Looking up"]) .controls .camera-navigation{display:none}
 @media(max-width:900px){
   .exploring[data-guide=closed].cinematic .controls{position:fixed;bottom:12px;left:20px;margin:0;width:calc(100% - 40px)}

@@ -1,6 +1,6 @@
 import {test,expect} from '@playwright/test'
 
-test('rapid seeks retain one coherent scene, reject superseded packets and settle at the latest target',async({page})=>{
+for(const mode of ['records','explore'] as const)test(`rapid seeks in ${mode} keep the scrubber stationary and retain a coherent scene`,async({page})=>{
   await page.emulateMedia({reducedMotion:'reduce'})
   // Delay delivery of real worker results, rather than replacing orbital calculations.
   await page.addInitScript(()=>{
@@ -24,8 +24,10 @@ test('rapid seeks retain one coherent scene, reject superseded packets and settl
   await page.goto('/')
   const canvas=page.locator('canvas'),clock=page.getByRole('slider',{name:'Study time',exact:true})
   await expect(canvas).toHaveAttribute('data-orbital-count','616')
+  if(mode==='explore'){await page.getByRole('button',{name:'Explore',exact:true}).click();await page.getByRole('button',{name:'See all families together'}).click();await page.getByRole('button',{name:'Show panels',exact:true}).click()}
   await page.getByLabel('Satellite or attachment',{exact:true}).selectOption('26407')
   await page.getByRole('button',{name:'Focus and follow',exact:true}).click()
+  if(mode==='explore')await page.getByRole('button',{name:'Hide panels',exact:true}).click()
   await page.evaluate(()=>document.fonts.ready)
   const layout=()=>clock.evaluate(node=>{const scrubber=node.getBoundingClientRect(),panel=node.closest('.controls')!.getBoundingClientRect();return {scrubberTop:scrubber.top+scrollY,panelHeight:panel.height}})
   const settledLayout=await layout()
