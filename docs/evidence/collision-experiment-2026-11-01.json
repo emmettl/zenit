@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "kind": "indicative-collision-experiment",
+  "reviewedOn": "2026-11-01",
+  "path": "how-a-debris-cloud-forms/",
+  "implementation": {
+    "file": "src/collision-model.ts",
+    "sha256": "a8750f127a920d4c08b113935a95ef829f65fb620f041b4596e4c69440873a90"
+  },
+  "identity": {
+    "synthetic": true,
+    "historicalEvent": null,
+    "catalogueIdentities": [],
+    "providerData": false,
+    "purpose": "Illustrate a prescribed fragment release and cloud stretching over the first three revolutions."
+  },
+  "physics": {
+    "model": "Edition-owned elliptic Kepler propagation from Cartesian release states, evaluated directly at every displayed time.",
+    "muKm3PerSecond2": 398600.4418,
+    "sphericalReferenceRadiusKm": 6378.137,
+    "releaseHeightKm": 800,
+    "incomingGeometry": "Two equal-weight circular bodies meet at [R+h,0,0]; velocity inclinations +55 and -35 degrees give perpendicular paths.",
+    "incomingRelativeSpeedKmPerSecond": 10.538480936333066,
+    "originalPeriodSeconds": 6052.413549492111,
+    "intervalSeconds": [
+      -30,
+      18157.240648476334
+    ],
+    "sampleCount": 192,
+    "samplesPerFamily": 96,
+    "sampleWeights": "Equal representative weights, not physical masses or predicted fragment yield.",
+    "seed": 1514491465,
+    "randomAlgorithm": "Mulberry32; uniform spherical directions from uniform z and azimuth, paired with opposite vectors.",
+    "releaseSpeedMPerSecond": {
+      "minimum": 10,
+      "maximum": 100,
+      "step": 10,
+      "initial": 60,
+      "distribution": "Every kick has the selected magnitude relative to its family mean. No fitted breakup distribution."
+    },
+    "relativeMeanVelocityRetention": 0.995,
+    "momentum": "Equal-weight family means conserve total incoming linear momentum; paired kicks sum to zero.",
+    "energy": "Relative mean velocity contraction removes more kinetic energy than the kicks add throughout the allowed slider range.",
+    "minimumSamplePerigeeAtMaximumSpreadKm": 361.1617573307103,
+    "periodRangesSecondsAtMaximumSpread": [
+      [
+        5784.391263250497,
+        6248.59386202563
+      ],
+      [
+        5777.0644157347,
+        6256.944768337874
+      ]
+    ],
+    "frame": "Synthetic inertial Cartesian axes mapped to Three world (x,z,-y). Earth rotates about its polar axis at 7.292115e-5 rad/s, with arbitrary orientation at contact and no dated geographical claim.",
+    "drawnEarth": "Existing WGS84 ellipsoid and pinned Natural Earth geography. Experiment heights are above the spherical reference, distinct from WGS84 geodetic altitude.",
+    "excluded": [
+      "Material fracture or impact hydrodynamics",
+      "NASA Standard Breakup Model or fitted size/mass/velocity distributions",
+      "Atmospheric drag, reentry and long-term decay",
+      "Oblateness / J2, third bodies and radiation pressure",
+      "Secondary collisions and cascades",
+      "Optical visibility or collision probability",
+      "Historical event reconstruction"
+    ]
+  },
+  "presentation": {
+    "label": "AN INDICATIVE SIMULATION",
+    "clock": "Elapsed seconds from contact; separate from all dated catalogue clocks.",
+    "guidedPace": "50 authored seconds: approach 8s; contact hold 2s; release to +3min over 8s; +3min to +30min over 10s; +30min to three original periods over 22s. Stops at the bound.",
+    "camera": "Continuous close encounter to Earth composition over the first 15 model minutes; gestures hand over the camera and preserve physical time.",
+    "glyphs": "Two diamonds before contact; 192 samples at/after contact, with no duplicate parent glyphs. Authored point sizes and direction arrow lengths.",
+    "slider": "Pauses at the displayed time; changes kick magnitudes with fixed seed/directions; directly recomputes states and period ranges.",
+    "reducedMotion": "Opening and replay stay paused. Later preference changes pause and never automatically restart.",
+    "navigation": "Discover and cross-links distinguish the synthetic experiment from the retained catalogue chapter."
+  },
+  "references": [
+    {
+      "url": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/FORTRAN/spicelib/prop2b.html",
+      "role": "Primary reference for the two-body initial-state problem and elliptic Kepler equation; no SPICE code copied or runtime dependency."
+    },
+    {
+      "url": "https://earth-info.nga.mil/index.php?action=wgs84&dir=wgs84",
+      "role": "Primary reference for Earth GM, reference radius and nominal rotation rate. Numerical constants only."
+    }
+  ],
+  "rights": {
+    "model": "Edition-owned MIT code and synthetic initial conditions; no satellite records or licensed breakup dataset acquired.",
+    "geography": "Existing audited Natural Earth public-domain geometry is unchanged."
+  },
+  "validation": {
+    "unit": "Encounter geometry, circular closure, seeded replay, fixed paired kicks, momentum and kinetic energy at slider extrema, positive perigees, orbital energy/angular momentum on forward/reverse seeks. Independent Cartesian RK4 with 2-second steps agrees after three orbits within 0.1 m position and 1 mm/s velocity.",
+    "browser": "Guided hold/release/stop, seek/replay/spread, camera clock preservation, reduced motion, keyboard, model scrolling, portrait/landscape, /zenit/ assets, no external requests.",
+    "interpretation": "Numerical validation of this authored two-body experiment, not empirical validation of fragmentation physics or a historical event."
+  }
+}
