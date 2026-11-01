@@ -1,0 +1,13 @@
+import {describe,it,expect} from 'vitest'
+import {readFileSync} from 'node:fs'
+import {json2satrec,sgp4,eciToGeodetic,gstime} from 'satellite.js'
+import {altitudeCounts,heightBand,profilePaths,sampleHeightProfile} from './debris-altitude'
+const index=JSON.parse(readFileSync('src/debris-release.json','utf8')),release=JSON.parse(readFileSync('public/'+index.file.slice(2),'utf8')),start=Date.parse(release.study.startUtc),end=Date.parse(release.study.endUtc)
+const records=release.movers.map((m:{group:'iridium-33'|'cosmos-2251';element:Parameters<typeof json2satrec>[0];eligibleStartUtc:string;eligibleEndUtc:string})=>({...m,first:Date.parse(m.eligibleStartUtc),last:Date.parse(m.eligibleEndUtc),epoch:Date.parse(String(m.element.EPOCH)),baseline:json2satrec(m.element,'a')}))
+function height(m:typeof records[number],time:number){if(time<m.first||time>m.last)return null;const state=sgp4({...m.baseline},(time-m.epoch)/60000);if(!state||!state.position)return null;return eciToGeodetic(state.position,gstime(new Date(time))).height}
+describe('linked debris heights',()=>{
+ it('assigns each finite height to exactly one fixed band, with open outer bands',()=>{expect([349.4,399.999,400,599.99,600,1599.99,1600,3000].map(heightBand)).toEqual([0,0,1,1,2,6,7,7]);expect(heightBand(NaN)).toBe(-1)})
+ it('reconciles the actual enabled population at both study bounds',()=>{for(const [time,expected] of [[start,462],[end,454]]){const states=records.map((m:typeof records[number])=>{const h=height(m,time);return h===null?null:{height:h}}),bins=altitudeCounts(records,states,['iridium-33','cosmos-2251']);expect(bins.reduce((n,b)=>n+b['iridium-33']+b['cosmos-2251'],0)).toBe(expected);const isolated=altitudeCounts(records,states,['iridium-33']);expect(isolated.reduce((n,b)=>n+b['iridium-33'],0)).toBe(74);expect(isolated.every(b=>b['cosmos-2251']===0)).toBe(true)}})
+ it('samples exact eligible endpoints and never joins across a missing calculation',()=>{const samples=sampleHeightProfile(1000,91000,5000,65500,t=>t===30000?null:700);expect(samples.map(p=>p.time)).toEqual([5000,30000,60000,65500]);expect(profilePaths(samples,t=>t/1000,h=>h)).toBe('M5.00,700.00 M60.00,700.00 L65.50,700.00');expect(sampleHeightProfile(0,100,200,300,()=>1)).toEqual([])})
+ it('truncates an expiring record profile at its retained element-age bound',()=>{const m=records.find((r:typeof records[number])=>r.last<end)!;const profile=sampleHeightProfile(start,end,m.first,m.last,t=>height(m,t));expect(profile[0].time).toBe(start);expect(profile.at(-1)!.time).toBe(m.last);expect(profile.every(p=>p.time<=m.last&&p.height!==null)).toBe(true)})
+})

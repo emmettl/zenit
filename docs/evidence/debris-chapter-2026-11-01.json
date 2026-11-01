@@ -1598,7 +1598,17 @@
       }
     ],
     "composition": "24 real seconds, 8 seconds per family/together beat, 10x shared model clock. Manual controls cancel the introduction. Reduced motion opens paused with both families.",
-    "physicalPhonePerformance": "Pending a measured physical-device session; no sustained frame-rate claim."
+    "physicalPhonePerformance": "Pending a measured physical-device session; no sustained frame-rate claim.",
+    "performanceFeedback": {
+      "reportedOn": "2026-11-01",
+      "timezone": "Europe/Zurich",
+      "statement": "Performance has been fine so far.",
+      "kind": "qualitative user report",
+      "device": null,
+      "browser": null,
+      "frameTimes": null
+    },
+    "altitudeView": "Enabled and age-eligible records counted by current WGS84 height in fixed bands; band emphasis preserves identities and positions. Selected profiles sample the retained interval every 30 seconds with exact eligibility endpoints and gaps; current height is from the displayed scene state. No orbital-extrema or historical-evolution inference."
   },
   "validation": {
     "proofAgreement": {
