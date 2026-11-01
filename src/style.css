@@ -205,3 +205,92 @@ main:not(.cinematic) .horizon-compass{top:52px;right:36px}
 
 /* The globe picker needs the full visible surface, especially on phones. */
 .picking-location header,.picking-location .composition,.picking-location .controls,.picking-location footer,.picking-location .edition-state { display:none; }
+
+/* Exploration shares the scene and dated clock, with its own way into the world. */
+.mode-navigation{position:absolute;z-index:3;top:22px;right:26px;display:flex;gap:4px;padding:3px;border:1px solid #263a47;border-radius:5px;background:#07121be8}
+.mode-navigation button{min-height:44px;min-width:74px;background:transparent;border-color:transparent;font:11px 'DM Mono',monospace}
+.mode-navigation button[aria-pressed=true]{background:#18313d;border-color:#476575;color:#e4edf3}
+.edition-state{display:none}
+.quiet-sky .mode-navigation{opacity:0;visibility:hidden;pointer-events:none}
+.exploring .composition{max-width:280px}
+.exploring .composition h2{font-size:22px}
+.explorer{position:fixed;z-index:2;right:26px;top:100px;width:320px;max-height:calc(100svh - 340px);overflow-y:auto;padding:18px;background:#0b141bed;border:1px solid #263a47;border-radius:5px;scrollbar-width:thin}
+.explorer-heading{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.explorer-heading .eyebrow{font-size:9px;letter-spacing:.09em;margin:0}
+.explorer-heading button{font-size:10px;padding:6px 8px;background:transparent}
+.explorer-tabs{display:flex;gap:4px;margin:16px 0}
+.explorer-tabs button{flex:1;background:transparent;border-color:#263a47}
+.explorer-tabs button[aria-pressed=true]{border-color:#a5d2e6;color:#a5d2e6;background:#122632}
+.explorer h2{font-size:24px;margin:14px 0 10px}
+.explorer-copy{font-size:12px;color:#9bb0bd;line-height:1.7}
+.explorer-cards{display:grid;gap:9px;margin-top:16px}
+.explorer-card{text-align:left;padding:14px;background:#10212c80;border-color:#304754;border-left:2px solid currentColor;color:#a5d2e6}
+.explorer-card.family-gnss{color:#b8b5ff;background:#10212c80}.explorer-card.family-geo{color:#ed9c63;background:#10212c80}
+.explorer-card>span{display:block;font-size:14px;color:#e4edf3;margin-bottom:7px}
+.explorer-card small{display:block;font-size:11px;line-height:1.7;color:#9bb0bd}
+.explorer-card[aria-pressed=true]{background:#1b303c;border-color:currentColor}
+.explorer-wide{width:100%;margin-top:10px;background:transparent}
+.explorer-source{border-top:1px solid #263a47;padding-top:12px;margin:18px 0 0;font:9px/1.8 'DM Mono',monospace;color:#8b9daa}
+.explorer label{display:block;font-size:11px;color:#a6b9c5;margin:12px 0 6px}
+.explorer select{width:100%;min-height:44px;background:#10212c;color:#e4edf3;border:1px solid #385363;border-radius:3px;padding:8px;font:11px Inter,sans-serif}
+.exploring.cinematic .controls .ms-timeline-scrubber,.exploring.cinematic .controls .timeline-scrubber{display:block}
+.exploring.cinematic .clock-buttons > :not(:first-child){display:flex}
+.exploring.cinematic .clock-buttons > button:last-child{display:none}
+.exploring.cinematic .camera-navigation{display:flex}
+.exploring.cinematic .camera-navigation button{min-height:44px}
+.exploring.cinematic .camera-buttons{grid-column:1 / -1}
+.exploring.cinematic .camera-buttons button:not(.panel-toggle){display:none}
+.exploring.cinematic .controls .camera-state,.exploring.cinematic .cinematic-object span{display:none}
+.exploring.cinematic .controls{width:min(600px,calc(100% - 52px));left:26px;transform:none;bottom:18px}
+.exploring.cinematic .clock-buttons{grid-column:1 / -1}
+@media(min-width:1100px){.explorer{width:340px}.exploring.cinematic .controls{width:min(660px,calc(100% - 430px))}}
+@media(max-width:900px){
+  .mode-navigation{top:18px;right:20px}
+  .exploring.cinematic .composition{top:100px}
+  .explorer{position:relative;right:auto;top:auto;width:calc(100% - 40px);max-height:none;margin:45svh 20px 16px;order:2}
+  .exploring.cinematic .controls{position:relative;left:auto;bottom:auto;width:calc(100% - 40px);margin:0 20px 20px;order:3;display:flex;flex-direction:column}
+  .exploring.cinematic .controls .clock-buttons{margin-top:10px}
+  .exploring.cinematic .controls .camera-navigation{margin-top:10px}
+  .exploring.cinematic .composition{max-width:calc(100% - 40px)}
+  .exploring .stellar-panel{margin-top:40svh}
+  .exploring:not(.cinematic) .composition{display:none}
+}
+@media(min-width:651px) and (max-height:500px){
+  .mode-navigation{top:8px;right:18px}.mode-navigation button{padding:4px 9px}
+  .exploring.cinematic .composition{top:68px}
+}
+@media(prefers-reduced-motion:reduce){.mode-navigation,.explorer{scroll-behavior:auto}}
+.exploring.cinematic .composition{display:none}
+.explorer-browse{position:fixed;z-index:2;top:100px;right:26px;background:#0b141bed;min-height:44px}
+.exploring.cinematic .controls .position-state:empty{display:none}
+.exploring:has(canvas[data-camera-phase="Looking up"]) .controls .camera-navigation{display:none}
+@media(max-width:900px){
+  .exploring[data-guide=closed].cinematic .controls{position:fixed;bottom:12px;left:20px;margin:0;width:calc(100% - 40px)}
+  .explorer-browse{top:92px;right:20px}
+}
+@media(min-width:651px) and (max-height:500px){
+  .exploring[data-guide=closed].cinematic .controls{width:calc(100% - 40px);padding:8px 12px}
+  .exploring[data-guide=closed].cinematic .controls .camera-navigation{display:none}
+  .exploring[data-guide=closed].cinematic .controls .cinematic-object{display:none}
+  .explorer-browse{top:68px}
+}
+@media(max-width:650px){
+  .exploring.cinematic .camera-navigation{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}
+  .exploring.cinematic .camera-navigation button{font-size:10px;padding:5px;min-width:0}
+}
+@media(min-width:651px) and (max-height:500px){
+  .exploring[data-guide=closed].cinematic .controls{display:grid;grid-template-columns:minmax(0,1fr) max-content max-content;gap:4px 8px}
+  .exploring[data-guide=closed].cinematic .controls > .control-heading{grid-column:1;grid-row:1}
+  .exploring[data-guide=closed].cinematic .controls .study-time{grid-column:1;grid-row:2}
+  .exploring[data-guide=closed].cinematic .controls .clock-buttons{grid-column:2;grid-row:1 / 3;margin:0;align-self:center;gap:5px}
+  .exploring[data-guide=closed].cinematic .controls .camera-buttons{grid-column:3;grid-row:1 / 3;margin:0;align-self:center}
+  .exploring[data-guide=closed].cinematic .controls .ms-timeline-scrubber{grid-column:1 / -1;grid-row:3}
+}
+.explorer-browse{left:26px;right:auto}
+@media(max-width:900px){.explorer-browse{left:20px;right:auto}}
+
+.cinematic:has(.sky-orientation:not([hidden])) .composition{display:none}
+.cinematic:has(.sky-orientation:not([hidden])) .mode-navigation{top:90px;left:26px;right:auto}
+@media(max-width:650px){.cinematic:has(.sky-orientation:not([hidden])) .mode-navigation{left:20px}}
+.cinematic:has(.sky-orientation:not([hidden])) .explorer-browse{top:150px}
+.exploring.cinematic .controls button{min-height:44px}

@@ -16,7 +16,7 @@ The frozen twelve-hour window is **7 October 2026, 11:58:49–23:58:49 UTC**. Th
 
 ## Places and dated windows
 
-Open **Explore freely** or **Show panels** to find **The sky above a place**. Choose Sydney, Zurich, Toronto, Singapore or Cape Town. Changing place pauses at the displayed UTC and updates the WGS84 observer, local horizon, compass, stellar labels, solar fade and trails together; world positions remain fixed at that UTC.
+Open **Explore → Your sky** to choose a viewpoint, or **Inspect records** for the full place controls. Choose Sydney, Zurich, Toronto, Singapore or Cape Town. Changing place pauses at the displayed UTC and updates the WGS84 observer, local horizon, compass, stellar labels, solar fade and trails together; world positions remain fixed at that UTC.
 
 Each preset offers an actual complete station pass above 20°. **Play [place] journey** follows ISS (NORAD 25544) or Tiangong / Tianhe (48274), preserving the station identity through the opening, descent and sky hold. Daylight passes are labelled; where another window contains a night sequence, a single button selects it and plays that sequence. Zurich and Toronto use Tiangong in the 9 October morning window. The original Sydney ISS sequence remains the default.
 
@@ -79,6 +79,10 @@ Unmodified Space on the page or canvas toggles play/pause without scrolling or r
 During the automatic surface hold, the interface recedes two seconds after look-up begins, leaving the sky and a small Pause button. A primary tap reveals controls for four seconds; dragging or cancelling that gesture does not select an object. Keyboard access, pausing and exploration restore inspection. Open panels, reduced motion, missing sources and calculation or graphics failures keep controls available. The interface returns for ascent.
 
 Free exploration retains the twelve-hour clock loop, with forward and reverse wraparound and elapsed-time overshoot. The independent Sydney cue freezes the clock during its twelve-second arrival and reveal, then starts 10× after completion.
+
+## Exploration
+
+The persistent Journey / Explore navigation gives the retained world its own workspace. Explore pauses at the displayed packet UTC and opens three starting points: orbital families at near-Earth, navigation and geosynchronous scales; a local sky with place and dated-window choices; and prompts to follow the ISS, watch the distant ring or compare places at one instant. Choosing a destination clears the guide from the scene; Browse exploration brings it back. Family choices explicitly filter the population and keep overlapping identities unique. See all families together restores the complete view. Camera choices retain the shared clock; Meet a station deliberately seeks to its retained culmination and stays paused. Discover playback respects reduced motion. Inspect records opens the full source, selection, coordinate and filter controls; Explore returns to the workspace. Journey restarts the selected place’s retained night sequence.
 
 ## Camera interaction
 
@@ -163,6 +167,8 @@ The core Earth-orbit composition is implemented, including family-specific camer
 - Review the complete journey for pacing and legibility, refining the orbital-family rhythm and surface hold while preserving source groups, attachment handling and the shared clock.
 
 A 31 October desktop and phone-layout frame review covered the family opening, station introduction, horizon arrival, quiet sky hold, ascent and loop restart. It found that the control card obscured family captions and the orbital scene in phone landscape. Short, wide viewports now use a compact bottom transport with 44 px minimum button heights and smaller captions clear of the controls. Browser regression checks cover each family, the station label and rotation back to portrait. The existing sixty-second timing is retained; this layout review does not establish physical-device frame rate or settle the final artistic assessment.
+
+Space debris is a candidate for the next substantive chapter. First define the question: a dated view of catalogued debris, an evidence-backed event, or historical accumulation. Each needs retained elements and classification provenance, a source and redistribution audit, explicit completeness limits, and its own rendering and performance budget. The current station/navigation/geosynchronous population is not a debris census. Historical evolution needs elements and membership from each represented date; propagating one frozen snapshot cannot establish that history. This is a research and design milestone, not an implemented layer.
 
 The canonical brief also leaves separate optional chapters: a dense constellation with its own source and performance budget; historical accumulation with historical membership and elements; debris evolution with event-specific evidence; and optical visibility modelling or authored sound. Gaia stellar depth and much longer clocks remain distant optional research. These investigations are not prerequisites for the current edition.
 

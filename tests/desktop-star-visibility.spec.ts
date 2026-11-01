@@ -18,7 +18,7 @@ test('desktop sky gives catalogue stars a readable raster footprint in Chromium 
   const camera=new PerspectiveCamera(100,1280/800,.1,2);camera.quaternion.copy(new Quaternion(...(await canvas.getAttribute('data-camera-rotation'))!.split(',').map(Number) as [number,number,number,number]));camera.updateMatrixWorld()
   const rays=skyDirections(catalogue.stars,'2026-10-07T17:58:49Z')
   const points=rays.flatMap((ray,i)=>{const ndc=ray.clone().project(camera);return ndc.z> -1&&ndc.z<1&&horizonReading(ray).altitude>5?[{star:catalogue.stars[i],x:(ndc.x+1)*640,y:(1-ndc.y)*400}]:[]})
-  const exclusions=await page.locator('header:visible,.composition:visible,.controls:visible,.horizon-compass:visible,.sky-star-label:visible,.iss-marker:visible').all().then(nodes=>Promise.all(nodes.map(node=>node.boundingBox())))
+  const exclusions=await page.locator('header:visible,.mode-navigation:visible,.composition:visible,.controls:visible,.horizon-compass:visible,.sky-star-label:visible,.iss-marker:visible').all().then(nodes=>Promise.all(nodes.map(node=>node.boundingBox())))
   const samples=points.filter(point=>point.x>12&&point.x<1268&&point.y>12&&point.y<788&&!exclusions.some(box=>box&&point.x>box.x-12&&point.x<box.x+box.width+12&&point.y>box.y-12&&point.y<box.y+box.height+12)&&!points.some(other=>other!==point&&Math.hypot(other.x-point.x,other.y-point.y)<10))
   const onBytes=await page.screenshot({scale:'css',path:testInfo.outputPath('desktop-stars.png')}),on=PNG.sync.read(onBytes)
   await page.getByRole('button',{name:'Show panels',exact:true}).click();await page.getByRole('checkbox',{name:'Show stars',exact:true}).uncheck();await page.getByRole('button',{name:'Hide panels',exact:true}).click()
