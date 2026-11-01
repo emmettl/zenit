@@ -31,18 +31,18 @@ export function SceneView({observer,heroId,hero,pass,pickingLocation,onPickLocat
     try {renderer=new WebGLRenderer({antialias:true,alpha:false})}catch{onFailure();return}
     renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));renderer.setClearColor('#05090e');renderer.autoClear=false
     const sunAt=solarSampler()
-    const scene=new Scene(),sky=new Scene(),groundScene=new Scene(),camera=new PerspectiveCamera(43,1,0.000002,100),skyCamera=new PerspectiveCamera(43,1,.1,2)
+    const scene=new Scene(),globeScene=new Scene(),sky=new Scene(),groundScene=new Scene(),camera=new PerspectiveCamera(43,1,0.000002,100),skyCamera=new PerspectiveCamera(43,1,.1,2)
     let texture:ReturnType<typeof earthTexture>|null=null
     try{texture=earthTexture()}catch{/* The globe and analytic horizon remain usable without a texture. */}
     const geometry=earthGeometry(),material=new MeshPhongMaterial({map:texture,color:texture?'#ffffff':'#102633',transparent:true,shininess:8,specular:'#42677b',polygonOffset:true,polygonOffsetFactor:1,polygonOffsetUnits:1})
-    const earth=new Mesh(geometry,material);scene.add(earth)
-    scene.add(new HemisphereLight('#94b8ca','#08131b',.65))
-    const light=new DirectionalLight('#b6dae9',3.2);scene.add(light)
+    const earth=new Mesh(geometry,material);globeScene.add(earth)
+    globeScene.add(new HemisphereLight('#94b8ca','#08131b',.65))
+    const light=new DirectionalLight('#b6dae9',3.2);globeScene.add(light)
     const vertices:number[]=[]
     for(let lat=-60;lat<=60;lat+=30)for(let lon=-180;lon<180;lon+=2)vertices.push(...earthSurface(lat,lon).addScaledVector(observerNormal(lat,lon),.0000005).toArray(),...earthSurface(lat,lon+2).addScaledVector(observerNormal(lat,lon+2),.0000005).toArray())
     for(let lon=-180;lon<180;lon+=30)for(let lat=-90;lat<90;lat+=2)vertices.push(...earthSurface(lat,lon).addScaledVector(observerNormal(lat,lon),.0000005).toArray(),...earthSurface(lat+2,lon).addScaledVector(observerNormal(lat+2,lon),.0000005).toArray())
     const gridGeometry=new BufferGeometry();gridGeometry.setAttribute('position',new Float32BufferAttribute(vertices,3))
-    const gridMaterial=new LineBasicMaterial({color:'#375c70',transparent:true,opacity:.42});scene.add(new LineSegments(gridGeometry,gridMaterial))
+    const gridMaterial=new LineBasicMaterial({color:'#375c70',transparent:true,opacity:.42});globeScene.add(new LineSegments(gridGeometry,gridMaterial))
     const directions=(catalogue?.stars??[]).map(catalogueDirection),starGeometry=new BufferGeometry()
     starGeometry.setAttribute('position',new Float32BufferAttribute(directions.flatMap(x=>x.toArray()),3))
     starGeometry.setAttribute('tint',new Float32BufferAttribute((catalogue?.stars??[]).flatMap(x=>starColour(x.bv)),3))
@@ -51,7 +51,7 @@ export function SceneView({observer,heroId,hero,pass,pickingLocation,onPickLocat
     const up=observerNormal(OBSERVER.latitude,OBSERVER.longitude)
     const groundGeometry=new PlaneGeometry(2,2)
     const groundMaterial=new ShaderMaterial({transparent:true,depthTest:false,depthWrite:false,uniforms:{origin:{value:new Vector3()},cameraWorld:{value:camera.matrixWorld.clone()},inverseProjection:{value:camera.projectionMatrixInverse.clone()},up:{value:up},amount:{value:0}},vertexShader:`varying vec2 screen;void main(){screen=position.xy;gl_Position=vec4(position.xy,0.0,1.0);}`,fragmentShader:`precision highp float;varying vec2 screen;uniform vec3 origin;uniform mat4 cameraWorld;uniform mat4 inverseProjection;uniform vec3 up;uniform float amount;
-      void main(){vec3 ray=normalize(mat3(cameraWorld)*(inverseProjection*vec4(screen,1.0,1.0)).xyz);vec3 o=origin*vec3(1.0,${1/ (1-1/298.257223563)},1.0);vec3 d=ray*vec3(1.0,${1/ (1-1/298.257223563)},1.0);float a=dot(d,d),b=dot(o,d),c=dot(o,o)-1.0;float disc=b*b-a*c;bool ground=b<0.0&&disc>=0.0&&(-b-sqrt(max(0.0,disc)))/a>0.0;float band=exp(-abs(dot(ray,up)+0.0043)*70.0);vec3 colour=ground?vec3(0.018,0.035,0.041)+band*vec3(0.03,0.055,0.065):vec3(0.13,0.25,0.31);gl_FragColor=vec4(colour,amount*(ground?1.0:band*0.5));}`})
+      void main(){vec3 ray=normalize(mat3(cameraWorld)*(inverseProjection*vec4(screen,1.0,1.0)).xyz);vec3 o=origin*vec3(1.0,${1/ (1-1/298.257223563)},1.0);vec3 d=ray*vec3(1.0,${1/ (1-1/298.257223563)},1.0);float a=dot(d,d),b=dot(o,d),c=dot(o,o)-1.0;float disc=b*b-a*c;bool ground=b<0.0&&disc>=0.0&&(-b-sqrt(max(0.0,disc)))/a>0.0;float limb=(b/sqrt(a)+sqrt(max(c,0.0)))/length(o);float band=exp(-abs(limb)*70.0);vec3 colour=ground?vec3(0.018,0.035,0.041)+band*vec3(0.03,0.055,0.065):vec3(0.13,0.25,0.31);gl_FragColor=vec4(colour,amount*(ground?1.0:band*0.5));}`})
     const groundQuad=new Mesh(groundGeometry,groundMaterial);groundQuad.frustumCulled=false;groundScene.add(groundQuad)
     const starMaterial=new ShaderMaterial({transparent:true,depthTest:false,depthWrite:false,uniforms:{pixelRatio:{value:renderer.getPixelRatio()},selected:{value:-1},ground:{value:0},solarOpacity:{value:1},compact:{value:0},up:{value:up}},vertexShader:`attribute vec3 tint; attribute float magnitude; attribute float starIndex;
       uniform float pixelRatio; uniform float selected; uniform float ground; uniform float solarOpacity; uniform float compact; uniform vec3 up;
@@ -124,7 +124,8 @@ export function SceneView({observer,heroId,hero,pass,pickingLocation,onPickLocat
       renderer.domElement.dataset.skyView=nav.surface?'free':'composed';renderer.domElement.dataset.openingCamera=!nav.interrupted?value.reveal?.focus??'none':'none';renderer.domElement.dataset.cameraRadius=pose.position.length().toFixed(9)
       renderer.domElement.dataset.cameraPosition=pose.position.toArray().map(x=>x.toFixed(9)).join(',');renderer.domElement.dataset.cameraRotation=pose.rotation.toArray().map(x=>x.toFixed(9)).join(',');renderer.domElement.dataset.cameraTarget=value.progress===0&&value.following&&followed?followed.toArray().map(x=>x.toFixed(9)).join(','):'0,0,0';renderer.domElement.dataset.following=value.progress===0&&value.following&&followed?selectedBodyId??'':'none'
       camera.position.copy(pose.position);camera.quaternion.copy(pose.rotation);camera.fov=skyCamera.fov=pose.fieldOfView;camera.near=Math.min(.05,Math.max(.0000001,(new Vector3(pose.position.x,pose.position.y/POLAR_RATIO,pose.position.z).length()-1)*.15));camera.updateProjectionMatrix();camera.updateMatrixWorld()
-      const groundAmount=smoothBetween(.60,ARRIVAL,value.progress);earth.visible=groundAmount<1;material.opacity=1-groundAmount;gridMaterial.opacity=.42*(1-groundAmount);groundMaterial.uniforms.amount.value=groundAmount;groundMaterial.uniforms.origin.value.copy(pose.position);groundMaterial.uniforms.cameraWorld.value.copy(camera.matrixWorld);groundMaterial.uniforms.inverseProjection.value.copy(camera.projectionMatrixInverse);renderer.domElement.dataset.cameraPhase=cameraPhase(value.progress,value.observer);renderer.domElement.dataset.groundOpacity=groundAmount.toFixed(3)
+      // Overlay the analytic ground gradually: fading both layers exposes the sky between them.
+      const groundAmount=smoothBetween(.48,ARRIVAL,value.progress);globeScene.visible=groundAmount<1;gridMaterial.opacity=.42*(1-groundAmount);groundMaterial.uniforms.amount.value=groundAmount;groundMaterial.uniforms.origin.value.copy(pose.position);groundMaterial.uniforms.cameraWorld.value.copy(camera.matrixWorld);groundMaterial.uniforms.inverseProjection.value.copy(camera.projectionMatrixInverse);renderer.domElement.dataset.cameraPhase=cameraPhase(value.progress,value.observer);renderer.domElement.dataset.groundOpacity=groundAmount.toFixed(3)
       skyCamera.quaternion.copy(pose.rotation);skyCamera.updateProjectionMatrix();skyCamera.updateMatrixWorld();stars.matrix.copy(rotation);stars.matrixWorldNeedsUpdate=true
       stars.visible=value.showStars;starMaterial.uniforms.ground.value=value.progress>=ARRIVAL?1:0;starMaterial.uniforms.selected.value=catalogue?.stars.findIndex(x=>x.id===value.selectedId)??-1
       const sun=sunAt(value.time),sunDirection=sun.clone().normalize();light.position.copy(sunDirection.clone().multiplyScalar(5));const opacity=value.progress>=ARRIVAL?twilightOpacity(Math.asin(sunDirection.dot(up))*180/Math.PI):1;starMaterial.uniforms.solarOpacity.value=opacity;renderer.domElement.dataset.surfaceStarOpacity=opacity.toFixed(3)
@@ -173,7 +174,7 @@ export function SceneView({observer,heroId,hero,pass,pickingLocation,onPickLocat
       tails.visible=tailData.visible.length>0
       for(const [name,array] of [['position',tailData.positions],['tint',tailData.colours],['fade',tailData.alphas.map(alpha=>alpha*guideOpacity)]] as const){const attribute=tailsGeometry.getAttribute(name);(attribute.array as Float32Array).set(array);attribute.needsUpdate=true}tailsGeometry.setDrawRange(0,tailData.positions.length/3)
       renderer.domElement.dataset.surfaceTrails=JSON.stringify(tailData.visible);renderer.domElement.dataset.surfaceTrailTime=String(packet?.time??'')
-      renderer.clear();renderer.render(sky,skyCamera);renderer.render(groundScene,skyCamera);renderer.clearDepth();renderer.render(scene,camera)
+      renderer.clear();renderer.render(sky,skyCamera);renderer.render(globeScene,camera);renderer.render(groundScene,skyCamera);renderer.render(scene,camera)
     }
     const resize=()=>{const {width,height}=element.getBoundingClientRect();renderer.setSize(width,height,false);camera.aspect=skyCamera.aspect=width/Math.max(1,height);const compact=Math.min(width,height)<=650;starMaterial.uniforms.compact.value=compact?1:0;renderer.domElement.dataset.starDisplay=compact?'compact':'standard';renderer.domElement.dataset.starDiameter=compact?'2.15–5.8':'2.0–5.0';draw()}
     const pick=(event:{clientX:number;clientY:number})=>{
