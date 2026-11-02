@@ -4,6 +4,6 @@ export default defineConfig({
   base: './',
   plugins: [react()],
   worker: { format: 'es' },
-  build: { target: 'es2022', assetsInlineLimit: 0, rolldownOptions: { input: { main: 'index.html', debris: 'after-the-collision/index.html', collision: 'how-a-debris-cloud-forms/index.html' } } },
+  build: { target: 'es2022', assetsInlineLimit: 0, rolldownOptions: { input: { main: 'index.html', debris: 'after-the-collision/index.html', collision: 'how-a-debris-cloud-forms/index.html', constellation: 'how-a-constellation-takes-shape/index.html' } } },
   test: { include: ['src/**/*.test.ts'] },
 })

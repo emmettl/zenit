@@ -1,0 +1,270 @@
+{
+  "title": "How a constellation takes shape — bounded visual proof",
+  "status": "bounded-visual-proof",
+  "sources": [
+    {
+      "id": "oneweb",
+      "url": "https://celestrak.org/NORAD/elements/gp.php?GROUP=oneweb&FORMAT=JSON",
+      "capturedAt": "2026-11-02T10:36:38.935738+00:00",
+      "responseDate": "Mon, 02 Nov 2026 10:36:38 GMT",
+      "sha256": "6b04ee799fe82bb53a9c802bd4b065daaee05b58b4eac13e0cf46232e50bb647",
+      "bytes": 270989,
+      "retainedPath": "work/sources/constellation-2026-11-02/oneweb.json"
+    },
+    {
+      "id": "celestrak-usage",
+      "url": "https://celestrak.org/usage-policy.php",
+      "capturedAt": "2026-11-02T10:36:36.700448+00:00",
+      "responseDate": "Mon, 02 Nov 2026 10:36:36 GMT",
+      "sha256": "7f7ae31ed4f29264f0a1ef35e4e6e73ef48fb0a7b5ae428cea8411632de7162b",
+      "bytes": 13980,
+      "retainedPath": "work/sources/constellation-2026-11-02/celestrak-usage.html"
+    },
+    {
+      "id": "celestrak-formats",
+      "url": "https://celestrak.org/NORAD/documentation/gp-data-formats.php",
+      "capturedAt": "2026-11-02T10:36:37.511470+00:00",
+      "responseDate": "Mon, 02 Nov 2026 10:36:37 GMT",
+      "sha256": "441d4fc9d9938058d0426b706d325c620c0b08a81de9f973d3587265c3e3103b",
+      "bytes": 40338,
+      "retainedPath": "work/sources/constellation-2026-11-02/celestrak-formats.html"
+    },
+    {
+      "id": "space-track-terms",
+      "url": "https://www.space-track.org/documentation",
+      "capturedAt": "2026-11-02T10:36:38.420719+00:00",
+      "sha256": "07f4461cad60ee70fb2214927f927973b83a753716b66f6e4385bde7cbfd3d6d",
+      "bytes": 186504,
+      "retainedPath": "work/sources/constellation-2026-11-02/space-track-terms.html"
+    }
+  ],
+  "study": {
+    "startUtc": "2026-11-02T10:30:00.000Z",
+    "endUtc": "2026-11-02T11:00:00.000Z",
+    "initialUtc": "2026-11-02T10:30:00.000Z"
+  },
+  "model": {
+    "library": "satellite.js",
+    "version": "7.1.0",
+    "gravity": "WGS72",
+    "operationMode": "a",
+    "propagationFrame": "TEME",
+    "ageLimitHours": 24,
+    "earthFixedTransform": "TEME to ECF via GMST; world = (x, z, -y) / 6378.137",
+    "sampleMode": "Direct propagation from a fresh copy of the frozen baseline at each displayed UTC; no interpolation."
+  },
+  "rights": {
+    "id": "basic-ssa-citation",
+    "attribution": "CelesTrak standard GP; USSPACECOM / 18th Space Defense Squadron via Space-Track.org.",
+    "reference": "https://www.space-track.org/documentation#/odr",
+    "providerPolicy": "https://celestrak.org/usage-policy.php",
+    "fields": "Basic GP/OMM fields only. OneWeb group membership and names are provider-supplied. No optional status, availability or service metadata.",
+    "changes": "NORAD identities normalized to decimal strings; UTC suffix and documented Earth/TEME/UTC/SGP4 defaults explicit; per-object age bounds added."
+  },
+  "statistics": {
+    "inputRows": 651,
+    "retainedIdentities": 647,
+    "excludedIdentities": 4,
+    "capExclusions": 0,
+    "initialEligible": 647,
+    "endEligible": 643
+  },
+  "exclusionLedger": [
+    {
+      "id": "45158",
+      "epoch": "2026-11-01T05:18:11.136672Z",
+      "reason": "outside-age-window"
+    },
+    {
+      "id": "45443",
+      "epoch": "2026-10-30T19:55:10.877664Z",
+      "reason": "outside-age-window"
+    },
+    {
+      "id": "54667",
+      "epoch": "2026-11-01T05:49:25.606272Z",
+      "reason": "outside-age-window"
+    },
+    {
+      "id": "56056",
+      "epoch": "2026-11-01T06:25:35.763456Z",
+      "reason": "outside-age-window"
+    }
+  ],
+  "selection": "Every valid, age-eligible identity from one retained CelesTrak OneWeb standard GP group. No visual cap; no active-service or complete-constellation claim.",
+  "presentation": {
+    "sequence": "One satellite, one measured orientation neighbourhood, all eligible retained identities. Authored reveal at one continuously advancing model UTC; not a deployment history.",
+    "plane": "At initial UTC, select the densest 1-degree angular-momentum-normal neighbourhood among near-circular main-shell records (108–111 minute mean period; eccentricity <0.003). Break ties by smallest numeric NORAD identity. All initially eligible records within 1 degree of its normal form the featured neighbourhood; no operator plane identifiers are inferred.",
+    "guides": "Optional circular orientation diagrams at sampled radii, using propagated angular-momentum normals. Not observed tracks, trajectories, coverage footprints or communications links.",
+    "frame": "Earth-fixed display. Direct SGP4 states; positions, orientation guides, inspection and UTC share the same instant.",
+    "scope": "The proof ends at the whole-population reveal. Coverage modelling and ground-location controls remain later work.",
+    "featured": {
+      "id": "45139",
+      "name": "ONEWEB-0026",
+      "initialMembers": 60,
+      "memberIds": [
+        "45139",
+        "45140",
+        "45145",
+        "45151",
+        "45155",
+        "45424",
+        "45425",
+        "45426",
+        "45427",
+        "45428",
+        "45429",
+        "45430",
+        "45431",
+        "45433",
+        "45434",
+        "45435",
+        "45436",
+        "45437",
+        "45438",
+        "45439",
+        "45440",
+        "45441",
+        "45442",
+        "45444",
+        "45445",
+        "45446",
+        "45447",
+        "45448",
+        "45449",
+        "45451",
+        "45452",
+        "45454",
+        "45455",
+        "45456",
+        "45457",
+        "50475",
+        "50478",
+        "50479",
+        "50484",
+        "50488",
+        "55142",
+        "55154",
+        "55156",
+        "55158",
+        "55161",
+        "55162",
+        "55163",
+        "55172",
+        "55174",
+        "55175",
+        "55176",
+        "61594",
+        "61597",
+        "61598",
+        "61599",
+        "61600",
+        "61602",
+        "61603",
+        "61604",
+        "61608"
+      ],
+      "thresholdDegrees": 1,
+      "frame": "Propagated TEME angular-momentum normal at initial study UTC."
+    }
+  },
+  "release": {
+    "file": "data/orbital/constellation-d909e54f48fb.json",
+    "sha256": "d909e54f48fbc21577fcefd47c8c9c019c060b12f9fee93891b1ee68a72f5509",
+    "bytes": 419905,
+    "gzipBytes": 45179
+  },
+  "validation": {
+    "sampling": "Every retained identity propagated every 30 seconds within its eligibility interval; independent cases at first, middle and last eligible UTC.",
+    "independentAgreement": {
+      "payloadSha256": "d909e54f48fbc21577fcefd47c8c9c019c060b12f9fee93891b1ee68a72f5509",
+      "implementation": "Python sgp4 2.25 / Vallado C++ plus independent GMST/ECF transform",
+      "gravity": "WGS72",
+      "operationMode": "a",
+      "epochPrecision": "Source fractional epochs retained; both propagations use JavaScript millisecond precision.",
+      "samples": 1941,
+      "identities": 647,
+      "maxPositionDifferenceMetres": 2.1672242073783697e-7,
+      "maxVelocityDifferenceMetresPerSecond": 2.1571916207784545e-10,
+      "maxEarthFixedDifferenceMetres": 0.000029963823634207543,
+      "positionToleranceMetres": 0.02,
+      "velocityToleranceMetresPerSecond": 0.0001,
+      "passed": true,
+      "limitation": "Independent numerical agreement; not a measurement of element accuracy or service availability."
+    },
+    "physicalPhonePerformance": "Unmeasured. No physical-phone frame-rate claim.",
+    "browserMeasurement": {
+      "payloadSha256": "d909e54f48fbc21577fcefd47c8c9c019c060b12f9fee93891b1ee68a72f5509",
+      "measuredAt": "2026-11-02T10:53:02.818Z",
+      "host": {
+        "platform": "darwin",
+        "architecture": "arm64"
+      },
+      "method": "Production preview, complete population, 300x direct propagation, 120 real rAF samples after load with first 11 omitted, ten direct seeks. Sampling/UI timing excludes the subsequent draw; rAF gaps measure scheduler cadence; model-frame gaps measure changed UTC on rendered updates (the app targets about 30 Hz). Two engines measured sequentially. No virtual clock.",
+      "limitation": "Local headless desktop and phone emulation only; hardware model and physical phone not measured. This is a bounded local check, not a sustained physical-device frame-rate claim.",
+      "results": [
+        {
+          "label": "Headless Chromium desktop",
+          "browserVersion": "156.0.8078.4",
+          "viewport": {
+            "width": 1280,
+            "height": 720
+          },
+          "devicePixelRatio": 1,
+          "rate": 300,
+          "readyMs": 457.64874999999995,
+          "rafIntervals": {
+            "samples": 109,
+            "medianMs": 16.699999999999818,
+            "p95Ms": 16.700000000000273
+          },
+          "modelFrameIntervals": {
+            "samples": 54,
+            "medianMs": 33.30000000000018,
+            "p95Ms": 33.40000000000009
+          },
+          "directSampleAndUI": {
+            "medianMs": 0.7,
+            "p95Ms": 1
+          },
+          "synchronousSeeks": {
+            "samples": 10,
+            "medianMs": 0.6000000014901161,
+            "p95Ms": 1
+          }
+        },
+        {
+          "label": "Headless WebKit iPhone 13 emulation (not a physical phone)",
+          "browserVersion": "27.2",
+          "viewport": {
+            "width": 390,
+            "height": 664
+          },
+          "devicePixelRatio": 3,
+          "rate": 300,
+          "readyMs": 179.7784590000001,
+          "rafIntervals": {
+            "samples": 109,
+            "medianMs": 17,
+            "p95Ms": 18
+          },
+          "modelFrameIntervals": {
+            "samples": 53,
+            "medianMs": 33,
+            "p95Ms": 49
+          },
+          "directSampleAndUI": {
+            "medianMs": 2,
+            "p95Ms": 3
+          },
+          "synchronousSeeks": {
+            "samples": 10,
+            "medianMs": 1,
+            "p95Ms": 2
+          }
+        }
+      ]
+    },
+    "browser": "186 browser checks pass across Chromium, mobile WebKit and the existing desktop WebKit raster case. New chapter checks cover the three-stage reveal, record/UTC agreement, deterministic seeking, eligibility, reduced motion, native controls, portrait/landscape, corruption recovery, Discover and /zenit/ relative assets."
+  }
+}

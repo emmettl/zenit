@@ -22,3 +22,14 @@ Study: 1 November 2026, 10:30–11:00 UTC; absolute element offset <=24 hours at
 The 10 February 2009 collision is documented context only: https://celestrak.org/events/collision/
 Glyph colour/size is authored. No physical debris sizes, collision risk, optical visibility or historical fragmentation reconstruction is represented.
 WGS84 Earth geography: Natural Earth public-domain data, as retained by the edition.
+
+OneWeb constellation visual proof:
+CelesTrak standard GP; USSPACECOM / 18th Space Defense Squadron via Space-Track.org.
+Basic SSA redistribution with citation: https://www.space-track.org/documentation#/odr
+Provider policy: https://celestrak.org/usage-policy.php
+Retained source and rights audit: https://github.com/emmettl/zenit/blob/main/docs/evidence/constellation-proof-2026-11-02.json
+One retained 2 November 2026 OneWeb group capture; SHA-256 6b04ee799fe82bb53a9c802bd4b065daaee05b58b4eac13e0cf46232e50bb647.
+651 input identities, 647 retained, 4 wholly stale exclusions. No visual cap. Provider-supplied group association and names; basic GP fields only, no operating-status enrichment.
+Study: 2 November 2026, 10:30–11:00 UTC. Direct SGP4 WGS72/AFSPC with TEME inputs and GMST Earth-fixed transform. Maximum absolute element offset 24 hours. 647 initially eligible, 643 at the end; this change is not a reentry history.
+Decimal-string identities, explicit documented frame/time/theory defaults, UTC suffix and age bounds added. Source fractional epoch retained; JavaScript propagation uses millisecond precision.
+Reveal is authored, not a deployment history. The featured plane is a measured orbital-normal neighbourhood, not an operator-assigned plane. Circular orientation guides, marker colours and sizes are authored; no observed tracks, links, coverage or optical-visibility claims.

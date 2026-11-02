@@ -1,0 +1,11 @@
+{
+  "file": "./data/orbital/constellation-d909e54f48fb.json",
+  "sha256": "d909e54f48fbc21577fcefd47c8c9c019c060b12f9fee93891b1ee68a72f5509",
+  "records": 647,
+  "study": {
+    "startUtc": "2026-11-02T10:30:00.000Z",
+    "endUtc": "2026-11-02T11:00:00.000Z",
+    "initialUtc": "2026-11-02T10:30:00.000Z"
+  },
+  "sourceSha256": "6b04ee799fe82bb53a9c802bd4b065daaee05b58b4eac13e0cf46232e50bb647"
+}

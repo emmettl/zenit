@@ -78,7 +78,7 @@ assert.deepEqual(cohorts.source.sources.map(x=>x.sha256),['9a8dd20063818e9782e17
 assert.equal(cohorts.statistics.distinctIdentities,716);assert.equal(cohorts.statistics.inputRows,762)
 assert.equal(cohorts.movers.length,635);assert.equal(new Set(cohorts.movers.map(x=>x.id)).size,635)
 assert.deepEqual(cohorts.study,manifest.study)
-const studyIndex=JSON.parse(await readFile('src/study-windows.json','utf8')),allowedOrbital=new Set(['NOTICE.txt',orbitalFile.split('/')[1],cohortFile.split('/')[1],JSON.parse(await readFile('src/debris-release.json','utf8')).file.split('/').at(-1)])
+const studyIndex=JSON.parse(await readFile('src/study-windows.json','utf8')),allowedOrbital=new Set(['NOTICE.txt',orbitalFile.split('/')[1],cohortFile.split('/')[1],JSON.parse(await readFile('src/debris-release.json','utf8')).file.split('/').at(-1),JSON.parse(await readFile('src/constellation-release.json','utf8')).file.split('/').at(-1)])
 assert.equal(studyIndex.schemaVersion,1);assert.equal(studyIndex.windows.length,3);assert.equal(studyIndex.observers.length,5)
 const nightPlaces=new Set()
 for(const window of studyIndex.windows){
@@ -134,3 +134,19 @@ assert.match(simulationHtml,/AN INDICATIVE SIMULATION/);assert.match(simulationH
 assert.match(simulationHtml,/href="\.\.\/\?explore=discover"/);assert.match(simulationHtml,/href="\.\.\/after-the-collision\/"/)
 assert.doesNotMatch(simulationHtml,/(?:src|href)="\/(?:assets|data)\//)
 console.log('Collision experiment checked: separate synthetic identity, authored model hash, explicit assumptions, representative samples and relative chapter links; no new catalogue data.')
+
+const constellationIndex=JSON.parse(await readFile('src/constellation-release.json','utf8')),constellationAudit=JSON.parse(await readFile('docs/evidence/constellation-proof-2026-11-02.json','utf8'))
+assert.match(constellationIndex.file,/^\.\/data\/orbital\/constellation-[a-f0-9]{12}\.json$/)
+const constellationBytes=await readFile('dist/'+constellationIndex.file.slice(2)),constellation=JSON.parse(constellationBytes)
+assert.equal(createHash('sha256').update(constellationBytes).digest('hex'),constellationIndex.sha256);assert.equal(constellationIndex.sha256,constellationAudit.release.sha256)
+assert.equal(constellation.kind,'constellation-proof');assert.equal(constellation.source.sha256,'6b04ee799fe82bb53a9c802bd4b065daaee05b58b4eac13e0cf46232e50bb647');assert.equal(constellation.rights.id,'basic-ssa-citation');assert.deepEqual(constellation.study,constellationIndex.study)
+assert.equal(constellation.movers.length,647);assert.equal(new Set(constellation.movers.map(m=>m.id)).size,647);assert.equal(constellation.statistics.inputRows,651);assert.equal(constellation.statistics.excludedIdentities,4);assert.equal(constellation.statistics.capExclusions,0)
+assert.equal(constellation.model.gravity,'WGS72');assert.equal(constellation.model.operationMode,'a');assert.equal(constellation.model.propagationFrame,'TEME');assert.equal(constellation.model.ageLimitHours,24)
+const independent=constellationAudit.validation.independentAgreement;assert.equal(independent.passed,true);assert.equal(independent.payloadSha256,constellationIndex.sha256);assert.equal(independent.identities,647);assert.equal(independent.samples,1941)
+for(const m of constellation.movers){const epoch=Date.parse(m.element.EPOCH);assert.equal(m.element.NORAD_CAT_ID,m.id);assert.match(m.name,/^ONEWEB-\d+$/);assert.equal(Date.parse(m.eligibleStartUtc),Math.max(Date.parse(constellation.study.startUtc),epoch-86400000));assert.equal(Date.parse(m.eligibleEndUtc),Math.min(Date.parse(constellation.study.endUtc),epoch+86400000))}
+assert.equal(constellation.movers.filter(m=>Date.parse(m.eligibleEndUtc)>=Date.parse(constellation.study.endUtc)).length,643)
+assert.equal(constellationAudit.exclusionLedger.length,4);assert.ok(constellationAudit.exclusionLedger.every(x=>x.reason==='outside-age-window'))
+assert.doesNotMatch(constellationBytes.toString(),/work\/sources|responseHeaders|Set-Cookie/i)
+const constellationHtml=await readFile('dist/how-a-constellation-takes-shape/index.html','utf8');assert.match(constellationHtml,/https:\/\/zenit\.motionstudies\.app\/how-a-constellation-takes-shape\//);assert.match(constellationHtml,/href="\.\.\/\?explore=discover"/);assert.doesNotMatch(constellationHtml,/(?:src|href)="\/(?:assets|data)\//)
+assert.match(await readFile('dist/data/orbital/NOTICE.txt','utf8'),/OneWeb constellation/)
+console.log('Constellation proof checked: 647 identities from 651 inputs, all-identity independent propagation/ECF agreement, immutable source hash, citation rights, changing age bounds and relative navigation.')
