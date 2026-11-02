@@ -3,16 +3,26 @@ import {OrbitControls} from 'three/addons/controls/OrbitControls.js'
 import {eciToEcf,eciToGeodetic,gstime} from 'satellite.js'
 import {earthGeometry,earthTexture} from './geography'
 import {earthFixedSun} from './illumination'
-import {loadConstellation,constellationOrbits,constellationState,featuredPlane,type ConstellationRelease} from './constellation'
+import {loadConstellation,constellationOrbits,constellationState,featuredPlane,type ConstellationRelease,CONSTELLATIONS,validConstellation,type ConstellationId} from './constellation'
+import {constellationSampler} from './constellation-sampler'
+import type {ConstellationFrame} from './constellation-frame'
 import {constellationReveal,constellationPose,orientationCircle,REVEAL_DURATION} from './constellation-composition'
 import {blockedByEarth} from './stellar'
 const el=<T extends HTMLElement=HTMLElement>(id:string)=>document.getElementById(id) as T
 const status=el('chapter-state'),retry=el<HTMLButtonElement>('retry')
-function mount(release:ConstellationRelease){
- const host=el('constellation-scene'),orbits=constellationOrbits(release),start=Date.parse(release.study.startUtc),end=Date.parse(release.study.endUtc),plane=featuredPlane(orbits,start),members=new Set(plane.members),reduced=matchMedia('(prefers-reduced-motion: reduce)')
+async function mount(release:ConstellationRelease,id:ConstellationId){
+ const metadata=CONSTELLATIONS[id],large=release.movers.length>1000
+ const host=el('constellation-scene'),orbits=constellationOrbits(release),start=Date.parse(release.study.startUtc),end=Date.parse(release.study.endUtc),plane=featuredPlane(orbits,start,release.featured),members=new Set(plane.members),reduced=matchMedia('(prefers-reduced-motion: reduce)')
  let time=start,playing=!reduced.matches&&!document.hidden,revealing=!reduced.matches,autoCamera=true,following=false,selected=plane.lead,rate=20,last=performance.now(),failed=false,updating=false
- let states=orbits.map(o=>constellationState(o,time)),previousTarget:Vector3|null=null
- const lead=states[plane.lead]!,fixedNormal=(n:Vector3,gmst:number)=>{const p=eciToEcf({x:n.x,y:n.y,z:n.z},gmst);return new Vector3(p.x,p.z,-p.y)}
+ const parameters=new URLSearchParams(location.search),at=parameters.has('t')?Number(parameters.get('t')):null
+ if(at!==null&&Number.isFinite(at)&&at>=0&&at<=(end-start)/1000){time=start+at*1000;playing=false;revealing=false}
+ type DisplayState={world:Vector3;normal:Vector3}
+ const fromPacket=(f:ConstellationFrame):Array<DisplayState|null>=>Array.from(f.available,(a,i)=>a?{world:new Vector3().fromArray(f.positions,i*3),normal:new Vector3().fromArray(f.normals,i*3)}:null)
+ const sampler=release.featured?await constellationSampler(release):null
+ const initial=sampler?await new Promise<ConstellationFrame>((resolve,reject)=>{sampler.listen(resolve,()=>reject(Error('Constellation propagation unavailable')));sampler.request(time)}):null
+ let frameTime=time,requestedTime=NaN,workerMs=initial?.sampleMs??0
+ let states:Array<DisplayState|null>=initial?fromPacket(initial):orbits.map(o=>constellationState(o,time)),previousTarget:Vector3|null=null
+ const lead=constellationState(orbits[plane.lead],start)!,fixedNormal=(n:Vector3,gmst:number)=>{const p=eciToEcf({x:n.x,y:n.y,z:n.z},gmst);return new Vector3(p.x,p.z,-p.y)}
  const initialNormal=fixedNormal(lead.normal,gstime(new Date(start))),radial=lead.world.clone().normalize(),along=initialNormal.clone().cross(radial).normalize(),globalDirection=radial.clone().multiplyScalar(2.5).addScaledVector(initialNormal,1.6).addScaledVector(along,2.1)
  const revealOrder=states.map(s=>s?(1-s.normal.dot(plane.normal))/2:1)
  const scene=new Scene(),camera=new PerspectiveCamera(43,1,.015,40),renderer=new WebGLRenderer({antialias:true})
@@ -27,13 +37,17 @@ function mount(release:ConstellationRelease){
  const material=new ShaderMaterial({transparent:true,depthTest:true,depthWrite:false,uniforms:{ratio:{value:renderer.getPixelRatio()}},vertexShader:`attribute vec3 tint;attribute float strength;attribute float size;uniform float ratio;varying vec3 colour;varying float opacity;void main(){colour=tint;opacity=strength;gl_PointSize=size*ratio;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);if(strength<.001)gl_Position=vec4(2.,2.,2.,1.);}`,fragmentShader:`varying vec3 colour;varying float opacity;void main(){float r=length(gl_PointCoord-.5)*2.;if(r>1.)discard;float core=1.-smoothstep(.18,.85,r);gl_FragColor=vec4(colour,opacity*mix(.12,1.,core));}`})
  const dots=new Points(geometry,material);dots.frustumCulled=false;scene.add(dots)
  // Separate orientation diagrams. Never connect catalogue identities with lines.
- const guideIndices=[plane.lead],normals=states.map(s=>s?.normal??null)
- for(const i of orbits.map((_,i)=>i).filter(i=>normals[i]).sort((a,b)=>Number(orbits[a].mover.id)-Number(orbits[b].mover.id))){if(guideIndices.every(j=>normals[i]!.dot(normals[j]!)<Math.cos(Math.PI/180*3)))guideIndices.push(i)}
+ const byId=new Map(orbits.map((o,i)=>[o.mover.id,i])),guideIndices=release.featured?release.featured.guideIds.map(id=>byId.get(id)!):[plane.lead],normals=states.map(s=>s?.normal??null)
+ if(!release.featured)for(const i of orbits.map((_,i)=>i).filter(i=>normals[i]).sort((a,b)=>Number(orbits[a].mover.id)-Number(orbits[b].mover.id))){if(guideIndices.every(j=>normals[i]!.dot(normals[j]!)<Math.cos(Math.PI/180*3)))guideIndices.push(i)}
  const guides=guideIndices.map((index,i)=>{const g=new BufferGeometry();g.setAttribute('position',new Float32BufferAttribute(new Float32Array(97*3),3));const line=new Line(g,new LineBasicMaterial({color:i===0?'#79cbe2':'#77929e',transparent:true,opacity:0,depthWrite:false}));line.frustumCulled=false;scene.add(line);return {index,line}})
  const object=el<HTMLSelectElement>('object'),timeInput=el<HTMLInputElement>('time'),speed=el<HTMLSelectElement>('speed'),guideToggle=el<HTMLInputElement>('guides')
  object.replaceChildren(...orbits.map((o,i)=>{const option=document.createElement('option');option.value=String(i);option.textContent=`${o.mover.name} · ${o.mover.id}`;return option}));object.value=String(selected)
- el('plane-description').textContent=`The featured group contains ${plane.members.length} initially eligible records whose orbital normals lie within 1° of ${orbits[plane.lead].mover.name}. Its featured record is chosen deterministically from the densest near-circular 108–111 minute neighbourhood, breaking ties by smallest NORAD identity.`
+ el('plane-description').textContent=`The featured group contains ${plane.members.length} initially eligible records whose orbital normals lie within 1° of ${orbits[plane.lead].mover.name}. ${release.featured?.selection??'Its featured record is chosen deterministically from the densest near-circular 108–111 minute neighbourhood, breaking ties by smallest NORAD identity.'}`
  el('source-counts').textContent=`${release.statistics.inputRows} source identities → ${orbits.length} retained; ${release.statistics.excludedIdentities} wholly stale exclusions. No visual cap. ${release.statistics.initialEligible} eligible at the opening, ${release.statistics.endEligible} at the end. Changes reflect the age limit, not reentries.`
+ el('source-heading').textContent=metadata.label.toUpperCase()+' / 2 NOVEMBER 2026'
+ el<HTMLAnchorElement>('audit-link').href='https://github.com/emmettl/zenit/blob/main/docs/evidence/'+(id==='oneweb'?'constellation-proof-2026-11-02.json':'large-constellations-2026-11-02.json')
+ el('source-label').textContent=metadata.label+' source group'
+ const choice=el<HTMLSelectElement>('constellation');choice.value=id;choice.onchange=()=>{const next=choice.value;if(!validConstellation(next)||next===id)return;pause();const url=new URL(location.href);url.searchParams.set('constellation',next);url.searchParams.set('t',String((Number(canvas.dataset.time??time)-start)/1000));location.assign(url.href)}
  el('source-window').textContent='2 November 2026, 10:30–11:00 UTC. One immutable snapshot; no provider requests from visitors. Ground coverage is outside this proof.'
  function fit(){const {width,height}=host.getBoundingClientRect();renderer.setSize(width,height);camera.aspect=width/Math.max(1,height)
   if(innerWidth>800)camera.setViewOffset(width,height,-width*.15,0,width,height)
@@ -43,12 +57,13 @@ function mount(release:ConstellationRelease){
  }
  function clearance(){const r=new Vector3(camera.position.x,camera.position.y/(1-1/298.257223563),camera.position.z).length();if(r<1.03)camera.position.multiplyScalar(1.03/Math.max(1e-10,r));const near=Math.min(.05,Math.max(.000001,(Math.max(r,1.03)-1)*.15));if(camera.near!==near){camera.near=near;camera.updateProjectionMatrix()}}
  function draw(){if(updating)return;clearance();renderer.render(scene,camera)}
- function pause(){playing=false;el('play').textContent='Play'}
+ function pause(preservePending=false){playing=false;el('play').textContent='Play';if(sampler&&!preservePending){time=frameTime;requestedTime=NaN}}
  function update(){
+  if(sampler&&time!==frameTime){if(requestedTime!==time){requestedTime=time;sampler.request(time)}return}
   updating=true;const began=performance.now(),gmst=gstime(new Date(time)),cue=revealing?Math.min(REVEAL_DURATION,(time-start)/20000):REVEAL_DURATION,beat=constellationReveal(cue)
-  states=orbits.map(o=>constellationState(o,time,gmst));let eligible=0,shown=0,planeCount=0
+  if(!sampler)states=orbits.map(o=>constellationState(o,time,gmst));let eligible=0,shown=0,planeCount=0
   states.forEach((s,i)=>{if(s)eligible++;if(s&&members.has(i))planeCount++;const alpha=!s?0:i===selected?1:members.has(i)?beat.plane:MathUtils.clamp((beat.whole-revealOrder[i]*.72)/.28,0,1)
-   if(alpha>.001)shown++;positions.setXYZ(i,...(s?.world.toArray()??[0,0,0]));strengths.setX(i,alpha);sizes.setX(i,i===selected?12:members.has(i)?5.5:4.2);const c=i===selected?gold:members.has(i)?cyan:silver;tints.setXYZ(i,c.r,c.g,c.b)
+   if(alpha>.001)shown++;positions.setXYZ(i,...(s?.world.toArray()??[0,0,0]));strengths.setX(i,alpha);sizes.setX(i,i===selected?12:members.has(i)?(large?4:5.5):(large?2.8:4.2));const c=i===selected?gold:members.has(i)?cyan:silver;tints.setXYZ(i,c.r,c.g,c.b)
   });for(const a of [positions,tints,strengths,sizes])a.needsUpdate=true
   const p=states[plane.lead]
   if(autoCamera&&p){const pose=constellationPose(cue,p.world,fixedNormal(p.normal,gmst),globalDirection,camera.aspect);camera.position.copy(pose.position);controls.target.copy(pose.target);camera.up.copy(pose.up);controls.update()}
@@ -56,19 +71,19 @@ function mount(release:ConstellationRelease){
   if(following){if(chosen){if(previousTarget)camera.position.add(chosen.world.clone().sub(previousTarget));controls.target.copy(chosen.world);previousTarget=chosen.world.clone();controls.update()}else{following=false;previousTarget=null;controls.target.set(0,0,0)}}
   guides.forEach(({index,line},i)=>{const s=states[index];line.visible=guideToggle.checked&&Boolean(s)&&(i===0?beat.plane:beat.whole)>.001;if(!line.visible||!s)return
    const points=orientationCircle(s.world,fixedNormal(s.normal,gmst),96),attr=line.geometry.getAttribute('position');points.forEach((p,j)=>attr.setXYZ(j,p.x,p.y,p.z));attr.needsUpdate=true
-   line.geometry.setDrawRange(0,i===0?Math.max(2,Math.round(97*beat.plane)):97);line.material.opacity=i===0?.32*beat.plane:.065*beat.whole
+   line.geometry.setDrawRange(0,i===0?Math.max(2,Math.round(97*beat.plane)):97);line.material.opacity=i===0?.32*beat.plane:(large?.035:.065)*beat.whole
   })
   sun.position.copy(earthFixedSun(time).normalize().multiplyScalar(5));const utc=new Date(time).toISOString().replace('T',' ').slice(0,19)+' UTC'
   el('utc').textContent=utc;timeInput.value=String((time-start)/1000);timeInput.setAttribute('aria-valuetext',utc);el('pace-label').textContent=`${rate}× MODEL TIME`
-  const titles=['Stay with one light.','The neighbours share a plane.','A pattern around Earth.'],notes=['A single dated orbital record. We travel with it as Earth turns below.',`${planeCount} eligible records in the featured orientation group. Cyan lights reveal their shared geometry.`,`${eligible} age-eligible records from the retained OneWeb source group, all moving at the same UTC.`]
+  const titles=['Stay with one light.','The neighbours share a plane.','A pattern around Earth.'],notes=['A single dated orbital record. We travel with it as Earth turns below.',`${planeCount} eligible records in the featured orientation group. Cyan lights reveal their shared geometry.`,`${eligible} age-eligible records from the retained ${metadata.label} source group, all moving at the same UTC.`]
   el('stage-number').textContent=['01 / ONE SATELLITE','02 / ONE PLANE','03 / THE CONSTELLATION'][beat.stage];el('stage-title').textContent=titles[beat.stage];el('stage-note').textContent=notes[beat.stage]
   el('view-label').textContent=following?'FOLLOWING SELECTED RECORD':autoCamera?['FOLLOWING ONE SATELLITE','OPENING OUT ALONG THE PLANE','THE WIDER STRUCTURE'][beat.stage]:'FREE CAMERA'
   el('featured-name').textContent=orbits[selected].mover.name;el('population').textContent=`${shown} revealed / ${eligible} age-eligible / ${orbits.length} retained`
   el('playback-note').textContent=revealing?'An authored reveal of a dated snapshot; not a deployment history.':'Explore the retained population. Playback stops at the study bounds.'
   document.querySelectorAll<HTMLButtonElement>('.waypoints button[data-cue]').forEach((b,i)=>b.setAttribute('aria-pressed',String(beat.stage===i)))
   el('play').textContent=playing?'Pause':'Play';el('follow').textContent=following?'Stop following':'Follow selected satellite';el('follow').setAttribute('aria-pressed',String(following));el<HTMLButtonElement>('follow').disabled=!chosen
-  if(!el('source-panel').hidden){const o=orbits[selected],height=chosen?eciToGeodetic(chosen.teme,gmst).height:null,entries=[['Identity',`NORAD ${o.mover.id}`],['Height',height===null?'Outside age window':`${height.toFixed(1)} km`],['Mean period',`${(1440/Number(o.mover.element.MEAN_MOTION)).toFixed(2)} min`],['Element offset',`${((time-o.epoch)/3600000).toFixed(2)} h`],['Epoch',o.mover.element.EPOCH]];el('readings').replaceChildren(...entries.flatMap(([a,b])=>{const dt=document.createElement('dt'),dd=document.createElement('dd');dt.textContent=a;dd.textContent=b;return[dt,dd]}))}
-  canvas.dataset.time=String(time);canvas.dataset.cue=String(cue);canvas.dataset.stage=String(beat.stage);canvas.dataset.shown=String(shown);canvas.dataset.eligible=String(eligible);canvas.dataset.planeCount=String(planeCount);canvas.dataset.featured=orbits[plane.lead].mover.id;canvas.dataset.selected=orbits[selected].mover.id;canvas.dataset.following=following?orbits[selected].mover.id:'';canvas.dataset.playing=String(playing);canvas.dataset.camera=autoCamera?'guided':following?'following':'free';canvas.dataset.sampleMs=(performance.now()-began).toFixed(2);canvas.dataset.position=chosen?chosen.world.toArray().join(','):''
+  if(!el('source-panel').hidden){const o=orbits[selected],inspection=chosen?constellationState(o,time,gmst):null,height=inspection?eciToGeodetic(inspection.teme,gmst).height:null,entries=[['Identity',`NORAD ${o.mover.id}`],['Height',height===null?'Outside age window':`${height.toFixed(1)} km`],['Mean period',`${(1440/Number(o.mover.element.MEAN_MOTION)).toFixed(2)} min`],['Element offset',`${((time-o.epoch)/3600000).toFixed(2)} h`],['Epoch',o.mover.element.EPOCH]];el('readings').replaceChildren(...entries.flatMap(([a,b])=>{const dt=document.createElement('dt'),dd=document.createElement('dd');dt.textContent=a;dd.textContent=b;return[dt,dd]}))}
+  canvas.dataset.time=String(time);canvas.dataset.cue=String(cue);canvas.dataset.stage=String(beat.stage);canvas.dataset.shown=String(shown);canvas.dataset.eligible=String(eligible);canvas.dataset.planeCount=String(planeCount);canvas.dataset.featured=orbits[plane.lead].mover.id;canvas.dataset.selected=orbits[selected].mover.id;canvas.dataset.following=following?orbits[selected].mover.id:'';canvas.dataset.playing=String(playing);canvas.dataset.camera=autoCamera?'guided':following?'following':'free';canvas.dataset.constellation=id;canvas.dataset.worker=String(Boolean(sampler));canvas.dataset.workerMs=String(workerMs);canvas.dataset.sampleMs=(performance.now()-began).toFixed(2);canvas.dataset.position=chosen?chosen.world.toArray().join(','):''
   updating=false;draw()
  }
  function explore(){revealing=false;autoCamera=false;following=false;previousTarget=null;pause()}
@@ -95,9 +110,11 @@ function mount(release:ConstellationRelease){
  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!panel.hidden){close();return}if(e.code==='Space'&&!e.altKey&&!e.ctrlKey&&!e.metaKey&&!e.shiftKey&&(e.target===document.body||e.target===canvas)){e.preventDefault();if(!e.repeat)toggle()}})
  reduced.addEventListener('change',()=>{if(reduced.matches){pause();revealing=false;update()}});document.addEventListener('visibilitychange',()=>{if(document.hidden){pause();update()}})
  canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();failed=true;pause();document.documentElement.dataset.constellation='error';status.hidden=false;status.textContent='Graphics interrupted. Reload to restore the retained snapshot.';retry.hidden=false})
+ sampler?.listen(frame=>{requestedTime=NaN;if(frame.time!==time)return;frameTime=frame.time;states=fromPacket(frame);workerMs=frame.sampleMs;update()},()=>{failed=true;pause();document.documentElement.dataset.constellation='error';status.hidden=false;status.textContent='Orbital calculation interrupted. Retry to restore the retained snapshot.';retry.hidden=false})
+ window.addEventListener('pagehide',()=>sampler?.dispose(),{once:true});window.addEventListener('pageshow',event=>{if(event.persisted&&sampler)location.reload()})
  new ResizeObserver(()=>{fit();update()}).observe(host);fit();camera.position.copy(globalDirection);camera.lookAt(0,0,0);renderer.compile(scene,camera);renderer.render(scene,camera);update();canvas.style.visibility='';last=performance.now()
- function tick(now:number){if(playing&&now-last>=33){const dt=(now-last)/1000;last=now;const next=time+dt*rate*1000,limit=revealing?start+REVEAL_DURATION*20000:end;time=Math.min(limit,Math.max(start,next));if(time>=limit){pause();if(revealing)revealing=false}update()}requestAnimationFrame(tick)}requestAnimationFrame(tick)
+ function tick(now:number){if(playing&&now-last>=33&&!sampler?.busy){const dt=(now-last)/1000;last=now;const next=time+dt*rate*1000,limit=revealing?start+REVEAL_DURATION*20000:end;time=Math.min(limit,Math.max(start,next));if(time>=limit){pause(true);if(revealing)revealing=false}update()}requestAnimationFrame(tick)}requestAnimationFrame(tick)
 }
 let controller:AbortController|undefined
-async function load(){controller?.abort();controller=new AbortController();status.hidden=false;retry.hidden=true;status.textContent='Opening the retained constellation…';try{const release=await loadConstellation(controller.signal);mount(release);document.documentElement.dataset.constellation='ready';status.hidden=true}catch(e){document.documentElement.dataset.constellation='error';status.textContent=e instanceof Error?e.message:'Constellation unavailable';retry.hidden=false}}
+async function load(){controller?.abort();controller=new AbortController();status.hidden=false;retry.hidden=true;status.textContent='Opening the retained constellation…';try{const requested=new URLSearchParams(location.search).get('constellation')??'oneweb';if(!validConstellation(requested))throw Error('Unknown constellation');const release=await loadConstellation(controller.signal,requested);await mount(release,requested);document.documentElement.dataset.constellation='ready';status.hidden=true}catch(e){document.documentElement.dataset.constellation='error';status.textContent=e instanceof Error?e.message:'Constellation unavailable';retry.hidden=false}}
 retry.onclick=()=>{if(document.querySelector('canvas'))location.reload();else void load()};void load()

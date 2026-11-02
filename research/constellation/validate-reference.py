@@ -1,9 +1,11 @@
 """Offline independent propagation and TEME/ECF reference; sgp4==2.25."""
-import json, math, pathlib, datetime, sgp4
+import json, math, pathlib, datetime, sgp4, sys
 from sgp4.api import Satrec, WGS72
 assert sgp4.__version__=='2.25'
-root=pathlib.Path('work/constellation-proof')
-samples=json.loads((root/'reference-samples.json').read_text()); maxima=[0.,0.,0.]
+group=sys.argv[1] if len(sys.argv)>1 else None
+assert group in [None,'starlink','kuiper']
+root=pathlib.Path('work/large-constellations' if group else 'work/constellation-proof')
+samples=json.loads((root/((group+'-' if group else '')+'reference-samples.json')).read_text()); maxima=[0.,0.,0.]
 for sample in samples:
     e=sample['element'];epoch=datetime.datetime.fromisoformat(e['EPOCH'].rstrip('Z'));epoch=epoch.replace(microsecond=epoch.microsecond//1000*1000)
     sat=Satrec();rad=math.pi/180
@@ -18,6 +20,6 @@ for sample in samples:
     for i,(actual,expected) in enumerate([(r,sample['temeKm']),(v,sample['velocityKmS']),(fixed,sample['fixedKm'])]):
         d=math.sqrt(sum((actual[j]-expected[k])**2 for j,k in enumerate(['x','y','z'])));maxima[i]=max(maxima[i],d)
 assert maxima[0]<.00002 and maxima[1]<.0000001 and maxima[2]<.00002,maxima
-path=pathlib.Path('docs/evidence/constellation-proof-2026-11-02.json');report=json.loads(path.read_text())
-result={'payloadSha256':report['release']['sha256'],'implementation':'Python sgp4 2.25 / Vallado C++ plus independent GMST/ECF transform','gravity':'WGS72','operationMode':'a','epochPrecision':'Source fractional epochs retained; both propagations use JavaScript millisecond precision.','samples':len(samples),'identities':len(set(s['id'] for s in samples)),'maxPositionDifferenceMetres':maxima[0]*1000,'maxVelocityDifferenceMetresPerSecond':maxima[1]*1000,'maxEarthFixedDifferenceMetres':maxima[2]*1000,'positionToleranceMetres':.02,'velocityToleranceMetresPerSecond':.0001,'passed':True,'limitation':'Independent numerical agreement; not a measurement of element accuracy or service availability.'}
-report['validation']['independentAgreement']=result;path.write_text(json.dumps(report,indent=2)+'\n');(root/'independent-validation.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result,indent=2))
+path=pathlib.Path('docs/evidence/large-constellations-2026-11-02.json' if group else 'docs/evidence/constellation-proof-2026-11-02.json');report=json.loads(path.read_text());target=report['groups'][group] if group else report
+result={'payloadSha256':target['release']['sha256'],'implementation':'Python sgp4 2.25 / Vallado C++ plus independent GMST/ECF transform','gravity':'WGS72','operationMode':'a','epochPrecision':'Source fractional epochs retained; both propagations use JavaScript millisecond precision.','samples':len(samples),'identities':len(set(s['id'] for s in samples)),'maxPositionDifferenceMetres':maxima[0]*1000,'maxVelocityDifferenceMetresPerSecond':maxima[1]*1000,'maxEarthFixedDifferenceMetres':maxima[2]*1000,'positionToleranceMetres':.02,'velocityToleranceMetresPerSecond':.0001,'passed':True,'limitation':'Independent numerical agreement; not a measurement of element accuracy or service availability.'}
+target['validation']['independentAgreement']=result;path.write_text(json.dumps(report,indent=2)+'\n');(root/((group+'-' if group else '')+'independent-validation.json')).write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result,indent=2))

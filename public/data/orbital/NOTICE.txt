@@ -33,3 +33,14 @@ One retained 2 November 2026 OneWeb group capture; SHA-256 6b04ee799fe82bb53a9c8
 Study: 2 November 2026, 10:30–11:00 UTC. Direct SGP4 WGS72/AFSPC with TEME inputs and GMST Earth-fixed transform. Maximum absolute element offset 24 hours. 647 initially eligible, 643 at the end; this change is not a reentry history.
 Decimal-string identities, explicit documented frame/time/theory defaults, UTC suffix and age bounds added. Source fractional epoch retained; JavaScript propagation uses millisecond precision.
 Reveal is authored, not a deployment history. The featured plane is a measured orbital-normal neighbourhood, not an operator-assigned plane. Circular orientation guides, marker colours and sizes are authored; no observed tracks, links, coverage or optical-visibility claims.
+
+Full Starlink and Kuiper source groups — ZENIT constellation chapter:
+Provider: CelesTrak standard GP. Upstream: USSPACECOM / 18th Space Defense Squadron via Space-Track.org.
+Basic SSA citation and redistribution: https://www.space-track.org/documentation#/odr
+Provider usage policy: https://celestrak.org/usage-policy.php
+Retained source/rights and independent numerical audit: https://github.com/emmettl/zenit/blob/main/docs/evidence/large-constellations-2026-11-02.json
+One successful 2 November 2026 capture per group. Starlink source SHA-256 2e22394e07aa724c3904d6cbd4502ee1dc7c2fe911d6470fa1870a19bed19d78; Kuiper source SHA-256 60cb0739ebcab95a2e9143dee9babac5ad4fa9cfa2213788133e84404cf1888c.
+Starlink: 11,156 input identities, 10,642 retained, 514 wholly stale exclusions; 10,590 age-eligible at the end. Kuiper: 391 input identities, 371 retained, 20 wholly stale exclusions; 370 age-eligible at the end. No population sample or visual cap.
+Study: 2 November 2026, 10:30–11:00 UTC. Each group is separately acquired; its provider membership is not proof of operational completeness. Only basic GP/OMM fields and provider names retained, including names carrying the provider's DTC suffix; no service or operating-status inference.
+Decimal-string identities, documented Earth/TEME/UTC/SGP4 defaults, UTC suffix and per-object 24-hour absolute element-offset bounds added. Direct SGP4 WGS72/AFSPC, with GMST Earth-fixed transform. Fresh baseline per sample; no interpolation. Float64 transport; authored GPU point sizes/colours. No visitors or CI acquire provider data.
+Every valid, age-eligible retained identity can appear once. Earth occludes the far side. At most 24 circular orientation diagrams are shown; this limit does not cap the satellite population. No deployment history, communications links, coverage or optical visibility is represented.

@@ -1,0 +1,48 @@
+{
+  "starlink": {
+    "file": "./data/orbital/constellation-fecda3965828.json",
+    "sha256": "fecda3965828fdf9e7fb72dc8f4ef7a6b2283d7d1de530ff2e51a5f364ea5670",
+    "records": 10642,
+    "study": {
+      "startUtc": "2026-11-02T10:30:00.000Z",
+      "endUtc": "2026-11-02T11:00:00.000Z",
+      "initialUtc": "2026-11-02T10:30:00.000Z"
+    },
+    "sourceSha256": "2e22394e07aa724c3904d6cbd4502ee1dc7c2fe911d6470fa1870a19bed19d78",
+    "label": "Starlink",
+    "namePattern": "^STARLINK-[0-9]+( \\[DTC\\])?$",
+    "statistics": {
+      "inputRows": 11156,
+      "retainedIdentities": 10642,
+      "excludedIdentities": 514,
+      "capExclusions": 0,
+      "initialEligible": 10642,
+      "endEligible": 10590
+    },
+    "maximumMovers": 20000,
+    "maximumBytes": 8000000
+  },
+  "kuiper": {
+    "file": "./data/orbital/constellation-005f4ac83fc1.json",
+    "sha256": "005f4ac83fc1ffa87f9703662079168e69beb887aa0c2189bce73c67b780e07f",
+    "records": 371,
+    "study": {
+      "startUtc": "2026-11-02T10:30:00.000Z",
+      "endUtc": "2026-11-02T11:00:00.000Z",
+      "initialUtc": "2026-11-02T10:30:00.000Z"
+    },
+    "sourceSha256": "60cb0739ebcab95a2e9143dee9babac5ad4fa9cfa2213788133e84404cf1888c",
+    "label": "Kuiper",
+    "namePattern": "^KUIPER-[0-9]+$",
+    "statistics": {
+      "inputRows": 391,
+      "retainedIdentities": 371,
+      "excludedIdentities": 20,
+      "capExclusions": 0,
+      "initialEligible": 371,
+      "endEligible": 370
+    },
+    "maximumMovers": 20000,
+    "maximumBytes": 8000000
+  }
+}

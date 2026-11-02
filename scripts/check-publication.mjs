@@ -53,10 +53,11 @@ assert.match(await readFile('dist/data/stellar/NOTICE.txt','utf8'),/David Nash.*
 assert.equal((await readdir('dist/licences')).length,11)
 const stellarBytes=gzipSync(bytes).length
 assert.ok(stellarBytes<=500_000,`Stellar payload exceeds 500 KB gzip: ${stellarBytes}`)
-let total=0
-async function measure(dir){for(const item of await readdir(dir,{withFileTypes:true})){const path=join(dir,item.name);if(item.isDirectory())await measure(path);else total+=gzipSync(await readFile(path)).length}}
-await measure('dist');assert.ok(total<=2_000_000,`Opening artifact exceeds 2 MB gzip: ${total}`)
-console.log(`Publication checked: 5,070 HYG records, source rights and integrity, relative URLs, canonical subdomain; stellar ${stellarBytes} gzip bytes, complete artifact ${total} gzip bytes.`)
+const largeConstellationIndex=JSON.parse(await readFile('src/large-constellation-releases.json','utf8')),lazyConstellationPaths=new Set(Object.values(largeConstellationIndex).map(x=>'dist/'+x.file.slice(2)))
+let total=0,opening=0
+async function measure(dir){for(const item of await readdir(dir,{withFileTypes:true})){const path=join(dir,item.name);if(item.isDirectory())await measure(path);else{const size=gzipSync(await readFile(path)).length;total+=size;if(!lazyConstellationPaths.has(path))opening+=size}}}
+await measure('dist');assert.ok(opening<=2_000_000,`Original edition artifact exceeds 2 MB gzip: ${opening}`);assert.ok(total<=3_500_000,`Complete artifact exceeds 3.5 MB gzip: ${total}`)
+console.log(`Publication checked: 5,070 HYG records, source rights and integrity, relative URLs, canonical subdomain; stellar ${stellarBytes} gzip bytes, original edition ${opening} gzip bytes, complete artifact with on-demand populations ${total} gzip bytes.`)
 
 const orbitalFile=manifest.evidence.iss.file
 assert.match(orbitalFile,/^orbital\/iss-[a-f0-9]{12}\.json$/)
@@ -78,7 +79,7 @@ assert.deepEqual(cohorts.source.sources.map(x=>x.sha256),['9a8dd20063818e9782e17
 assert.equal(cohorts.statistics.distinctIdentities,716);assert.equal(cohorts.statistics.inputRows,762)
 assert.equal(cohorts.movers.length,635);assert.equal(new Set(cohorts.movers.map(x=>x.id)).size,635)
 assert.deepEqual(cohorts.study,manifest.study)
-const studyIndex=JSON.parse(await readFile('src/study-windows.json','utf8')),allowedOrbital=new Set(['NOTICE.txt',orbitalFile.split('/')[1],cohortFile.split('/')[1],JSON.parse(await readFile('src/debris-release.json','utf8')).file.split('/').at(-1),JSON.parse(await readFile('src/constellation-release.json','utf8')).file.split('/').at(-1)])
+const studyIndex=JSON.parse(await readFile('src/study-windows.json','utf8')),allowedOrbital=new Set(['NOTICE.txt',orbitalFile.split('/')[1],cohortFile.split('/')[1],JSON.parse(await readFile('src/debris-release.json','utf8')).file.split('/').at(-1),JSON.parse(await readFile('src/constellation-release.json','utf8')).file.split('/').at(-1),...Object.values(largeConstellationIndex).map(x=>x.file.split('/').at(-1))])
 assert.equal(studyIndex.schemaVersion,1);assert.equal(studyIndex.windows.length,3);assert.equal(studyIndex.observers.length,5)
 const nightPlaces=new Set()
 for(const window of studyIndex.windows){
@@ -150,3 +151,18 @@ assert.doesNotMatch(constellationBytes.toString(),/work\/sources|responseHeaders
 const constellationHtml=await readFile('dist/how-a-constellation-takes-shape/index.html','utf8');assert.match(constellationHtml,/https:\/\/zenit\.motionstudies\.app\/how-a-constellation-takes-shape\//);assert.match(constellationHtml,/href="\.\.\/\?explore=discover"/);assert.doesNotMatch(constellationHtml,/(?:src|href)="\/(?:assets|data)\//)
 assert.match(await readFile('dist/data/orbital/NOTICE.txt','utf8'),/OneWeb constellation/)
 console.log('Constellation proof checked: 647 identities from 651 inputs, all-identity independent propagation/ECF agreement, immutable source hash, citation rights, changing age bounds and relative navigation.')
+
+const largeAudit=JSON.parse(await readFile('docs/evidence/large-constellations-2026-11-02.json','utf8'))
+assert.equal(largeAudit.budgets.maximumMoversPerGroup,20000);assert.equal(largeAudit.budgets.maximumCompleteArtifactGzip,3500000)
+for(const [id,index] of Object.entries(largeConstellationIndex)){
+ const body=await readFile('dist/'+index.file.slice(2)),r=JSON.parse(body),a=largeAudit.groups[id]
+ assert.equal(createHash('sha256').update(body).digest('hex'),index.sha256);assert.equal(index.sha256,a.release.sha256);assert.equal(r.source.sha256,index.sourceSha256)
+ assert.equal(r.constellation,id);assert.equal(r.kind,'constellation-proof');assert.deepEqual(r.study,constellation.study);assert.deepEqual(r.statistics,index.statistics)
+ assert.equal(r.movers.length,index.records);assert.ok(r.movers.length<=20000);assert.ok(body.length<=8000000);assert.ok(gzipSync(body).length<=1000000)
+ assert.equal(new Set(r.movers.map(m=>m.id)).size,r.movers.length);assert.equal(r.statistics.capExclusions,0);assert.equal(r.statistics.inputRows,r.movers.length+a.exclusionLedger.length)
+ assert.equal(r.rights.id,'basic-ssa-citation');assert.equal(r.model.gravity,'WGS72');assert.equal(r.model.operationMode,'a');assert.equal(r.model.propagationFrame,'TEME');assert.equal(r.model.ageLimitHours,24)
+ assert.equal(a.validation.independentAgreement.passed,true);assert.equal(a.validation.independentAgreement.payloadSha256,index.sha256);assert.equal(a.validation.independentAgreement.identities,r.movers.length)
+ for(const m of r.movers){const epoch=Date.parse(m.element.EPOCH);assert.equal(m.element.NORAD_CAT_ID,m.id);assert.match(m.name,new RegExp(index.namePattern));assert.equal(m.name,m.element.OBJECT_NAME);assert.equal(Date.parse(m.eligibleStartUtc),Math.max(Date.parse(r.study.startUtc),epoch-86400000));assert.equal(Date.parse(m.eligibleEndUtc),Math.min(Date.parse(r.study.endUtc),epoch+86400000))}
+ assert.ok(r.featured.guideIds.length<=24);assert.equal(r.featured.epochUtc,r.study.startUtc);assert.deepEqual(r.featured,a.featured);assert.doesNotMatch(body.toString(),/work\/sources|responseHeaders|Set-Cookie/i)
+}
+console.log('Large constellations checked: complete eligible Starlink and Kuiper groups, separate on-demand budgets, independent all-identity references, source/rights hashes, no cap and bounded orientation diagrams.')

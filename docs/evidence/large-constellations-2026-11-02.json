@@ -1,0 +1,3193 @@
+{
+  "title": "Full Starlink and Kuiper constellation populations",
+  "status": "bounded-full-group-visualisation",
+  "study": {
+    "startUtc": "2026-11-02T10:30:00.000Z",
+    "endUtc": "2026-11-02T11:00:00.000Z",
+    "initialUtc": "2026-11-02T10:30:00.000Z"
+  },
+  "policySources": [
+    {
+      "id": "celestrak-usage",
+      "url": "https://celestrak.org/usage-policy.php",
+      "capturedAt": "2026-11-02T10:36:36.700448+00:00",
+      "responseDate": "Mon, 02 Nov 2026 10:36:36 GMT",
+      "sha256": "7f7ae31ed4f29264f0a1ef35e4e6e73ef48fb0a7b5ae428cea8411632de7162b",
+      "bytes": 13980,
+      "retainedPath": "work/sources/constellation-2026-11-02/celestrak-usage.html"
+    },
+    {
+      "id": "celestrak-formats",
+      "url": "https://celestrak.org/NORAD/documentation/gp-data-formats.php",
+      "capturedAt": "2026-11-02T10:36:37.511470+00:00",
+      "responseDate": "Mon, 02 Nov 2026 10:36:37 GMT",
+      "sha256": "441d4fc9d9938058d0426b706d325c620c0b08a81de9f973d3587265c3e3103b",
+      "bytes": 40338,
+      "retainedPath": "work/sources/constellation-2026-11-02/celestrak-formats.html"
+    },
+    {
+      "id": "space-track-terms",
+      "url": "https://www.space-track.org/documentation",
+      "capturedAt": "2026-11-02T10:36:38.420719+00:00",
+      "sha256": "07f4461cad60ee70fb2214927f927973b83a753716b66f6e4385bde7cbfd3d6d",
+      "bytes": 186504,
+      "retainedPath": "work/sources/constellation-2026-11-02/space-track-terms.html"
+    }
+  ],
+  "rights": {
+    "id": "basic-ssa-citation",
+    "attribution": "CelesTrak standard GP; USSPACECOM / 18th Space Defense Squadron via Space-Track.org.",
+    "reference": "https://www.space-track.org/documentation#/odr",
+    "providerPolicy": "https://celestrak.org/usage-policy.php",
+    "fields": "Basic GP/OMM fields only. Starlink and Kuiper group membership and names are provider-supplied, including the provider DTC suffix in OBJECT_NAME. No optional status, availability or service enrichment.",
+    "changes": "NORAD identities normalized to decimal strings; UTC suffix and documented Earth/TEME/UTC/SGP4 defaults explicit; per-object age bounds added."
+  },
+  "groups": {
+    "starlink": {
+      "label": "Starlink",
+      "source": {
+        "id": "starlink",
+        "url": "https://celestrak.org/NORAD/elements/gp.php?GROUP=starlink&FORMAT=JSON",
+        "capturedAt": "2026-11-02T10:57:36.565446+00:00",
+        "responseDate": "Mon, 02 Nov 2026 10:57:45 GMT",
+        "sha256": "2e22394e07aa724c3904d6cbd4502ee1dc7c2fe911d6470fa1870a19bed19d78",
+        "bytes": 4691225,
+        "retainedPath": "work/sources/large-constellations-2026-11-02/starlink.json"
+      },
+      "study": {
+        "startUtc": "2026-11-02T10:30:00.000Z",
+        "endUtc": "2026-11-02T11:00:00.000Z",
+        "initialUtc": "2026-11-02T10:30:00.000Z"
+      },
+      "statistics": {
+        "inputRows": 11156,
+        "retainedIdentities": 10642,
+        "excludedIdentities": 514,
+        "capExclusions": 0,
+        "initialEligible": 10642,
+        "endEligible": 10590
+      },
+      "featured": {
+        "id": "47384",
+        "memberIds": [
+          "45696",
+          "47356",
+          "47361",
+          "47381",
+          "47384",
+          "47385",
+          "47386",
+          "47399",
+          "47401",
+          "47407",
+          "47408",
+          "51852",
+          "51855",
+          "51856",
+          "51857",
+          "51858",
+          "51886",
+          "51893",
+          "51957",
+          "51959",
+          "51960",
+          "51965",
+          "51966",
+          "51970",
+          "51972",
+          "51973",
+          "51974",
+          "51977",
+          "51992",
+          "51995",
+          "51996",
+          "51997",
+          "51998",
+          "52836",
+          "52882",
+          "60091",
+          "60092",
+          "60093",
+          "60094",
+          "60095",
+          "60096",
+          "60097",
+          "60098",
+          "60099",
+          "60100",
+          "60101",
+          "60102",
+          "60103",
+          "60104",
+          "60105",
+          "60106",
+          "60107",
+          "60108",
+          "60109",
+          "60110",
+          "60111",
+          "60112",
+          "62218",
+          "62219",
+          "62220",
+          "62221",
+          "62222",
+          "62223",
+          "62224",
+          "62225",
+          "62226",
+          "62227",
+          "62228",
+          "62229",
+          "62230",
+          "64204",
+          "64205",
+          "64206",
+          "64211",
+          "64213",
+          "64214",
+          "64215",
+          "64220",
+          "64221",
+          "64222",
+          "64223",
+          "64225",
+          "64226",
+          "64228",
+          "64229",
+          "66114",
+          "66116",
+          "66120",
+          "66123",
+          "66124",
+          "66125",
+          "66126",
+          "66131",
+          "66132",
+          "66133",
+          "66134",
+          "66136",
+          "66137",
+          "66140",
+          "66141"
+        ],
+        "thresholdDegrees": 1,
+        "epochUtc": "2026-11-02T10:30:00.000Z",
+        "selection": "Densest 1-degree opening-time angular-momentum-normal neighbourhood among eligible, near-circular (eccentricity <0.003), 85–130 minute records; lowest numeric NORAD ID breaks ties.",
+        "guideIds": [
+          "47384",
+          "44714",
+          "44723",
+          "44744",
+          "44747",
+          "44748",
+          "44751",
+          "44753",
+          "44768",
+          "44927",
+          "44930",
+          "44941",
+          "44961",
+          "44968",
+          "45044",
+          "45047",
+          "45061",
+          "45064",
+          "45088",
+          "45183",
+          "45201",
+          "45222",
+          "45225",
+          "45228"
+        ]
+      },
+      "exclusionLedger": [
+        {
+          "id": "45198",
+          "epoch": "2026-11-01T06:09:05.376672Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "45229",
+          "epoch": "2026-11-01T08:45:42.414336Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "45399",
+          "epoch": "2026-11-01T10:25:40.507104Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "46080",
+          "epoch": "2026-11-01T08:42:45.332352Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "46146",
+          "epoch": "2026-11-01T06:51:41.175072Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "46706",
+          "epoch": "2026-11-01T02:41:04.754112Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "47378",
+          "epoch": "2026-11-01T09:57:54.133632Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "47838",
+          "epoch": "2026-11-01T05:27:32.697792Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "47981",
+          "epoch": "2026-11-01T07:08:15.327168Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "48129",
+          "epoch": "2026-11-01T06:28:52.284576Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "48133",
+          "epoch": "2026-10-31T07:03:33.309792Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "48358",
+          "epoch": "2026-11-01T10:22:58.181376Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "48368",
+          "epoch": "2026-11-01T08:15:31.408992Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "48373",
+          "epoch": "2026-11-01T08:25:38.074368Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "48379",
+          "epoch": "2026-11-01T07:59:05.070912Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "48380",
+          "epoch": "2026-11-01T08:24:26.631936Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "48385",
+          "epoch": "2026-11-01T08:07:11.236800Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "48390",
+          "epoch": "2026-11-01T08:43:36.245280Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "48401",
+          "epoch": "2026-11-01T07:25:11.508672Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "48438",
+          "epoch": "2026-11-01T07:27:00.664704Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "48441",
+          "epoch": "2026-11-01T07:38:22.661376Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "48479",
+          "epoch": "2026-11-01T08:18:44.862912Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "49431",
+          "epoch": "2026-11-01T04:50:09.599136Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "49749",
+          "epoch": "2026-11-01T06:38:38.345280Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "50844",
+          "epoch": "2026-11-01T08:40:16.694112Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "51116",
+          "epoch": "2026-11-01T05:42:14.325984Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "51125",
+          "epoch": "2026-11-01T09:21:01.677600Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "51135",
+          "epoch": "2026-11-01T06:10:17.608800Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "51472",
+          "epoch": "2026-11-01T02:22:27.995232Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "51715",
+          "epoch": "2026-11-01T08:56:13.950816Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "51726",
+          "epoch": "2026-11-01T08:33:52.591680Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "51742",
+          "epoch": "2026-11-01T08:26:41.482464Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "51748",
+          "epoch": "2026-11-01T06:55:46.843104Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "51752",
+          "epoch": "2026-11-01T07:00:53.812800Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "51754",
+          "epoch": "2026-11-01T06:31:32.579040Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "51768",
+          "epoch": "2026-11-01T09:21:21.180672Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "51776",
+          "epoch": "2026-11-01T08:57:09.778176Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "51782",
+          "epoch": "2026-11-01T09:19:59.987136Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "51784",
+          "epoch": "2026-11-01T09:13:58.122336Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "51785",
+          "epoch": "2026-11-01T08:46:04.949184Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "51787",
+          "epoch": "2026-11-01T09:25:55.994016Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "51788",
+          "epoch": "2026-11-01T10:09:05.280192Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "51798",
+          "epoch": "2026-11-01T09:35:07.461888Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "51803",
+          "epoch": "2026-11-01T09:29:04.424640Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "51879",
+          "epoch": "2026-11-01T10:12:13.205376Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "51884",
+          "epoch": "2026-11-01T10:06:17.589024Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "51887",
+          "epoch": "2026-11-01T09:56:20.268672Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "51956",
+          "epoch": "2026-11-01T09:39:22.142304Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "52352",
+          "epoch": "2026-11-01T09:44:58.320384Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "52672",
+          "epoch": "2026-11-01T08:13:02.174592Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "53151",
+          "epoch": "2026-10-31T23:46:16.350528Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "53189",
+          "epoch": "2026-11-01T10:23:22.794144Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "53192",
+          "epoch": "2026-11-01T03:28:21.898560Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "53200",
+          "epoch": "2026-11-01T09:55:58.437120Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "53207",
+          "epoch": "2026-11-01T09:53:50.457120Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "53225",
+          "epoch": "2026-11-01T02:49:12.225504Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "53231",
+          "epoch": "2026-11-01T02:57:03.664512Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "53255",
+          "epoch": "2026-11-01T10:12:12.661056Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "53268",
+          "epoch": "2026-11-01T09:44:45.896064Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "53398",
+          "epoch": "2026-10-31T19:15:45.353664Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "53702",
+          "epoch": "2026-11-01T04:20:00.925728Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "53827",
+          "epoch": "2026-11-01T05:19:04.229472Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "53828",
+          "epoch": "2026-11-01T07:03:33.257952Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "53840",
+          "epoch": "2026-11-01T06:02:24.644832Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "53889",
+          "epoch": "2026-11-01T08:17:00.785472Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "53894",
+          "epoch": "2026-10-31T07:40:40.566144Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "53905",
+          "epoch": "2026-11-01T08:39:47.255904Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "53919",
+          "epoch": "2026-11-01T07:23:14.017632Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "53966",
+          "epoch": "2026-11-01T04:07:51.018528Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "53967",
+          "epoch": "2026-11-01T05:32:34.047168Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "53975",
+          "epoch": "2026-11-01T04:33:44.976960Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "53977",
+          "epoch": "2026-11-01T04:59:08.164896Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "54003",
+          "epoch": "2026-11-01T02:41:23.262720Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "54054",
+          "epoch": "2026-11-01T09:08:30.745824Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "54070",
+          "epoch": "2026-11-01T09:10:50.925504Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "54074",
+          "epoch": "2026-11-01T09:45:00.398304Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "54075",
+          "epoch": "2026-11-01T08:52:42.686400Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "54163",
+          "epoch": "2026-11-01T09:06:26.785152Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "54182",
+          "epoch": "2026-11-01T09:20:40.249536Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "54184",
+          "epoch": "2026-11-01T10:29:36.435264Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "54188",
+          "epoch": "2026-11-01T10:05:28.274496Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "54196",
+          "epoch": "2026-11-01T10:02:24.767808Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "54199",
+          "epoch": "2026-11-01T10:14:32.948736Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "54201",
+          "epoch": "2026-11-01T09:53:19.538016Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "54204",
+          "epoch": "2026-11-01T10:11:30.439968Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "54205",
+          "epoch": "2026-11-01T10:13:56.646048Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "54209",
+          "epoch": "2026-11-01T09:08:41.961408Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "54868",
+          "epoch": "2026-11-01T01:24:29.125152Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "55423",
+          "epoch": "2026-11-01T03:58:39.879840Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "55426",
+          "epoch": "2026-11-01T10:24:07.252992Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "55431",
+          "epoch": "2026-11-01T02:21:44.504928Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "55599",
+          "epoch": "2026-11-01T10:22:31.091520Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "55630",
+          "epoch": "2026-11-01T02:09:48.788928Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "55639",
+          "epoch": "2026-11-01T10:23:09.370176Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "55676",
+          "epoch": "2026-10-31T04:44:45.696768Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "55772",
+          "epoch": "2026-10-31T20:53:09.925728Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "56799",
+          "epoch": "2026-10-30T10:40:11.814816Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "57117",
+          "epoch": "2026-11-01T05:49:18.024672Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "57347",
+          "epoch": "2026-11-01T05:44:39.973056Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "57534",
+          "epoch": "2026-11-01T08:50:26.287584Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "57668",
+          "epoch": "2026-11-01T09:13:00.371712Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "57935",
+          "epoch": "2026-11-01T09:07:15.219264Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "57941",
+          "epoch": "2026-11-01T10:08:24.057888Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "58150",
+          "epoch": "2026-10-31T16:00:03.000096Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "58230",
+          "epoch": "2026-11-01T04:38:07.916352Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "58382",
+          "epoch": "2026-11-01T08:48:11.072448Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "58385",
+          "epoch": "2026-11-01T09:06:14.747904Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "58387",
+          "epoch": "2026-11-01T09:03:20.231136Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "58391",
+          "epoch": "2026-11-01T08:54:13.584384Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "58394",
+          "epoch": "2026-11-01T09:09:19.053792Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "58405",
+          "epoch": "2026-11-01T07:35:10.433472Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "58421",
+          "epoch": "2026-11-01T07:18:29.784960Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "58707",
+          "epoch": "2026-11-01T09:33:26.519904Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "58765",
+          "epoch": "2026-11-01T09:50:21.258528Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "58770",
+          "epoch": "2026-11-01T10:07:42.046752Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "58778",
+          "epoch": "2026-11-01T09:55:35.204160Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "58847",
+          "epoch": "2026-11-01T05:33:44.877888Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "58886",
+          "epoch": "2026-11-01T07:12:22.207392Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "58887",
+          "epoch": "2026-11-01T06:39:09.571104Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "58940",
+          "epoch": "2026-11-01T05:44:36.517056Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "58946",
+          "epoch": "2026-11-01T04:14:23.731584Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "58949",
+          "epoch": "2026-11-01T05:38:33.247392Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "59256",
+          "epoch": "2026-11-01T07:29:04.704000Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "59270",
+          "epoch": "2026-11-01T07:40:21.981504Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "59382",
+          "epoch": "2026-11-01T04:30:34.644672Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "59431",
+          "epoch": "2026-11-01T06:15:13.959072Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "59500",
+          "epoch": "2026-11-01T07:58:58.960704Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "59712",
+          "epoch": "2026-11-01T05:48:32.079744Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "59713",
+          "epoch": "2026-11-01T05:41:28.369824Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "59768",
+          "epoch": "2026-11-01T09:12:40.668192Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "60062",
+          "epoch": "2026-11-01T04:04:27.909408Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "60113",
+          "epoch": "2026-11-01T06:00:54.785376Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "60142",
+          "epoch": "2026-11-01T05:55:56.440992Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "60147",
+          "epoch": "2026-11-01T06:14:06.281952Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "60157",
+          "epoch": "2026-11-01T06:29:15.922752Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "60197",
+          "epoch": "2026-11-01T06:36:04.689792Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "60356",
+          "epoch": "2026-11-01T06:08:42.765792Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "60409",
+          "epoch": "2026-11-01T09:55:20.730432Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "60595",
+          "epoch": "2026-11-01T06:34:56.401824Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "60739",
+          "epoch": "2026-11-01T06:05:16.236096Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "60927",
+          "epoch": "2026-11-01T04:15:05.115456Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "61061",
+          "epoch": "2026-11-01T06:18:30.352320Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "61217",
+          "epoch": "2026-11-01T08:27:13.618944Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "61245",
+          "epoch": "2026-11-01T07:37:47.849088Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "61247",
+          "epoch": "2026-11-01T09:02:24.784800Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "61249",
+          "epoch": "2026-11-01T08:48:17.070336Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "61251",
+          "epoch": "2026-11-01T08:34:18.148800Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "61545",
+          "epoch": "2026-11-01T10:04:41.869920Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "61550",
+          "epoch": "2026-11-01T09:46:30.180000Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "61661",
+          "epoch": "2026-11-01T01:44:43.008000Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "61854",
+          "epoch": "2026-11-01T09:51:38.064672Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "61939",
+          "epoch": "2026-11-01T10:18:12.865248Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "61968",
+          "epoch": "2026-11-01T04:44:04.328448Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "62009",
+          "epoch": "2026-11-01T07:38:12.022944Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "62018",
+          "epoch": "2026-11-01T06:36:06.388416Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "62062",
+          "epoch": "2026-11-01T09:57:06.560064Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "62064",
+          "epoch": "2026-11-01T09:35:55.228128Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "62176",
+          "epoch": "2026-11-01T07:40:36.857856Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "62180",
+          "epoch": "2026-11-01T08:54:36.501984Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "62182",
+          "epoch": "2026-11-01T08:31:02.228160Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "62443",
+          "epoch": "2026-11-01T07:05:01.144032Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "62446",
+          "epoch": "2026-11-01T07:13:17.271840Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "62468",
+          "epoch": "2026-11-01T04:07:42.549600Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "62469",
+          "epoch": "2026-11-01T02:20:51.751680Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "62511",
+          "epoch": "2026-10-31T16:15:29.367936Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "62554",
+          "epoch": "2026-11-01T00:15:12.825504Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "62556",
+          "epoch": "2026-11-01T00:00:02.000160Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "62744",
+          "epoch": "2026-11-01T07:03:13.464576Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "62782",
+          "epoch": "2026-11-01T07:39:36.218880Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "62808",
+          "epoch": "2026-11-01T05:41:09.106944Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "62812",
+          "epoch": "2026-11-01T06:08:03.268032Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "62813",
+          "epoch": "2026-11-01T06:29:06.438624Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "62820",
+          "epoch": "2026-11-01T08:55:47.496000Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "62825",
+          "epoch": "2026-11-01T06:32:08.702016Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "62838",
+          "epoch": "2026-10-31T23:14:28.026816Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "62882",
+          "epoch": "2026-11-01T09:45:30.249504Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "62965",
+          "epoch": "2026-11-01T03:04:07.389120Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "63017",
+          "epoch": "2026-11-01T00:57:11.148768Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "63041",
+          "epoch": "2026-11-01T06:27:03.966624Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "63110",
+          "epoch": "2026-11-01T04:57:53.918784Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "63113",
+          "epoch": "2026-11-01T06:16:19.610112Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "63114",
+          "epoch": "2026-11-01T06:14:09.807072Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "63134",
+          "epoch": "2026-11-01T07:19:41.215296Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "63135",
+          "epoch": "2026-11-01T07:17:19.531392Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "63183",
+          "epoch": "2026-11-01T09:09:42.780960Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "63265",
+          "epoch": "2026-10-31T19:08:54.764448Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "63311",
+          "epoch": "2026-11-01T06:53:36.101760Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "63312",
+          "epoch": "2026-11-01T05:00:20.984544Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "63667",
+          "epoch": "2026-11-01T09:15:21.069792Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "63668",
+          "epoch": "2026-11-01T09:07:42.397248Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "63701",
+          "epoch": "2026-11-01T09:37:48.479520Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "63751",
+          "epoch": "2026-11-01T07:02:22.944768Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "63755",
+          "epoch": "2026-11-01T06:54:44.672256Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "63758",
+          "epoch": "2026-11-01T06:47:05.952192Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "63763",
+          "epoch": "2026-11-01T01:38:02.988096Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "63820",
+          "epoch": "2026-11-01T04:47:46.848192Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "63907",
+          "epoch": "2026-11-01T04:58:05.757312Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "63964",
+          "epoch": "2026-11-01T07:11:04.852608Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "63996",
+          "epoch": "2026-11-01T10:21:48.472992Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "63999",
+          "epoch": "2026-11-01T10:19:57.201888Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "64075",
+          "epoch": "2026-11-01T04:37:35.234688Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "64115",
+          "epoch": "2026-11-01T10:16:54.810624Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "64134",
+          "epoch": "2026-11-01T09:48:03.458304Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "64217",
+          "epoch": "2026-11-01T08:32:37.276800Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "64234",
+          "epoch": "2026-11-01T01:17:06.491904Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "64245",
+          "epoch": "2026-11-01T04:32:59.013888Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "64310",
+          "epoch": "2026-11-01T09:43:25.754880Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "64425",
+          "epoch": "2026-11-01T09:39:29.491488Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "64427",
+          "epoch": "2026-11-01T09:15:56.393568Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "64596",
+          "epoch": "2026-11-01T08:07:45.496128Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "64603",
+          "epoch": "2026-11-01T07:37:35.871456Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "64606",
+          "epoch": "2026-11-01T06:10:31.996128Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "64608",
+          "epoch": "2026-11-01T08:13:49.378368Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "64612",
+          "epoch": "2026-11-01T07:23:07.395072Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "64615",
+          "epoch": "2026-11-01T07:26:10.830048Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "64617",
+          "epoch": "2026-11-01T06:30:06.560928Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "64676",
+          "epoch": "2026-10-31T17:07:37.748640Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "64736",
+          "epoch": "2026-11-01T07:28:18.050592Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "64793",
+          "epoch": "2026-11-01T06:12:21.270528Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "64906",
+          "epoch": "2026-11-01T07:55:49.227168Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "64908",
+          "epoch": "2026-11-01T08:01:26.498208Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "64909",
+          "epoch": "2026-11-01T07:58:50.871936Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "64911",
+          "epoch": "2026-11-01T08:01:52.493376Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "64922",
+          "epoch": "2026-11-01T08:13:59.774016Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "64928",
+          "epoch": "2026-11-01T08:10:58.199232Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "64929",
+          "epoch": "2026-11-01T08:17:01.424832Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "65040",
+          "epoch": "2026-11-01T04:39:18.164736Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "65058",
+          "epoch": "2026-11-01T04:09:39.125664Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "65067",
+          "epoch": "2026-11-01T10:29:26.284128Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "65082",
+          "epoch": "2026-11-01T10:16:07.777920Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "65095",
+          "epoch": "2026-11-01T10:28:13.907712Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "65096",
+          "epoch": "2026-11-01T10:25:11.976960Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "65097",
+          "epoch": "2026-11-01T10:22:10.925760Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "65100",
+          "epoch": "2026-11-01T10:29:44.714976Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "65278",
+          "epoch": "2026-11-01T09:05:57.780672Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "65328",
+          "epoch": "2026-11-01T09:13:12.161856Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "65336",
+          "epoch": "2026-10-30T21:06:37.014048Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "65370",
+          "epoch": "2026-10-31T23:39:14.346144Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "65459",
+          "epoch": "2026-11-01T04:37:24.741408Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "65460",
+          "epoch": "2026-11-01T04:31:21.343872Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "65465",
+          "epoch": "2026-11-01T05:19:50.079360Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "65469",
+          "epoch": "2026-11-01T04:34:22.965312Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "65494",
+          "epoch": "2026-11-01T06:59:44.982240Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "65528",
+          "epoch": "2026-11-01T03:30:46.437120Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "65536",
+          "epoch": "2026-11-01T04:13:50.397600Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "65537",
+          "epoch": "2026-11-01T04:17:44.937312Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "65540",
+          "epoch": "2026-11-01T10:14:02.950656Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "65541",
+          "epoch": "2026-11-01T10:21:52.559712Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "65593",
+          "epoch": "2026-11-01T10:04:42.234528Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "65610",
+          "epoch": "2026-11-01T10:08:37.145760Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "65631",
+          "epoch": "2026-11-01T06:13:13.949472Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "65639",
+          "epoch": "2026-11-01T06:19:17.516352Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "65641",
+          "epoch": "2026-11-01T06:10:12.424800Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "65676",
+          "epoch": "2026-11-01T08:09:15.672672Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "65677",
+          "epoch": "2026-11-01T08:04:54.418944Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "65683",
+          "epoch": "2026-11-01T08:21:36.179424Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "65684",
+          "epoch": "2026-11-01T08:07:56.002368Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "65687",
+          "epoch": "2026-11-01T08:14:52.781280Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "65688",
+          "epoch": "2026-11-01T08:55:12.641376Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "65689",
+          "epoch": "2026-11-01T07:52:49.148832Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "65695",
+          "epoch": "2026-11-01T08:15:58.659552Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "65703",
+          "epoch": "2026-11-01T08:08:08.725632Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "65734",
+          "epoch": "2026-11-01T08:10:02.307936Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "65742",
+          "epoch": "2026-11-01T07:21:33.289920Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "65752",
+          "epoch": "2026-11-01T08:04:01.054848Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "65757",
+          "epoch": "2026-11-01T07:12:28.526688Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "65828",
+          "epoch": "2026-11-01T01:34:05.966976Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "65837",
+          "epoch": "2026-11-01T01:28:03.163008Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "65869",
+          "epoch": "2026-11-01T04:38:32.599104Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "65884",
+          "epoch": "2026-11-01T10:01:40.152576Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "65901",
+          "epoch": "2026-11-01T09:43:28.962912Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "65903",
+          "epoch": "2026-11-01T09:22:16.192416Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "65915",
+          "epoch": "2026-10-31T23:38:24.560736Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "66159",
+          "epoch": "2026-11-01T09:51:35.635104Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "66221",
+          "epoch": "2026-11-01T03:59:18.263040Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "66252",
+          "epoch": "2026-11-01T07:58:54.410016Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "66392",
+          "epoch": "2026-11-01T02:12:29.732256Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "66399",
+          "epoch": "2026-11-01T02:11:49.081920Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "66884",
+          "epoch": "2026-11-01T09:49:39.986112Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "66898",
+          "epoch": "2026-11-01T10:22:52.291488Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "66901",
+          "epoch": "2026-11-01T10:28:55.231968Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "66904",
+          "epoch": "2026-11-01T10:19:57.734976Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "66925",
+          "epoch": "2026-11-01T09:02:29.091840Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "66926",
+          "epoch": "2026-11-01T08:41:16.997856Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "66930",
+          "epoch": "2026-11-01T09:05:30.951744Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "66933",
+          "epoch": "2026-11-01T08:53:23.939808Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "66934",
+          "epoch": "2026-11-01T08:59:27.964608Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "66942",
+          "epoch": "2026-11-01T08:50:22.007328Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "66945",
+          "epoch": "2026-11-01T08:47:20.370336Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "66947",
+          "epoch": "2026-11-01T08:56:25.542240Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "66951",
+          "epoch": "2026-11-01T08:44:18.979584Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67003",
+          "epoch": "2026-11-01T03:42:39.494592Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67195",
+          "epoch": "2026-11-01T09:44:09.638304Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67196",
+          "epoch": "2026-11-01T08:49:11.528256Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67202",
+          "epoch": "2026-11-01T06:00:02.000160Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67207",
+          "epoch": "2026-11-01T09:01:49.583712Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67212",
+          "epoch": "2026-11-01T06:00:02.000160Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67218",
+          "epoch": "2026-11-01T09:36:27.382752Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67319",
+          "epoch": "2026-11-01T06:00:02.000160Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67337",
+          "epoch": "2026-11-01T08:25:07.501728Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67338",
+          "epoch": "2026-11-01T03:31:33.272832Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67341",
+          "epoch": "2026-11-01T09:11:10.057056Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67347",
+          "epoch": "2026-11-01T01:38:53.589984Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67352",
+          "epoch": "2026-11-01T08:32:18.557376Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67353",
+          "epoch": "2026-11-01T08:26:58.473024Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67355",
+          "epoch": "2026-11-01T08:21:25.488288Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67356",
+          "epoch": "2026-11-01T08:15:54.042336Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67359",
+          "epoch": "2026-11-01T08:28:49.160064Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67360",
+          "epoch": "2026-11-01T08:23:16.552896Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67405",
+          "epoch": "2026-11-01T03:31:16.936320Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67414",
+          "epoch": "2026-11-01T03:49:47.100288Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67428",
+          "epoch": "2026-11-01T06:00:02.000160Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67430",
+          "epoch": "2026-11-01T06:00:02.000160Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67451",
+          "epoch": "2026-11-01T07:00:23.934816Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67452",
+          "epoch": "2026-11-01T06:00:02.000160Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67453",
+          "epoch": "2026-11-01T01:59:25.360224Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67454",
+          "epoch": "2026-11-01T00:34:31.576512Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67457",
+          "epoch": "2026-11-01T06:45:35.774784Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67460",
+          "epoch": "2026-11-01T06:56:42.120960Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67466",
+          "epoch": "2026-11-01T07:02:16.702368Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67469",
+          "epoch": "2026-11-01T08:32:42.189504Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67472",
+          "epoch": "2026-11-01T06:47:26.531808Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67501",
+          "epoch": "2026-11-01T06:00:02.000160Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67513",
+          "epoch": "2026-11-01T06:00:02.000160Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67518",
+          "epoch": "2026-11-01T09:04:41.244960Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67519",
+          "epoch": "2026-11-01T06:00:02.000160Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67521",
+          "epoch": "2026-10-31T16:00:04.257216Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67533",
+          "epoch": "2026-11-01T06:00:02.000160Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67535",
+          "epoch": "2026-11-01T05:25:41.083680Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67536",
+          "epoch": "2026-11-01T06:00:02.000160Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67540",
+          "epoch": "2026-11-01T06:00:02.000160Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67552",
+          "epoch": "2026-11-01T09:48:00.990720Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67553",
+          "epoch": "2026-11-01T06:00:02.000160Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67564",
+          "epoch": "2026-11-01T09:59:16.246464Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67575",
+          "epoch": "2026-11-01T06:00:02.000160Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67577",
+          "epoch": "2026-11-01T10:07:06.245184Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67590",
+          "epoch": "2026-11-01T06:00:02.000160Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67593",
+          "epoch": "2026-11-01T03:35:18.101184Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67598",
+          "epoch": "2026-11-01T10:18:34.540416Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67600",
+          "epoch": "2026-11-01T10:22:29.978688Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67603",
+          "epoch": "2026-11-01T03:31:23.028384Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67604",
+          "epoch": "2026-11-01T10:10:44.432832Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67606",
+          "epoch": "2026-11-01T10:02:55.007808Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67608",
+          "epoch": "2026-11-01T04:26:11.810688Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67622",
+          "epoch": "2026-11-01T06:00:02.000160Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67628",
+          "epoch": "2026-11-01T04:18:29.067840Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67629",
+          "epoch": "2026-11-01T04:09:13.572000Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67632",
+          "epoch": "2026-11-01T06:00:02.000160Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67640",
+          "epoch": "2026-11-01T05:48:56.800512Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67641",
+          "epoch": "2026-11-01T05:17:41.750304Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67644",
+          "epoch": "2026-11-01T04:05:31.648416Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67645",
+          "epoch": "2026-11-01T04:03:40.639104Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67669",
+          "epoch": "2026-11-01T08:49:56.705088Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67694",
+          "epoch": "2026-11-01T06:37:55.602336Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67699",
+          "epoch": "2026-11-01T06:30:05.902560Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67701",
+          "epoch": "2026-11-01T06:26:10.921344Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67704",
+          "epoch": "2026-11-01T06:34:00.709248Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67711",
+          "epoch": "2026-11-01T06:45:45.332352Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67712",
+          "epoch": "2026-11-01T06:00:02.000160Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67713",
+          "epoch": "2026-11-01T06:43:38.507520Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67716",
+          "epoch": "2026-11-01T06:41:50.665632Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67717",
+          "epoch": "2026-11-01T07:09:15.106464Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67721",
+          "epoch": "2026-11-01T02:51:36.307872Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67726",
+          "epoch": "2026-11-01T02:32:01.439808Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67733",
+          "epoch": "2026-11-01T09:54:27.220320Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67741",
+          "epoch": "2026-11-01T06:00:02.000160Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67744",
+          "epoch": "2026-11-01T09:23:07.908000Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67803",
+          "epoch": "2026-11-01T06:00:02.000160Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67827",
+          "epoch": "2026-11-01T06:00:02.000160Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67837",
+          "epoch": "2026-11-01T06:00:02.000160Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67852",
+          "epoch": "2026-11-01T06:00:02.000160Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67860",
+          "epoch": "2026-11-01T01:59:28.215744Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67869",
+          "epoch": "2026-11-01T08:41:14.201952Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67876",
+          "epoch": "2026-11-01T06:00:02.000160Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67878",
+          "epoch": "2026-11-01T06:00:02.000160Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67881",
+          "epoch": "2026-11-01T09:15:19.289952Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67887",
+          "epoch": "2026-11-01T09:27:01.535328Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67893",
+          "epoch": "2026-11-01T09:03:33.064128Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67896",
+          "epoch": "2026-11-01T07:37:24.470976Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67897",
+          "epoch": "2026-11-01T09:19:12.574272Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67902",
+          "epoch": "2026-11-01T09:07:28.265664Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67905",
+          "epoch": "2026-11-01T10:14:28.658112Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67912",
+          "epoch": "2026-11-01T09:31:54.128928Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67913",
+          "epoch": "2026-11-01T09:26:21.952896Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67928",
+          "epoch": "2026-11-01T06:00:02.000160Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67932",
+          "epoch": "2026-11-01T01:08:34.579680Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67947",
+          "epoch": "2026-11-01T06:00:04.980960Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67948",
+          "epoch": "2026-11-01T05:56:23.054784Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67949",
+          "epoch": "2026-11-01T01:10:12.571104Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67987",
+          "epoch": "2026-11-01T06:00:02.000160Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67992",
+          "epoch": "2026-11-01T06:23:48.822720Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67994",
+          "epoch": "2026-11-01T06:00:02.000160Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67998",
+          "epoch": "2026-11-01T07:15:24.564096Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68004",
+          "epoch": "2026-11-01T06:00:02.000160Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68007",
+          "epoch": "2026-11-01T06:00:02.000160Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68014",
+          "epoch": "2026-11-01T08:00:03.000384Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68036",
+          "epoch": "2026-11-01T10:00:32.487552Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68039",
+          "epoch": "2026-11-01T10:08:22.528608Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68089",
+          "epoch": "2026-11-01T06:00:02.000160Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68091",
+          "epoch": "2026-11-01T07:27:29.977632Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68097",
+          "epoch": "2026-11-01T06:48:14.280768Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68113",
+          "epoch": "2026-11-01T10:20:44.236320Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68153",
+          "epoch": "2026-11-01T08:10:09.034176Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68162",
+          "epoch": "2026-11-01T00:35:58.624512Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68174",
+          "epoch": "2026-11-01T06:00:02.000160Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68178",
+          "epoch": "2026-11-01T06:00:02.000160Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68181",
+          "epoch": "2026-11-01T06:00:02.000160Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68233",
+          "epoch": "2026-11-01T06:00:02.000160Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68238",
+          "epoch": "2026-11-01T06:00:02.000160Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68243",
+          "epoch": "2026-11-01T07:33:14.533056Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68250",
+          "epoch": "2026-11-01T06:00:02.000160Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68252",
+          "epoch": "2026-11-01T05:11:06.579168Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68253",
+          "epoch": "2026-11-01T03:30:52.022016Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68258",
+          "epoch": "2026-11-01T05:37:40.753344Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68260",
+          "epoch": "2026-11-01T06:00:02.000160Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68264",
+          "epoch": "2026-11-01T09:23:58.773408Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68267",
+          "epoch": "2026-11-01T07:01:42.506976Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68280",
+          "epoch": "2026-11-01T06:00:02.000160Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68282",
+          "epoch": "2026-11-01T06:07:17.793120Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68285",
+          "epoch": "2026-11-01T06:00:02.000160Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68290",
+          "epoch": "2026-11-01T06:00:02.000160Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68299",
+          "epoch": "2026-11-01T08:29:42.412704Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68316",
+          "epoch": "2026-11-01T06:00:02.000160Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68323",
+          "epoch": "2026-11-01T08:04:04.834848Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68324",
+          "epoch": "2026-11-01T08:23:44.752992Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68326",
+          "epoch": "2026-11-01T08:32:50.280000Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68328",
+          "epoch": "2026-11-01T08:26:46.822848Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68330",
+          "epoch": "2026-11-01T06:56:01.120704Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68336",
+          "epoch": "2026-11-01T08:20:43.366560Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68337",
+          "epoch": "2026-11-01T07:51:57.426336Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68339",
+          "epoch": "2026-11-01T08:14:39.547392Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68340",
+          "epoch": "2026-11-01T08:10:08.251392Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68341",
+          "epoch": "2026-11-01T06:54:31.253472Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68342",
+          "epoch": "2026-11-01T08:01:02.985312Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68343",
+          "epoch": "2026-11-01T06:00:02.000160Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68347",
+          "epoch": "2026-11-01T08:08:36.181824Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68380",
+          "epoch": "2026-11-01T09:29:58.493760Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68385",
+          "epoch": "2026-11-01T08:43:36.195168Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68387",
+          "epoch": "2026-11-01T08:39:41.478336Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68391",
+          "epoch": "2026-11-01T08:55:21.131904Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68392",
+          "epoch": "2026-11-01T08:47:32.969184Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68397",
+          "epoch": "2026-11-01T08:35:46.383072Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68398",
+          "epoch": "2026-11-01T08:51:26.151552Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68402",
+          "epoch": "2026-11-01T08:31:51.553920Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68403",
+          "epoch": "2026-11-01T08:42:59.254848Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68542",
+          "epoch": "2026-11-01T09:13:11.195040Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68543",
+          "epoch": "2026-11-01T09:10:08.398560Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68544",
+          "epoch": "2026-11-01T09:04:04.936224Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68545",
+          "epoch": "2026-11-01T09:07:06.491136Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68568",
+          "epoch": "2026-11-01T09:19:13.305216Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68570",
+          "epoch": "2026-11-01T09:16:12.465696Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68716",
+          "epoch": "2026-11-01T09:52:46.768224Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "69164",
+          "epoch": "2026-11-01T05:12:09.141408Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "69191",
+          "epoch": "2026-11-01T05:59:35.611008Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "69192",
+          "epoch": "2026-11-01T05:53:31.947360Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "69195",
+          "epoch": "2026-11-01T04:07:37.388064Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "69197",
+          "epoch": "2026-11-01T08:45:58.935744Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "69248",
+          "epoch": "2026-11-01T08:21:25.061472Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "69252",
+          "epoch": "2026-11-01T08:09:17.884512Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "69255",
+          "epoch": "2026-11-01T08:00:12.325536Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "69258",
+          "epoch": "2026-11-01T07:48:12.785472Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "69259",
+          "epoch": "2026-11-01T06:11:23.458560Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "69355",
+          "epoch": "2026-11-01T06:59:41.109792Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "69357",
+          "epoch": "2026-11-01T05:56:03.448032Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "69359",
+          "epoch": "2026-11-01T07:05:44.750112Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "69374",
+          "epoch": "2026-11-01T06:56:38.594112Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "69379",
+          "epoch": "2026-11-01T06:50:35.640672Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "69452",
+          "epoch": "2026-11-01T08:31:29.166816Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "69454",
+          "epoch": "2026-11-01T08:28:27.547104Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "69459",
+          "epoch": "2026-11-01T08:46:30.357696Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "69465",
+          "epoch": "2026-11-01T08:07:15.327840Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "69468",
+          "epoch": "2026-11-01T08:44:18.163104Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "69471",
+          "epoch": "2026-11-01T08:43:28.055424Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "69552",
+          "epoch": "2026-11-01T02:28:38.216640Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "69825",
+          "epoch": "2026-11-01T05:57:23.989248Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "69829",
+          "epoch": "2026-11-01T05:33:09.131616Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "69843",
+          "epoch": "2026-11-01T05:54:21.708576Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "69947",
+          "epoch": "2026-11-01T06:04:11.710848Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "69951",
+          "epoch": "2026-10-30T20:10:57.155520Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "100032",
+          "epoch": "2026-11-01T08:00:09.311904Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "100033",
+          "epoch": "2026-11-01T07:38:57.123744Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "100034",
+          "epoch": "2026-11-01T07:20:48.413760Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "100046",
+          "epoch": "2026-11-01T04:00:01.999584Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "100047",
+          "epoch": "2026-11-01T04:00:01.999584Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "100054",
+          "epoch": "2026-11-01T07:41:58.670016Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "100055",
+          "epoch": "2026-10-31T23:46:56.207712Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "100154",
+          "epoch": "2026-11-01T08:59:53.467296Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "100156",
+          "epoch": "2026-11-01T08:52:03.574848Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "100164",
+          "epoch": "2026-11-01T01:25:44.061600Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "100199",
+          "epoch": "2026-11-01T02:44:10.762080Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "100214",
+          "epoch": "2026-11-01T10:11:53.837088Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "100219",
+          "epoch": "2026-11-01T10:15:49.076640Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "100220",
+          "epoch": "2026-11-01T02:41:40.307712Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "100221",
+          "epoch": "2026-11-01T09:52:20.871552Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "100224",
+          "epoch": "2026-11-01T09:13:10.311168Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "100234",
+          "epoch": "2026-11-01T02:49:28.670880Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "100250",
+          "epoch": "2026-11-01T02:52:28.806240Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "100257",
+          "epoch": "2026-11-01T02:05:30.209280Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "100438",
+          "epoch": "2026-11-01T10:26:03.560352Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "100494",
+          "epoch": "2026-10-31T23:45:45.389088Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "100525",
+          "epoch": "2026-11-01T04:00:01.999584Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "100528",
+          "epoch": "2026-11-01T04:00:01.999584Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "100536",
+          "epoch": "2026-11-01T04:00:01.999584Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "100552",
+          "epoch": "2026-11-01T04:00:01.999584Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "100559",
+          "epoch": "2026-11-01T06:20:05.222112Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "100623",
+          "epoch": "2026-11-01T05:26:43.770336Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "101006",
+          "epoch": "2026-11-01T10:08:19.776768Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "101018",
+          "epoch": "2026-11-01T09:33:53.602848Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "101019",
+          "epoch": "2026-11-01T04:00:01.999584Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "101021",
+          "epoch": "2026-11-01T09:28:01.590240Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "101022",
+          "epoch": "2026-11-01T09:45:07.223904Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "101177",
+          "epoch": "2026-11-01T04:00:01.999584Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "101181",
+          "epoch": "2026-11-01T04:00:01.999584Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "101223",
+          "epoch": "2026-11-01T04:00:01.999584Z",
+          "reason": "outside-age-window"
+        }
+      ],
+      "release": {
+        "file": "data/orbital/constellation-fecda3965828.json",
+        "sha256": "fecda3965828fdf9e7fb72dc8f4ef7a6b2283d7d1de530ff2e51a5f364ea5670",
+        "bytes": 6961615,
+        "gzipBytes": 703865
+      },
+      "validation": {
+        "independentAgreement": {
+          "payloadSha256": "fecda3965828fdf9e7fb72dc8f4ef7a6b2283d7d1de530ff2e51a5f364ea5670",
+          "implementation": "Python sgp4 2.25 / Vallado C++ plus independent GMST/ECF transform",
+          "gravity": "WGS72",
+          "operationMode": "a",
+          "epochPrecision": "Source fractional epochs retained; both propagations use JavaScript millisecond precision.",
+          "samples": 31926,
+          "identities": 10642,
+          "maxPositionDifferenceMetres": 2.964485389222977e-7,
+          "maxVelocityDifferenceMetresPerSecond": 3.3073676205827603e-10,
+          "maxEarthFixedDifferenceMetres": 0.00006839199404142269,
+          "positionToleranceMetres": 0.02,
+          "velocityToleranceMetresPerSecond": 0.0001,
+          "passed": true,
+          "limitation": "Independent numerical agreement; not a measurement of element accuracy or service availability."
+        },
+        "everyThirtySeconds": true,
+        "browserMeasurement": {
+          "payloadSha256": "fecda3965828fdf9e7fb72dc8f4ef7a6b2283d7d1de530ff2e51a5f364ea5670",
+          "measuredAt": "2026-11-02T11:12:10.804Z",
+          "host": {
+            "platform": "darwin",
+            "architecture": "arm64"
+          },
+          "method": "Production preview, complete population, 300x direct propagation, 120 real rAF samples after load with first 11 omitted, ten direct seeks. Main-thread sampling/UI excludes subsequent GPU draw. Worker propagation is reported separately. rAF gaps measure scheduler cadence; model-frame gaps measure changed UTC on rendered updates (the app targets about 30 Hz). Seeks wait for the requested UTC packet to commit, measured at rAF observation resolution. Engines run sequentially. No virtual clock.",
+          "limitation": "Local headless desktop and phone emulation only; hardware model and physical phone not measured. Bounded local check, not a sustained physical-device frame-rate claim.",
+          "results": [
+            {
+              "label": "Headless Chromium desktop",
+              "browserVersion": "156.0.8078.4",
+              "viewport": {
+                "width": 1280,
+                "height": 720
+              },
+              "devicePixelRatio": 1,
+              "rate": 300,
+              "readyMs": 281.920875,
+              "retainedRecords": 10642,
+              "finalShown": 10642,
+              "rafIntervals": {
+                "samples": 109,
+                "medianMs": 16.699999999999818,
+                "p95Ms": 16.799999999999955
+              },
+              "modelFrameIntervals": {
+                "samples": 54,
+                "medianMs": 33.30000000000018,
+                "p95Ms": 33.40000000000009
+              },
+              "mainThreadSampleAndUI": {
+                "medianMs": 0.7,
+                "p95Ms": 0.9
+              },
+              "workerPropagation": {
+                "medianMs": 5.100000001490116,
+                "p95Ms": 5.299999997019768
+              },
+              "seekToCommittedFrame": {
+                "samples": 10,
+                "medianMs": 16.69999999552965,
+                "p95Ms": 17.399999998509884
+              }
+            },
+            {
+              "label": "Headless WebKit iPhone 13 emulation (not a physical phone)",
+              "browserVersion": "27.2",
+              "viewport": {
+                "width": 390,
+                "height": 664
+              },
+              "devicePixelRatio": 3,
+              "rate": 300,
+              "readyMs": 298.9982500000001,
+              "retainedRecords": 10642,
+              "finalShown": 10642,
+              "rafIntervals": {
+                "samples": 109,
+                "medianMs": 17,
+                "p95Ms": 17
+              },
+              "modelFrameIntervals": {
+                "samples": 54,
+                "medianMs": 33,
+                "p95Ms": 34
+              },
+              "mainThreadSampleAndUI": {
+                "medianMs": 1,
+                "p95Ms": 2
+              },
+              "workerPropagation": {
+                "medianMs": 6,
+                "p95Ms": 6
+              },
+              "seekToCommittedFrame": {
+                "samples": 10,
+                "medianMs": 17,
+                "p95Ms": 17
+              }
+            }
+          ]
+        }
+      }
+    },
+    "kuiper": {
+      "label": "Kuiper",
+      "source": {
+        "id": "kuiper",
+        "url": "https://celestrak.org/NORAD/elements/gp.php?GROUP=kuiper&FORMAT=JSON",
+        "capturedAt": "2026-11-02T10:57:48.457054+00:00",
+        "responseDate": "Mon, 02 Nov 2026 10:57:52 GMT",
+        "sha256": "60cb0739ebcab95a2e9143dee9babac5ad4fa9cfa2213788133e84404cf1888c",
+        "bytes": 162666,
+        "retainedPath": "work/sources/large-constellations-2026-11-02/kuiper.json"
+      },
+      "study": {
+        "startUtc": "2026-11-02T10:30:00.000Z",
+        "endUtc": "2026-11-02T11:00:00.000Z",
+        "initialUtc": "2026-11-02T10:30:00.000Z"
+      },
+      "statistics": {
+        "inputRows": 391,
+        "retainedIdentities": 371,
+        "excludedIdentities": 20,
+        "capExclusions": 0,
+        "initialEligible": 371,
+        "endEligible": 370
+      },
+      "featured": {
+        "id": "63749",
+        "memberIds": [
+          "63748",
+          "63749",
+          "69286",
+          "69292",
+          "69294",
+          "69295"
+        ],
+        "thresholdDegrees": 1,
+        "epochUtc": "2026-11-02T10:30:00.000Z",
+        "selection": "Densest 1-degree opening-time angular-momentum-normal neighbourhood among eligible, near-circular (eccentricity <0.003), 85–130 minute records; lowest numeric NORAD ID breaks ties.",
+        "guideIds": [
+          "63749",
+          "63724",
+          "63726",
+          "63728",
+          "63729",
+          "63731",
+          "63733",
+          "63738",
+          "63745",
+          "63746",
+          "64500",
+          "64501",
+          "64507",
+          "64509",
+          "64510",
+          "64513",
+          "64515",
+          "64526",
+          "64817",
+          "64823",
+          "64824",
+          "64828",
+          "64839",
+          "65132"
+        ]
+      },
+      "exclusionLedger": [
+        {
+          "id": "64523",
+          "epoch": "2026-11-01T07:36:26.352288Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "64830",
+          "epoch": "2026-11-01T07:28:49.438848Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "64836",
+          "epoch": "2026-11-01T05:37:56.075520Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "65148",
+          "epoch": "2026-11-01T02:56:11.220576Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67780",
+          "epoch": "2026-11-01T06:00:02.000160Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67789",
+          "epoch": "2026-11-01T06:00:02.000160Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "67795",
+          "epoch": "2026-11-01T06:00:02.000160Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68588",
+          "epoch": "2026-11-01T05:04:49.701504Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68594",
+          "epoch": "2026-11-01T08:46:30.332640Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68866",
+          "epoch": "2026-11-01T10:16:07.688928Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68872",
+          "epoch": "2026-11-01T08:58:20.690112Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "68879",
+          "epoch": "2026-11-01T10:27:48.649536Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "69602",
+          "epoch": "2026-11-01T04:40:00.891264Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "69612",
+          "epoch": "2026-10-31T18:36:06.996672Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "69615",
+          "epoch": "2026-10-31T17:14:20.928192Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "69616",
+          "epoch": "2026-10-31T17:51:22.987584Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "69617",
+          "epoch": "2026-11-01T04:29:48.190848Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "69622",
+          "epoch": "2026-11-01T03:46:27.984576Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "69627",
+          "epoch": "2026-10-31T19:13:05.208672Z",
+          "reason": "outside-age-window"
+        },
+        {
+          "id": "69779",
+          "epoch": "2026-10-31T00:48:27.745344Z",
+          "reason": "outside-age-window"
+        }
+      ],
+      "release": {
+        "file": "data/orbital/constellation-005f4ac83fc1.json",
+        "sha256": "005f4ac83fc1ffa87f9703662079168e69beb887aa0c2189bce73c67b780e07f",
+        "bytes": 242862,
+        "gzipBytes": 26764
+      },
+      "validation": {
+        "independentAgreement": {
+          "payloadSha256": "005f4ac83fc1ffa87f9703662079168e69beb887aa0c2189bce73c67b780e07f",
+          "implementation": "Python sgp4 2.25 / Vallado C++ plus independent GMST/ECF transform",
+          "gravity": "WGS72",
+          "operationMode": "a",
+          "epochPrecision": "Source fractional epochs retained; both propagations use JavaScript millisecond precision.",
+          "samples": 1113,
+          "identities": 371,
+          "maxPositionDifferenceMetres": 2.0553385507470883e-7,
+          "maxVelocityDifferenceMetresPerSecond": 2.2116099665329233e-10,
+          "maxEarthFixedDifferenceMetres": 0.00003484828778007687,
+          "positionToleranceMetres": 0.02,
+          "velocityToleranceMetresPerSecond": 0.0001,
+          "passed": true,
+          "limitation": "Independent numerical agreement; not a measurement of element accuracy or service availability."
+        },
+        "everyThirtySeconds": true,
+        "browserMeasurement": {
+          "payloadSha256": "005f4ac83fc1ffa87f9703662079168e69beb887aa0c2189bce73c67b780e07f",
+          "measuredAt": "2026-11-02T11:20:22.506Z",
+          "host": {
+            "platform": "darwin",
+            "architecture": "arm64"
+          },
+          "method": "Production preview, complete population, 300x direct propagation, 120 real rAF samples after load with first 11 omitted, ten direct seeks. Main-thread sampling/UI excludes subsequent GPU draw. Worker propagation is reported separately. rAF gaps measure scheduler cadence; model-frame gaps measure changed UTC on rendered updates (the app targets about 30 Hz). Seeks wait for the requested UTC packet to commit, measured at rAF observation resolution. Engines run sequentially. No virtual clock.",
+          "limitation": "Local headless desktop and phone emulation only; hardware model and physical phone not measured. Bounded local check, not a sustained physical-device frame-rate claim.",
+          "results": [
+            {
+              "label": "Headless Chromium desktop",
+              "browserVersion": "156.0.8078.4",
+              "viewport": {
+                "width": 1280,
+                "height": 720
+              },
+              "devicePixelRatio": 1,
+              "rate": 300,
+              "readyMs": 162.06216699999993,
+              "retainedRecords": 371,
+              "finalShown": 371,
+              "rafIntervals": {
+                "samples": 109,
+                "medianMs": 16.700000000000045,
+                "p95Ms": 16.799999999999727
+              },
+              "modelFrameIntervals": {
+                "samples": 54,
+                "medianMs": 33.299999999999955,
+                "p95Ms": 33.40000000000009
+              },
+              "mainThreadSampleAndUI": {
+                "medianMs": 0.3,
+                "p95Ms": 0.4
+              },
+              "workerPropagation": {
+                "medianMs": 0.29999999701976776,
+                "p95Ms": 0.30000000447034836
+              },
+              "seekToCommittedFrame": {
+                "samples": 10,
+                "medianMs": 16.600000001490116,
+                "p95Ms": 17.19999999552965
+              }
+            },
+            {
+              "label": "Headless WebKit iPhone 13 emulation (not a physical phone)",
+              "browserVersion": "27.2",
+              "viewport": {
+                "width": 390,
+                "height": 664
+              },
+              "devicePixelRatio": 3,
+              "rate": 300,
+              "readyMs": 176.64458299999978,
+              "retainedRecords": 371,
+              "finalShown": 371,
+              "rafIntervals": {
+                "samples": 109,
+                "medianMs": 17,
+                "p95Ms": 17
+              },
+              "modelFrameIntervals": {
+                "samples": 54,
+                "medianMs": 33,
+                "p95Ms": 34
+              },
+              "mainThreadSampleAndUI": {
+                "medianMs": 1,
+                "p95Ms": 2
+              },
+              "workerPropagation": {
+                "medianMs": 0,
+                "p95Ms": 1
+              },
+              "seekToCommittedFrame": {
+                "samples": 10,
+                "medianMs": 17,
+                "p95Ms": 17
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "budgets": {
+    "scope": "Separate on-demand constellation chapter; original main edition keeps its 1,000-mover budget.",
+    "maximumMoversPerGroup": 20000,
+    "maximumPayloadGzipPerGroup": 1000000,
+    "maximumPayloadBytesPerGroup": 8000000,
+    "maximumCompleteArtifactGzip": 3500000,
+    "originalOpeningArtifactGzip": 2000000,
+    "selection": "No population cap or sample. Only invalid, wholly stale or unpropagatable records excluded.",
+    "orientationGuides": "At most 24 illustrative orientation circles. This guide limit does not remove any satellite identities."
+  },
+  "presentation": {
+    "comparison": "One constellation per load, with shared 2 November 2026 10:30–11:00 UTC bounds. Switching preserves displayed UTC and opens the full population paused. Each group is a separate capture; no simultaneous operational completeness claim.",
+    "density": "One GPU point per identity. Smaller authored markers at large scale. No synthetic filling, communication links, coverage or deployment reconstruction."
+  },
+  "validation": {
+    "independent": "Python sgp4 2.25 / Vallado C++ plus GMST/ECF at first, middle and last eligible time of every retained identity.",
+    "physicalPhonePerformance": "Unmeasured; local desktop and WebKit emulation only.",
+    "browser": {
+      "command": "ZENIT_TEST_PORT=4198 npm run test:browser",
+      "passed": 198,
+      "scope": "Full application suite in Chromium and mobile WebKit, plus existing desktop WebKit raster case. Large-population cases cover complete eligible identities, lazy group fetching, selected-record coordinate agreement, rapid seeks, in-flight pause, three-stage reveal, shared-UTC switching, both phone orientations, /zenit/ worker/assets, and worker startup recovery."
+    },
+    "applicationCheck": {
+      "command": "npm run check",
+      "unitTests": 86,
+      "typecheck": true,
+      "productionBuild": true,
+      "publicationGuards": true
+    }
+  }
+}

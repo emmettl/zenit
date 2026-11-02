@@ -194,6 +194,21 @@ The featured plane is a **1° angular-momentum-normal neighbourhood at the openi
 
 Offline reproduction after restoring the exact retained captures: `node scripts/compile-constellation.mjs`, then run `research/constellation/validate-reference.py` in an environment with `sgp4==2.25`, followed by `npm run check`. The compiled payload is about **45 KB gzip**. The retained local Chromium/WebKit measurement includes model-frame intervals and seek timings; reproduce it with `node research/constellation/measure-browser.mjs` against the production preview. Physical-phone performance remains unmeasured. **Coverage modelling and a ground-location control are the next possible extension after reviewing this proof.**
 
+The chapter's **Constellation** selector now compares **OneWeb, Starlink and Kuiper** at the same dated UTC. Switching preserves the displayed time and opens the new population paused. Discover also links directly to **Starlink at scale**. Both additional groups are complete retained source populations, with no sampling or visual cap:
+
+| Source group | Input identities | Retained / initially eligible | Wholly stale exclusions | Eligible at end |
+| --- | ---: | ---: | ---: | ---: |
+| Starlink | 11,156 | 10,642 | 514 | 10,590 |
+| Kuiper | 391 | 371 | 20 | 370 |
+
+The [large-population audit](docs/evidence/large-constellations-2026-11-02.json) retains both source hashes, policy evidence, all exclusion identities and independent first/middle/last SGP4 plus GMST/ECF agreement for every retained record. Provider names, including Starlink names carrying a DTC suffix, are preserved without inferring operational status. These source groups do not establish complete service populations.
+
+Starlink and Kuiper propagation run in dedicated workers. Each accepted packet contains one complete set of Float64 positions, orbital normals and eligibility at one UTC. Only one calculation is in flight; newer seeks replace queued requests and superseded packets never commit. The camera, scene, counts, inspection and clock update together. There is no interpolation or synthetic population filling. GPU attributes remain Float32, with one point per identity. Up to 24 illustrative orientation circles are independent of the satellite count. The pinned featured group is computed offline using exact 1° angular tests; a Cartesian grid only accelerates candidate lookup.
+
+This separate chapter declares **20,000 movers, 8 MB uncompressed and 1 MB gzip per on-demand group**. The original edition keeps its 1,000-mover and 2 MB gzip budgets; larger constellation payloads load only when selected. The complete distributable artifact, including on-demand populations, has a separate 3.5 MB gzip ceiling. Current Starlink and Kuiper payloads are about 704 KB and 27 KB gzip. Local Chromium/WebKit timing is retained; physical-phone performance remains unmeasured.
+
+Offline reproduction: `node scripts/compile-large-constellations.mjs`, then `research/constellation/validate-reference.py starlink` and `research/constellation/validate-reference.py kuiper` in the pinned Python environment, followed by `npm run check`. Measure a production preview with `node research/constellation/measure-browser.mjs starlink` (or `kuiper`). No acquisition occurs in builds, visitors or these reproduction commands.
+
 The canonical brief also leaves separate optional chapters: a constellation coverage extension beyond the bounded structure proof; historical accumulation with historical membership and elements; historical debris evolution with event-specific evidence; and optical visibility modelling or authored sound. Gaia stellar depth and much longer clocks remain distant optional research. These investigations are not prerequisites for the current edition.
 
 The build includes dependency and font licence notices under `licences/`. Code is MIT licensed. The stellar dataset retains its separate CC BY-SA 4.0 licence and attribution; the code licence does not grant data rights.
