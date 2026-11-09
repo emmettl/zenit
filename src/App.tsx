@@ -1,5 +1,6 @@
+import { useMediaQuery } from '@motionstudies/web/use-media-query'
 import {Explorer,type ExploreTab,type OrbitalScale} from './Explorer'
-import {useCallback,useEffect,useMemo,useRef,useState} from 'react'
+import {useCallback,useEffect,useLayoutEffect,useMemo,useRef,useState} from 'react'
 import {TimelineScrubber} from '@motionstudies/web/components/TimelineScrubber'
 import '@motionstudies/web/study-timeline.css'
 import {earthFixedSun,illumination,ILLUMINATION_LABELS} from './illumination'
@@ -40,7 +41,7 @@ export function App() {
   const [groups,setGroups]=useState<GroupId[]>([...GROUP_IDS]),[scale,setScale]=useState<OrbitalScale>('whole'),[revision,setRevision]=useState(0),[workerAttempt,setWorkerAttempt]=useState(0)
   const [showStars,setShowStars]=useState(true),[showTrail,setShowTrail]=useState(true),[selectedId,setSelectedId]=useState<string|null>('iss:25544')
   const [time,setTime]=useState(Date.parse(SKY_TIME)),[playing,setPlaying]=useState(false),[rate,setRate]=useState(600),[cue,setCue]=useState(false)
-  const [reduced,setReduced]=useState(()=>window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+  const reduced=useMediaQuery('(prefers-reduced-motion: reduce)')
   const [visible,setVisible]=useState(()=>!document.hidden)
   const [journey,setJourney]=useState<number|null>(null)
   const passes=usePasses(orbit,cohorts,observer,study.sequences[observer.id]),recommended=passes.pass,heroId=storyPass?.objectId??'25544',heroName=stationName(heroId,storyPass?.name)
@@ -51,12 +52,12 @@ export function App() {
   const interaction=useRef(()=>{})
   const autoplayPending=useRef(!reduced&&!returnToExplore)
   const current=useRef(cameraProgress);current.current=cameraProgress
-  const reducedCurrent=useRef(reduced);reducedCurrent.current=reduced
+  const reducedCurrent=useRef(reduced)
   const fail=useCallback(()=>setFailed(true),[]),select=useCallback((id:string)=>{interaction.current();setSelectedId(id);setFollowing(current.current===0&&(id.startsWith('sat:')||id.startsWith('iss:')))},[])
   useEffect(()=>{const controller=new AbortController();setStarState('loading');loadCatalogue(controller.signal).then(value=>{setCatalogue(value);setStarState('ready')}).catch(()=>{if(!controller.signal.aborted)setStarState('error')});return()=>controller.abort()},[starAttempt])
   useEffect(()=>{const controller=new AbortController();initialOrbitLoad.current=controller;setOrbitState('loading');loadOrbit(controller.signal).then(value=>{if(controller.signal.aborted)return;setOrbit(value);setTime(Date.parse(value.release.study.initialUtc));setRevision(x=>x+1);setOrbitState('ready')}).catch(()=>{if(!controller.signal.aborted)setOrbitState('error')});return()=>controller.abort()},[orbitAttempt])
   useEffect(()=>{const controller=new AbortController();initialCohortLoad.current=controller;setCohortState('loading');loadCohorts(controller.signal).then(value=>{if(controller.signal.aborted)return;setCohorts(value);setCohortState('ready')}).catch(()=>{if(!controller.signal.aborted)setCohortState('error')});return()=>controller.abort()},[cohortAttempt])
-  useEffect(()=>{const query=window.matchMedia('(prefers-reduced-motion: reduce)');const change=()=>{if(query.matches===reducedCurrent.current)return;interaction.current();autoplayPending.current=false;setReduced(query.matches);setTarget(null);setPlaying(false);setCue(false)};query.addEventListener('change',change);return()=>query.removeEventListener('change',change)},[])
+  useLayoutEffect(()=>{if(reduced===reducedCurrent.current)return;reducedCurrent.current=reduced;interaction.current();autoplayPending.current=false;setTarget(null);setPlaying(false);setCue(false)},[reduced])
   useEffect(()=>{const change=()=>{setVisible(!document.hidden);if(document.hidden){setPlaying(false);setTarget(null);setCue(false)}};document.addEventListener('visibilitychange',change);return()=>document.removeEventListener('visibilitychange',change)},[])
   useEffect(()=>{
     if(!playing||!orbit)return
