@@ -1,7 +1,5 @@
 name: Check ZENIT
 on:
-  push:
-    branches-ignore: [main]
   pull_request:
   workflow_call:
 permissions:
@@ -10,15 +8,17 @@ jobs:
   check:
     # Current stable native ARM image; pinned Playwright includes macOS 26 WebKit.
     runs-on: macos-26
-    timeout-minutes: 15
+    # The 198-case native browser suite reached 191 passes at the old 15-minute limit.
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: npm
-      - run: npm install --global npm@11.21.1 --ignore-scripts
+      - run: npm install --global npm@12.2.2 --ignore-scripts
       - run: npm ci
+      - run: npm run check:stack
       - run: npm run check
       # Native WebKit/Chromium runtimes avoid the Ubuntu package-mirror dependency.
       - run: npx playwright install chromium webkit
