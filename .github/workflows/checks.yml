@@ -8,7 +8,8 @@ jobs:
   check:
     # Current stable native ARM image; pinned Playwright includes macOS 26 WebKit.
     runs-on: macos-26
-    timeout-minutes: 15
+    # The 198-case native browser suite reached 191 passes at the old 15-minute limit.
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
